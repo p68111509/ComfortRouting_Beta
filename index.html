@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Low-Exposure Routing Demo</title>
+  <!-- Leaflet local assets (no CDN) -->
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <h1 data-i18n="title">舒適路徑系統</h1>
+    </div>
+    <div class="header-right">
+      <button id="help-btn" class="help-btn" data-i18n="helpBtn" title="使用說明">❓</button>
+      <button id="btn-lang-en" class="lang-btn" data-i18n="langEN" type="button">EN</button>
+      <button id="btn-lang-zh" class="lang-btn" data-i18n="langZH" type="button">中文</button>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <aside class="panel">
+      <section class="card">
+        <div class="input-group">
+          <label for="input-start" class="label" data-i18n="start">📍 起點地址</label>
+          <div class="input-with-coords">
+            <input id="input-start" type="text" class="text-input" placeholder="" />
+            <span id="coords-start" class="coords-text">-</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="input-end" class="label" data-i18n="end">🏁 終點地址</label>
+          <div class="input-with-coords">
+            <input id="input-end" type="text" class="text-input" placeholder="" />
+            <span id="coords-end" class="coords-text">-</span>
+          </div>
+        </div>
+
+        <label for="select-mode" class="label" data-i18n="travelMode">🚗 交通方式</label>
+        <select id="select-mode" class="select">
+          <option value="motorcycle" data-i18n="motorcycle">機車</option>
+          <option value="bicycle" data-i18n="bicycle">單車</option>
+          <option value="walk" data-i18n="walk">步行</option>
+        </select>
+
+        <!-- 距離限制開關 -->
+        <div class="toggle-container">
+          <label class="toggle-label" data-i18n="distanceLimitToggle">📏 距離限制功能</label>
+          <div class="toggle-switch">
+            <input type="checkbox" id="distance-limit-toggle" class="toggle-input">
+            <label for="distance-limit-toggle" class="toggle-slider">
+              <span class="toggle-text" data-i18n="off">關</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 距離限制拉桿（預設隱藏） -->
+        <div class="slider-container" id="distance-slider-container" style="display: none;">
+          <label for="max-distance-slider" class="label" data-i18n="maxDistance">📏 最大增加距離</label>
+          <input type="range" id="max-distance-slider" class="slider" min="0" max="10000" value="10000" step="100">
+          <div class="slider-labels">
+            <span class="slider-label">0m</span>
+            <span class="slider-label">+10000m</span>
+          </div>
+          <div class="slider-value" id="slider-value">+10000m</div>
+        </div>
+
+        <div class="btn-row">
+          <button id="btn-plan" class="primary-btn" type="button" disabled data-i18n="plan">規劃路徑</button>
+          <button id="btn-reset" class="secondary-btn" type="button" data-i18n="reset">重置選擇</button>
+        </div>
+        <p class="helper" data-i18n="helper">也可以點地圖依序設定起點/終點。</p>
+        <p id="validation" class="validation" role="status" aria-live="polite" data-i18n="validation">請先設定起點與終點。</p>
+      </section>
+
+
+      <section id="error-box" class="card error-card" hidden>
+        <div class="error-title">Error</div>
+        <div id="error-msg" class="error-msg"></div>
+      </section>
+    </aside>
+
+    <section class="content">
+      <div class="map-card card">
+        <div id="map" class="map" aria-label="map"></div>
+        <div class="map-legend">
+          <div class="legend-item">
+            <span class="legend-line shortest"></span>
+            <span data-i18n="legendShortest">最短路徑</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-line lowest"></span>
+            <span data-i18n="legendLowest">低暴露路徑</span>
+          </div>
+        </div>
+        
+        <div class="map-overlay-selector">
+          <div class="overlay-title" data-i18n="overlayTitle">疊加圖層</div>
+          <div class="overlay-options">
+            <label class="overlay-option">
+              <input type="radio" name="overlay" value="none" checked>
+              <span data-i18n="overlayNone">無</span>
+            </label>
+            <label class="overlay-option">
+              <input type="radio" name="overlay" value="pm25">
+              <span data-i18n="overlayPM25">PM₂.₅</span>
+            </label>
+            <label class="overlay-option">
+              <input type="radio" name="overlay" value="no2">
+              <span data-i18n="overlayNO2">NO₂</span>
+            </label>
+            <label class="overlay-option">
+              <input type="radio" name="overlay" value="wbgt">
+              <span data-i18n="overlayWBGT">氣溫</span>
+            </label>
+          </div>
+        </div>
+        <div class="legend" id="map-legend">
+          <div class="legend-item"><span class="line solid"></span><span data-i18n="legendShortest">🔵 最短路徑</span></div>
+          <div class="legend-item"><span class="line dashed"></span><span data-i18n="legendLowest">🟢 最低暴露路徑</span></div>
+        </div>
+      </div>
+
+      <section class="card table-card">
+        <h2 class="table-title" data-i18n="compareTitle">📊 路徑比較</h2>
+        <div class="table-wrap">
+          <table id="compare-table">
+            <thead>
+              <tr>
+                <th data-i18n="colType">路徑類型</th>
+                <th data-i18n="colDist">距離（km）</th>
+                <th data-i18n="colTime">通勤時間（min）</th>
+                <th>
+                  <span data-i18n="colExp">暴露量減少</span>
+                  <span class="unit-text" data-i18n="colExpUnit">(μg/m³·min)</span>
+                </th>
+                <th data-i18n="colExtra">額外距離（m）</th>
+                <th data-i18n="colImprove">改善率（%）</th>
+              </tr>
+            </thead>
+            <tbody id="compare-tbody">
+              <!-- rows generated dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- 使用說明彈出視窗 -->
+  <div id="help-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 data-i18n="helpTitle">使用說明</h3>
+        <button id="close-help" class="close-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="help-content">
+          🟢 輸入起點與終點地址（或點選地圖設定起終點）<br>
+          🚘 選擇權重：PM2.5、NO2、氣溫<br>
+          🚘 選擇交通方式：機車、單車或步行<br>
+          🧭 點選「路徑解算」：計算兩種路徑（最短/最低暴露），顯示統計表格<br>
+          ✅ 點選「空汙疊圖」可查看PM2.5濃度背景圖層
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <hr class="footer-divider" />
+    <div class="footer-content">
+      <p class="footer-text">
+        © 2025 許家瑋 林祐如 林宇家｜國立成功大學 測量及空間資訊學系｜指導老師：吳治達 教授<br>
+        聯絡信箱：<a href="mailto:p68111509@gs.ncku.edu.tw">p68111509@gs.ncku.edu.tw</a>｜GitHub 專案：<a href="https://github.com/p68111509/Health-routing_Taichung" target="_blank">Health-routing_Taichung</a>
+      </p>
+      <p class="footer-note">
+        部分空氣污染空間資訊參考自環境部公開資料
+      </p>
+      <p class="footer-disclaimer">
+        本系統僅供展示與研究用途，禁止未經授權之下載、修改、或商業使用。<br>
+        所有原始碼、資料與介面設計，皆為作者智慧財產，保留所有權利。
+      </p>
+      <div class="footer-logos">
+        <img src="logo/成大_白色水平.jpg" alt="College logo" class="footer-logo" />
+        <img src="logo/實驗室_紅色長方形.jpg" alt="Lab logo" class="footer-logo" />
+      </div>
+    </div>
+  </footer>
+
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
