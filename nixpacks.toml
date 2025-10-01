@@ -1,8 +1,8 @@
 [phases.setup]
-nixPkgs = ["python39", "pip"]
+nixPkgs = ["python39"]
 
 [phases.install]
-cmds = ["pip install -r api/requirements.txt"]
+cmds = ["python -m pip install -r api/requirements.txt"]
 
 [phases.build]
 cmds = ["echo 'Build complete'"]
