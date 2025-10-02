@@ -1,9 +1,11 @@
 services:
   - type: web
-    name: comfort-routing-system
+    name: comfort-routing
     env: python
     buildCommand: pip install -r api/requirements.txt
-    startCommand: cd api && python -m uvicorn main:app --host 0.0.0.0 --port $PORT
+    startCommand: cd api && uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: PORT
-        value: 10000
+      - key: GRAPH_PATH
+        value: data/雙北基隆路網_濃度與暴露_最大連通版.pkl
+      - key: GOOGLE_API_KEY
+        value: AIzaSyDnbTu8PgUkue5A9uO5aJa3lHZuNUwj6z0

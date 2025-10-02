@@ -129,7 +129,7 @@ const START_COLOR = '#16a34a'; // green
 const END_COLOR = '#dc2626';   // red
 
 // API base（本機 FastAPI）
-const API_BASE = ''; // 使用相對路徑，部署時自動使用當前域名
+const API_BASE = ''; // 部署版本使用相對路徑
 
 // Taipei center
 const DEFAULT_CENTER = [25.04, 121.56];

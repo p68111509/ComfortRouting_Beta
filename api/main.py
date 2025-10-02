@@ -38,9 +38,9 @@ from pyproj import Transformer
 import networkx as nx
 import numpy as np
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from scipy.spatial import cKDTree as KDTree
 import requests
