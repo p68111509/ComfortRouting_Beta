@@ -14,7 +14,8 @@ let currentTileLayer = null;
 // 常數
 const DEFAULT_CENTER = [25.0330, 121.5654];
 const DEFAULT_ZOOM = 13;
-const API_BASE = 'http://localhost:8000';
+// 自動檢測 API 基礎 URL
+const API_BASE = window.location.protocol + '//' + window.location.host;
 
 // 速度常數 (km/h)
 const SPEED_CONSTANTS = {
@@ -469,7 +470,7 @@ function initMap() {
     zoom: DEFAULT_ZOOM,
     zoomControl: true
   });
-
+  
   // 載入預設底圖
   loadTileLayer('cartodb-voyager');
   
@@ -1014,7 +1015,7 @@ function setStart(lat, lng) {
   
   const startIcon = L.divIcon({
     html: `<div style="
-        width: 48px;
+      width: 48px;
       height: 48px;
       background: #10b981;
       border: 6px solid white;
@@ -1041,7 +1042,7 @@ function setEnd(lat, lng) {
   
   const endIcon = L.divIcon({
     html: `<div style="
-        width: 48px;
+      width: 48px;
       height: 48px;
       background: #ef4444;
       border: 6px solid white;
@@ -1512,7 +1513,7 @@ function resetAll() {
     
     // 重新調整地圖大小
     if (window.map) {
-  setTimeout(() => {
+      setTimeout(() => {
         window.map.invalidateSize();
       }, 300);
     }

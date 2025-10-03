@@ -411,13 +411,14 @@ def _get_path_distance(g: nx.Graph, path: List[Any]) -> float:
 # -------------------------- FastAPI App --------------------------
 app = FastAPI(title="Comfort Routing System Backend")
 
-# CORS：開放本機前端（file:// 或 http://localhost）
+# CORS：開放所有來源（包括 Render 部署）
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 開發期先全開，正式再收斂
+    allow_origins=["*"],  # 允許所有來源
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # 靜態檔案服務 - 嘗試多個可能的目錄
@@ -461,6 +462,18 @@ async def read_index():
 async def health_check():
     """健康檢查端點，用於Render監控服務狀態"""
     return {"status": "healthy", "message": "ComfortRouting API is running"}
+
+# 測試端點 - 檢查 API 連接
+@app.get("/api/test")
+async def test_api():
+    """測試端點，檢查 API 是否正常響應"""
+    return {
+        "status": "ok",
+        "message": "API is working",
+        "timestamp": "2025-01-04",
+        "graph_loaded": G is not None,
+        "graph_nodes": len(G.nodes) if G else 0
+    }
 
 # 調試端點 - 檢查靜態文件
 @app.get("/api/debug/static")
