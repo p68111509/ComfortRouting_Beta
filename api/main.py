@@ -415,6 +415,12 @@ app.mount("/static", StaticFiles(directory="."), name="static")
 async def read_index():
     return FileResponse("index.html")
 
+# 健康檢查端點
+@app.get("/api/health")
+async def health_check():
+    """健康檢查端點，用於Render監控服務狀態"""
+    return {"status": "healthy", "message": "ComfortRouting API is running"}
+
 
 @app.on_event("startup")
 def _on_startup():
