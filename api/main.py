@@ -421,7 +421,13 @@ app.add_middleware(
 )
 
 # 靜態檔案服務
-app.mount("/static", StaticFiles(directory="."), name="static")
+# 在 Render 上，靜態文件在專案根目錄
+if os.environ.get("RENDER"):
+    static_dir = BASE_DIR.parent
+else:
+    static_dir = BASE_DIR
+
+app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
 # 根路徑返回前端頁面
 @app.get("/")
