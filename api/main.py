@@ -420,13 +420,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 靜態檔案服務
-# 在 Render 上，靜態文件在專案根目錄
-if os.environ.get("RENDER"):
-    static_dir = BASE_DIR.parent
-else:
-    static_dir = BASE_DIR
+# 靜態檔案服務 - 嘗試多個可能的目錄
+possible_static_dirs = [
+    BASE_DIR.parent,  # ../ (專案根目錄)
+    BASE_DIR,         # ./ (api目錄)
+    Path(".")         # 當前目錄
+]
 
+static_dir = None
+for dir_path in possible_static_dirs:
+    if (dir_path / "index.html").exists() and (dir_path / "styles.css").exists():
+        static_dir = dir_path
+        break
+
+if not static_dir:
+    static_dir = BASE_DIR.parent  # 預設使用專案根目錄
+
+print(f"[config] Static files directory: {static_dir}")
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
 # 根路徑返回前端頁面
@@ -451,6 +461,24 @@ async def read_index():
 async def health_check():
     """健康檢查端點，用於Render監控服務狀態"""
     return {"status": "healthy", "message": "ComfortRouting API is running"}
+
+# 調試端點 - 檢查靜態文件
+@app.get("/api/debug/static")
+async def debug_static():
+    """調試端點，檢查靜態文件路徑"""
+    import os
+    return {
+        "static_dir": str(static_dir),
+        "files": {
+            "index.html": (static_dir / "index.html").exists(),
+            "styles.css": (static_dir / "styles.css").exists(),
+            "app.js": (static_dir / "app.js").exists(),
+            "vendor/leaflet/leaflet.css": (static_dir / "vendor" / "leaflet" / "leaflet.css").exists(),
+            "vendor/leaflet/leaflet.js": (static_dir / "vendor" / "leaflet" / "leaflet.js").exists(),
+        },
+        "working_dir": os.getcwd(),
+        "base_dir": str(BASE_DIR)
+    }
 
 
 @app.on_event("startup")
