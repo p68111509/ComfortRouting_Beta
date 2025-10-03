@@ -55,14 +55,21 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parents[1]
 DEFAULT_GRAPH = BASE_DIR / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl"
 
-# 在 Render 上，data 文件夾在專案根目錄，不在 api 目錄下
-if os.environ.get("RENDER"):
-    # Render 環境：data 文件夾在專案根目錄
-    RENDER_GRAPH = BASE_DIR.parent / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl"
-    GRAPH_PATH = Path(os.environ.get("GRAPH_PATH", str(RENDER_GRAPH))).resolve()
-else:
-    # 本地環境：data 文件夾在專案根目錄
-    GRAPH_PATH = Path(os.environ.get("GRAPH_PATH", str(DEFAULT_GRAPH))).resolve()
+# 嘗試多個可能的路徑
+possible_paths = [
+    DEFAULT_GRAPH,  # api/data/...
+    BASE_DIR.parent / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl",  # ../data/...
+    Path(os.environ.get("GRAPH_PATH", "")).resolve() if os.environ.get("GRAPH_PATH") else None
+]
+
+GRAPH_PATH = None
+for path in possible_paths:
+    if path and path.exists():
+        GRAPH_PATH = path
+        break
+
+if not GRAPH_PATH:
+    GRAPH_PATH = DEFAULT_GRAPH  # 使用預設路徑作為後備
 
 # 啟動時印出絕對路徑，幫助你確認
 print(f"[config] GRAPH_PATH = {GRAPH_PATH}")
@@ -419,13 +426,19 @@ app.mount("/static", StaticFiles(directory="."), name="static")
 # 根路徑返回前端頁面
 @app.get("/")
 async def read_index():
-    # 在 Render 上，index.html 在專案根目錄
-    if os.environ.get("RENDER"):
-        index_path = BASE_DIR.parent / "index.html"
-    else:
-        index_path = BASE_DIR / "index.html"
+    # 嘗試多個可能的 index.html 路徑
+    possible_index_paths = [
+        BASE_DIR.parent / "index.html",  # ../index.html
+        BASE_DIR / "index.html",         # ./index.html
+        Path("index.html")               # 當前目錄
+    ]
     
-    return FileResponse(str(index_path))
+    for index_path in possible_index_paths:
+        if index_path.exists():
+            return FileResponse(str(index_path))
+    
+    # 如果都找不到，返回錯誤
+    raise HTTPException(status_code=404, detail="index.html not found")
 
 # 健康檢查端點
 @app.get("/api/health")
