@@ -1701,7 +1701,35 @@ function updateOverlay(overlayType) {
     return;
   }
   
-  // 這裡可以添加實際的覆蓋層邏輯
+  // 疊加圖層圖片路徑
+  let imagePath;
+  switch (overlayType) {
+    case 'PM25':
+      imagePath = '/static/data/PM25_全台.png';
+      break;
+    case 'NO2':
+      imagePath = '/static/data/NO2_全台.png';
+      break;
+    case 'WBGT':
+      imagePath = '/static/data/WBGT_全台.png';
+      break;
+    default:
+      return;
+  }
+  
+  // EPSG:3826 (TWD97) 的邊界座標（台灣全島）
+  const bounds = [
+    [21.9, 120.1],  // 西南角
+    [25.3, 122.0]   // 東北角
+  ];
+  
+  // 創建圖片疊加層
+  overlayLayer = L.imageOverlay(imagePath, bounds, {
+    opacity: 0.5,
+    interactive: false
+  });
+  
+  overlayLayer.addTo(map);
   console.log(`Switching to overlay: ${overlayType}`);
 }
 
