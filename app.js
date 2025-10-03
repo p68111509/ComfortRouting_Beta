@@ -469,7 +469,7 @@ function initMap() {
     zoom: DEFAULT_ZOOM,
     zoomControl: true
   });
-  
+
   // 載入預設底圖
   loadTileLayer('cartodb-voyager');
   
@@ -1014,7 +1014,7 @@ function setStart(lat, lng) {
   
   const startIcon = L.divIcon({
     html: `<div style="
-      width: 48px;
+        width: 48px;
       height: 48px;
       background: #10b981;
       border: 6px solid white;
@@ -1041,7 +1041,7 @@ function setEnd(lat, lng) {
   
   const endIcon = L.divIcon({
     html: `<div style="
-      width: 48px;
+        width: 48px;
       height: 48px;
       background: #ef4444;
       border: 6px solid white;
@@ -1512,7 +1512,7 @@ function resetAll() {
     
     // 重新調整地圖大小
     if (window.map) {
-      setTimeout(() => {
+  setTimeout(() => {
         window.map.invalidateSize();
       }, 300);
     }
