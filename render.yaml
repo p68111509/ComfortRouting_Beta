@@ -5,6 +5,8 @@ services:
     buildCommand: pip install -r api/requirements.txt
     startCommand: cd api && uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
+      - key: RENDER
+        value: "true"
       - key: GRAPH_PATH
         value: data/雙北基隆路網_濃度與暴露_最大連通版.pkl
       - key: GOOGLE_API_KEY

@@ -55,8 +55,14 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parents[1]
 DEFAULT_GRAPH = BASE_DIR / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl"
 
-# 允許用環境變數覆蓋；沒設就用專案根/data 的預設
-GRAPH_PATH = Path(os.environ.get("GRAPH_PATH", str(DEFAULT_GRAPH))).resolve()
+# 在 Render 上，data 文件夾在專案根目錄，不在 api 目錄下
+if os.environ.get("RENDER"):
+    # Render 環境：data 文件夾在專案根目錄
+    RENDER_GRAPH = BASE_DIR.parent / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl"
+    GRAPH_PATH = Path(os.environ.get("GRAPH_PATH", str(RENDER_GRAPH))).resolve()
+else:
+    # 本地環境：data 文件夾在專案根目錄
+    GRAPH_PATH = Path(os.environ.get("GRAPH_PATH", str(DEFAULT_GRAPH))).resolve()
 
 # 啟動時印出絕對路徑，幫助你確認
 print(f"[config] GRAPH_PATH = {GRAPH_PATH}")
@@ -413,7 +419,13 @@ app.mount("/static", StaticFiles(directory="."), name="static")
 # 根路徑返回前端頁面
 @app.get("/")
 async def read_index():
-    return FileResponse("index.html")
+    # 在 Render 上，index.html 在專案根目錄
+    if os.environ.get("RENDER"):
+        index_path = BASE_DIR.parent / "index.html"
+    else:
+        index_path = BASE_DIR / "index.html"
+    
+    return FileResponse(str(index_path))
 
 # 健康檢查端點
 @app.get("/api/health")
