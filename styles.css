@@ -1311,17 +1311,31 @@ body {
 /* 響應式設計 */
 @media (max-width: 768px) {
   .app-header {
-    padding: 0 16px;
+    padding: 12px 16px; /* 增加上下 padding */
+    min-height: 80px; /* 確保最小高度 */
+    flex-wrap: wrap; /* 允許換行 */
   }
   
   .header-left h1 {
     font-size: 18px;
   }
   
+  /* 手機版 header 元素調整 */
+  .header-center {
+    order: 3; /* 模式切換移到下方 */
+    width: 100%;
+    justify-content: center;
+    margin-top: 8px;
+  }
+  
+  .header-right {
+    margin-left: auto; /* 推到右側 */
+  }
+  
   /* 手機版：頂部面板調整 */
   .left-panel {
     position: fixed;
-    top: 80px; /* 在 header 下方 */
+    top: 100px; /* 調整為新的 header 高度 */
     left: 0;
     right: 0;
     width: 100vw;
@@ -1346,7 +1360,7 @@ body {
   
   /* 手機版地圖調整 */
   .fullscreen-map {
-    top: 80px; /* 手機版 header 高度 */
+    top: 100px; /* 調整為新的 header 高度 */
     bottom: 60px;
   }
   
@@ -1462,8 +1476,15 @@ body {
 }
 
 @media (max-width: 480px) {
+  /* 保留模式切換，但調整大小 */
   .mode-switch {
-    display: none;
+    display: flex;
+    gap: 6px;
+  }
+  
+  .mode-btn {
+    padding: 6px 10px;
+    font-size: 12px;
   }
   
   .header-right {
