@@ -1344,8 +1344,50 @@ body {
     display: none !important;
   }
   
-  .main-row, .distance-limit-section {
+  .main-row {
     display: block !important;
+  }
+  
+  /* 桌面版交通方式布局 */
+  .transport-row-desktop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: var(--input-bg);
+  }
+  
+  .transport-label-desktop {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  
+  .radio-group-desktop {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .radio-option-desktop {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  
+  .radio-option-desktop input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+  }
+  
+  .radio-option-desktop .radio-text {
+    font-size: 16px;
+    color: var(--text-primary);
   }
 }
 
@@ -1527,104 +1569,16 @@ body {
     color: var(--text-primary);
   }
   
-  /* 第四行：距離限制功能 + 按鈕 */
+  /* 第四行：按鈕 */
   .nav-row-4 {
     display: flex;
     align-items: center;
   }
   
-  .fourth-row-content {
-    display: flex;
-    width: 100%;
-    gap: 12px;
-  }
-  
-  /* 距離限制功能（佔一半） */
-  .distance-limit-mobile {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 12px 16px; /* 添加內邊距 */
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    background: var(--input-bg);
-  }
-  
-  .toggle-container-mobile {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .toggle-text {
-    font-size: 14px;
-    color: var(--text-primary);
-  }
-  
-  .toggle-switch-mobile {
-    position: relative;
-    width: 44px;
-    height: 24px;
-    background: var(--border);
-    border-radius: 12px;
-    transition: background 0.3s ease;
-  }
-  
-  .toggle-slider-mobile {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 20px;
-    height: 20px;
-    background: white;
-    border-radius: 50%;
-    transition: transform 0.3s ease;
-  }
-  
-  .toggle-input:checked + .toggle-label .toggle-switch-mobile {
-    background: var(--primary-color);
-  }
-  
-  .toggle-input:checked + .toggle-label .toggle-slider-mobile {
-    transform: translateX(20px);
-  }
-  
-  .slider-container-mobile {
-    margin-top: 8px;
-  }
-  
-  .slider-mobile {
-    width: 100%;
-    height: 6px;
-    border-radius: 3px;
-    background: var(--border);
-    outline: none;
-    -webkit-appearance: none;
-  }
-  
-  .slider-mobile::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--primary-color);
-    cursor: pointer;
-  }
-  
-  .slider-value-mobile {
-    display: block;
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-top: 4px;
-  }
-  
-  /* 按鈕區域（佔另一半） */
   .button-row-mobile {
-    flex: 1;
+    width: 100%;
     display: flex;
-    gap: 8px;
+    gap: 12px;
   }
   
   .btn-primary-mobile, .btn-secondary-mobile {
@@ -1639,13 +1593,13 @@ body {
   }
   
   .btn-primary-mobile {
-    background: #dc267f !important; /* 直接使用紅色 */
+    background: #8B0000 !important; /* 酒紅色 */
     color: white !important;
-    border: 2px solid #dc267f !important;
+    border: 2px solid #8B0000 !important;
   }
   
   .btn-primary-mobile:hover {
-    background: #b91c6b !important; /* 深一點的紅色 */
+    background: #660000 !important; /* 深酒紅色 */
     transform: translateY(-1px);
   }
   

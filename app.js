@@ -1062,8 +1062,11 @@ function setStart(lat, lng) {
   
   startMarker = L.marker([lat, lng], { icon: startIcon }).addTo(map);
   
-  // 更新座標顯示
-  document.getElementById('coords-start').textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+  // 更新座標顯示（如果元素存在）
+  const coordsStart = document.getElementById('coords-start');
+  if (coordsStart) {
+    coordsStart.textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+  }
 }
 
 // 設置終點
@@ -1089,8 +1092,11 @@ function setEnd(lat, lng) {
   
   endMarker = L.marker([lat, lng], { icon: endIcon }).addTo(map);
   
-  // 更新座標顯示
-  document.getElementById('coords-end').textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+  // 更新座標顯示（如果元素存在）
+  const coordsEnd = document.getElementById('coords-end');
+  if (coordsEnd) {
+    coordsEnd.textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+  }
 }
 
 // 更新規劃按鈕狀態

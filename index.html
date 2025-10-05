@@ -129,34 +129,11 @@
           </div>
         </div>
 
-        <!-- 第四行：距離限制功能 + 按鈕 -->
+        <!-- 第四行：按鈕 -->
         <div class="nav-row nav-row-4">
-          <div class="fourth-row-content">
-            <!-- 距離限制功能（佔一半） -->
-            <div class="distance-limit-mobile">
-              <div class="toggle-container-mobile">
-                <input type="checkbox" id="distance-limit-toggle" class="toggle-input">
-                <label for="distance-limit-toggle" class="toggle-label">
-                  <span class="toggle-text" data-i18n="distanceLimit">距離限制</span>
-                  <span class="toggle-switch-mobile">
-                    <span class="toggle-slider-mobile"></span>
-                  </span>
-                </label>
-              </div>
-              
-              <div id="distance-slider-container" class="slider-container-mobile" style="display: none;">
-                <div class="slider-wrapper-mobile">
-                  <input type="range" id="max-distance-slider" class="slider-mobile" min="0" max="10000" value="10000" step="100">
-                  <span id="slider-value" class="slider-value-mobile">+10000m</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- 按鈕區域（佔另一半） -->
-            <div class="button-row-mobile">
-              <button id="plan-btn" class="btn btn-primary-mobile" data-i18n="planBtn">🔍 規劃路徑</button>
-              <button id="reset-btn" class="btn btn-secondary-mobile" data-i18n="resetBtn">🔄 重置</button>
-            </div>
+          <div class="button-row-mobile">
+            <button id="plan-btn" class="btn btn-primary-mobile" data-i18n="planBtn">🔍 規劃路徑</button>
+            <button id="reset-btn" class="btn btn-secondary-mobile" data-i18n="resetBtn">🔄 重置</button>
           </div>
         </div>
       </div>
@@ -181,16 +158,18 @@
 
         <!-- 中間：交通方式 -->
         <div class="transport-section">
-          <label data-i18n="modeLabel">🚗 交通方式</label>
-          <div class="radio-group">
-            <label class="radio-option">
-              <input type="radio" name="transport-mode-desktop" value="bicycle" checked>
-              <span class="radio-text" data-i18n="modeBicycle">單車</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="transport-mode-desktop" value="walk">
-              <span class="radio-text" data-i18n="modeWalk">步行</span>
-            </label>
+          <div class="transport-row-desktop">
+            <label class="transport-label-desktop" data-i18n="modeLabel">🚗 交通方式</label>
+            <div class="radio-group-desktop">
+              <label class="radio-option-desktop">
+                <input type="radio" name="transport-mode-desktop" value="bicycle" checked>
+                <span class="radio-text" data-i18n="modeBicycle">單車</span>
+              </label>
+              <label class="radio-option-desktop">
+                <input type="radio" name="transport-mode-desktop" value="walk">
+                <span class="radio-text" data-i18n="modeWalk">步行</span>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -201,29 +180,6 @@
         </div>
       </div>
 
-      <!-- 距離限制功能（縮小版） -->
-      <div class="distance-limit-section">
-        <div class="toggle-container-small">
-          <input type="checkbox" id="distance-limit-toggle-desktop" class="toggle-input">
-          <label for="distance-limit-toggle-desktop" class="toggle-label">
-            <span class="toggle-text" data-i18n="distanceLimit">距離限制</span>
-            <span class="toggle-switch-small">
-              <span class="toggle-slider-small"></span>
-            </span>
-          </label>
-        </div>
-        
-        <div id="distance-slider-container-desktop" class="slider-container-small" style="display: none;">
-          <div class="slider-wrapper-small">
-            <div class="slider-group-small">
-              <span class="slider-min-small">0m</span>
-              <input type="range" id="max-distance-slider-desktop" class="slider-small" min="0" max="10000" value="10000" step="100">
-              <span class="slider-max-small">+10000m</span>
-              <span id="slider-value-desktop" class="slider-value-small">+10000m</span>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
