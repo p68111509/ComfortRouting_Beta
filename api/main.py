@@ -677,3 +677,8 @@ def api_routes(req: RoutesReq):
     return resp
 
 
+# 啟動代碼 - 確保在 Render 環境中正確綁定端口
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
