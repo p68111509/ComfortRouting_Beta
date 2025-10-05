@@ -1346,23 +1346,32 @@ body {
     padding: 0;
   }
   
+  /* 手機版模式切換器 - 水平排列 */
+  .mode-switch {
+    flex-direction: row; /* 改為水平排列 */
+    gap: 4px; /* 按鈕間距 */
+  }
+  
   /* 手機版模式按鈕調整 */
   .mode-btn {
     padding: 8px 16px; /* 調整按鈕大小 */
     font-size: 14px;
+    writing-mode: horizontal-tb; /* 強制水平文字 */
+    text-orientation: mixed; /* 文字方向 */
   }
   
-  /* 手機版：頂部面板調整 */
+  /* 手機版：頂部面板調整 - 自適應 Header 高度 */
   .left-panel {
     position: fixed;
-    top: 90px; /* 調整為新的 header 高度 */
+    top: calc(80px + var(--header-height, 80px)); /* 動態計算 Header 高度 */
     left: 0;
     right: 0;
     width: 100vw;
     height: auto;
-    max-height: 70vh;
+    max-height: calc(100vh - 140px); /* 預留 Header 和底部空間 */
     transform: translateY(-100%);
     z-index: 1000;
+    transition: top 0.3s ease; /* 平滑過渡 */
   }
   
   .left-panel.expanded {

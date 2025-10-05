@@ -17,6 +17,34 @@ const DEFAULT_ZOOM = 13;
 // 自動檢測 API 基礎 URL
 const API_BASE = window.location.protocol + '//' + window.location.host;
 
+// 手機版 Header 高度自適應
+function updateHeaderHeight() {
+  if (window.innerWidth <= 768) {
+    const header = document.querySelector('.app-header');
+    if (header) {
+      const headerHeight = header.offsetHeight;
+      document.documentElement.style.setProperty('--header-height', headerHeight + 'px');
+      
+      // 更新左側面板位置
+      const leftPanel = document.querySelector('.left-panel');
+      if (leftPanel) {
+        leftPanel.style.top = (headerHeight + 10) + 'px';
+      }
+      
+      // 更新地圖位置
+      const map = document.querySelector('.fullscreen-map');
+      if (map) {
+        map.style.top = (headerHeight + 10) + 'px';
+      }
+    }
+  }
+}
+
+// 監聽視窗大小變化
+window.addEventListener('resize', updateHeaderHeight);
+// 初始執行
+document.addEventListener('DOMContentLoaded', updateHeaderHeight);
+
 // 速度常數 (km/h)
 const SPEED_CONSTANTS = {
   motorcycle: 45,
