@@ -1356,8 +1356,8 @@ body {
   .mode-btn {
     padding: 8px 16px; /* 調整按鈕大小 */
     font-size: 14px;
-    writing-mode: horizontal-tb; /* 強制水平文字 */
-    text-orientation: mixed; /* 文字方向 */
+    white-space: nowrap; /* 防止文字換行 */
+    text-align: center; /* 文字置中 */
   }
   
   /* 手機版：頂部面板調整 - 自適應 Header 高度 */
@@ -1371,7 +1371,15 @@ body {
     max-height: calc(100vh - 140px); /* 預留 Header 和底部空間 */
     transform: translateY(-100%);
     z-index: 1000;
-    transition: top 0.3s ease; /* 平滑過渡 */
+    transition: top 0.3s ease, transform 0.3s ease; /* 平滑過渡 */
+  }
+  
+  /* 確保手機版面板把手樣式與底部面板一致 */
+  .left-panel .panel-handle {
+    background: var(--card-bg) !important;
+    backdrop-filter: saturate(200%) blur(18px) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 0 0 var(--border-radius) var(--border-radius) !important;
   }
   
   .left-panel.expanded {

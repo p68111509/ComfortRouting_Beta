@@ -25,10 +25,14 @@ function updateHeaderHeight() {
       const headerHeight = header.offsetHeight;
       document.documentElement.style.setProperty('--header-height', headerHeight + 'px');
       
-      // 更新左側面板位置
+      // 更新左側面板位置（保持動畫）
       const leftPanel = document.querySelector('.left-panel');
       if (leftPanel) {
         leftPanel.style.top = (headerHeight + 10) + 'px';
+        // 確保動畫屬性不被覆蓋
+        if (!leftPanel.style.transition.includes('transform')) {
+          leftPanel.style.transition += ', transform 0.3s ease';
+        }
       }
       
       // 更新地圖位置
