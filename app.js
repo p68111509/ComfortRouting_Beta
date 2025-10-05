@@ -866,11 +866,11 @@ function bindOverlayEvents() {
 // 綁定幫助事件
 function bindHelpEvents() {
   const helpBtn = document.getElementById('help-btn');
-  const usageUsageBtn = document.getElementById('usage-usage-btn');
+  const aboutUsBtn = document.getElementById('about-us-btn');
   const helpModal = document.getElementById('help-modal');
   const closeBtn = document.getElementById('close-help');
   
-  console.log('[debug] Help button elements:', { helpBtn, usageUsageBtn, helpModal, closeBtn });
+  console.log('[debug] Help button elements:', { helpBtn, aboutUsBtn, helpModal, closeBtn });
   
   // 使用說明按鈕事件
   if (helpBtn && helpModal) {
@@ -885,11 +885,11 @@ function bindHelpEvents() {
     });
   }
   
-  // 使用使用按鈕事件
-  if (usageUsageBtn && helpModal) {
-    usageUsageBtn.addEventListener('click', () => {
-      console.log('[debug] Usage Usage button clicked');
-      updateHelpContent();
+  // 關於我們按鈕事件
+  if (aboutUsBtn && helpModal) {
+    aboutUsBtn.addEventListener('click', () => {
+      console.log('[debug] About Us button clicked');
+      updateAboutUsContent();
       helpModal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
       
@@ -1013,6 +1013,90 @@ function updateHelpContent() {
     metroContent.style.display = 'none';
     if (helpModalTitle) {
       helpModalTitle.textContent = i18nDict[currentLang].helpTitle;
+    }
+  }
+}
+
+// 更新關於我們內容
+function updateAboutUsContent() {
+  const commuteContent = document.getElementById('help-content-commute');
+  const metroContent = document.getElementById('help-content-metro');
+  const helpModalTitle = document.getElementById('help-modal-title');
+  
+  // 隱藏原有的幫助內容
+  commuteContent.style.display = 'none';
+  metroContent.style.display = 'none';
+  
+  // 設置標題
+  if (helpModalTitle) {
+    helpModalTitle.textContent = '關於我們';
+  }
+  
+  // 創建關於我們內容
+  const aboutUsContent = `
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.8; color: #333;">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <h2 style="color: #8B0000; margin-bottom: 15px; font-size: 24px;">舒適路徑系統</h2>
+        <p style="font-size: 16px; color: #666; margin-bottom: 30px;">
+          一個專為台北地區設計的智能路徑規劃系統，幫助您找到最舒適、最健康的出行路線。
+        </p>
+      </div>
+      
+      <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+        <h3 style="color: #8B0000; margin-bottom: 15px; font-size: 18px;">開發團隊</h3>
+        <p style="margin-bottom: 10px;">
+          © 2025 許家瑋 林祐如｜國立成功大學 測量及空間資訊學系｜指導老師：吳治達 教授
+        </p>
+        <p style="margin-bottom: 0;">
+          📧 聯絡信箱：<a href="mailto:p68111509@gs.ncku.edu.tw" style="color: #8B0000; text-decoration: none;">p68111509@gs.ncku.edu.tw</a>
+        </p>
+      </div>
+      
+      <div style="margin-bottom: 25px;">
+        <h3 style="color: #8B0000; margin-bottom: 15px; font-size: 18px;">資料來源</h3>
+        <p style="margin-bottom: 10px;">
+          國立成功大學實驗室
+        </p>
+        <p style="margin-bottom: 0; font-size: 14px; color: #666;">
+          部分空氣汙染空間資訊參考自環境部公開資料
+        </p>
+      </div>
+      
+      <div style="background: #fff3cd; padding: 20px; border-radius: 12px; border-left: 4px solid #ffc107;">
+        <h3 style="color: #856404; margin-bottom: 15px; font-size: 18px;">版權聲明</h3>
+        <p style="margin-bottom: 10px; color: #856404;">
+          本系統僅供展示與研究用途，禁止未經授權之下載、修改、或商業使用。
+        </p>
+        <p style="margin-bottom: 0; color: #856404;">
+          所有原始碼、資料與介面設計，皆為作者智慧財產，保留所有權利。
+        </p>
+      </div>
+    </div>
+  `;
+  
+  // 將內容插入到幫助模態框中
+  const helpModalContent = document.querySelector('#help-modal .modal-content');
+  if (helpModalContent) {
+    // 清除現有內容並添加關於我們內容
+    helpModalContent.innerHTML = `
+      <div class="modal-header">
+        <h2 id="help-modal-title">關於我們</h2>
+        <button id="close-help" class="close-btn">×</button>
+      </div>
+      <div class="modal-body">
+        ${aboutUsContent}
+      </div>
+    `;
+    
+    // 重新綁定關閉按鈕事件
+    const closeBtn = document.getElementById('close-help');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        const helpModal = document.getElementById('help-modal');
+        helpModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        enableModeSwitching();
+      });
     }
   }
 }
