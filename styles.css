@@ -1329,9 +1329,11 @@ body {
   
   .header-left {
     flex: 1; /* 佔據剩餘空間 */
+    order: 1; /* 最左側 */
   }
   
   .header-center {
+    order: 2; /* 中間 */
     margin: 0 20px; /* 左右間距 */
   }
   
@@ -1339,6 +1341,7 @@ body {
     display: flex;
     gap: 12px;
     align-items: center;
+    order: 3; /* 最右側 */
   }
   
   /* 桌面版：隱藏手機版布局，顯示原版布局 */
