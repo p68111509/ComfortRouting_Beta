@@ -1334,7 +1334,8 @@ body {
   
   .header-center {
     order: 2; /* 中間 */
-    margin: 0 20px; /* 左右間距 */
+    margin: 0 auto; /* 自動置中 */
+    flex: 0 0 auto; /* 不伸縮，保持固定大小 */
   }
   
   .header-right {
@@ -1342,6 +1343,8 @@ body {
     gap: 12px;
     align-items: center;
     order: 3; /* 最右側 */
+    flex: 1; /* 佔據剩餘空間 */
+    justify-content: flex-end; /* 右側對齊 */
   }
   
   /* 桌面版：隱藏手機版布局，顯示原版布局 */
