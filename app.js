@@ -866,14 +866,29 @@ function bindOverlayEvents() {
 // 綁定幫助事件
 function bindHelpEvents() {
   const helpBtn = document.getElementById('help-btn');
+  const usageUsageBtn = document.getElementById('usage-usage-btn');
   const helpModal = document.getElementById('help-modal');
   const closeBtn = document.getElementById('close-help');
   
-  console.log('[debug] Help button elements:', { helpBtn, helpModal, closeBtn });
+  console.log('[debug] Help button elements:', { helpBtn, usageUsageBtn, helpModal, closeBtn });
   
+  // 使用說明按鈕事件
   if (helpBtn && helpModal) {
     helpBtn.addEventListener('click', () => {
       console.log('[debug] Help button clicked');
+      updateHelpContent();
+      helpModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      
+      // 禁用模式切換按鈕
+      disableModeSwitching();
+    });
+  }
+  
+  // 使用使用按鈕事件
+  if (usageUsageBtn && helpModal) {
+    usageUsageBtn.addEventListener('click', () => {
+      console.log('[debug] Usage Usage button clicked');
       updateHelpContent();
       helpModal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
