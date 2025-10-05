@@ -598,17 +598,23 @@ function bindUI() {
     }
   });
   
-  // 規劃路徑按鈕
+  // 規劃路徑按鈕（手機版和桌面版）
   const planBtn = document.getElementById('plan-btn');
-  planBtn.addEventListener('click', planRoutes);
+  const planBtnDesktop = document.getElementById('plan-btn-desktop');
+  if (planBtn) planBtn.addEventListener('click', planRoutes);
+  if (planBtnDesktop) planBtnDesktop.addEventListener('click', planRoutes);
   
-  // 重製按鈕
+  // 重製按鈕（手機版和桌面版）
   const resetBtn = document.getElementById('reset-btn');
-  resetBtn.addEventListener('click', resetAll);
+  const resetBtnDesktop = document.getElementById('reset-btn-desktop');
+  if (resetBtn) resetBtn.addEventListener('click', resetAll);
+  if (resetBtnDesktop) resetBtnDesktop.addEventListener('click', resetAll);
   
   // 交通方式選擇（Radio 按鈕）
   const transportRadios = document.querySelectorAll('input[name="transport-mode"]');
-  transportRadios.forEach(radio => {
+  const transportRadiosDesktop = document.querySelectorAll('input[name="transport-mode-desktop"]');
+  
+  [...transportRadios, ...transportRadiosDesktop].forEach(radio => {
     radio.addEventListener('change', () => {
       if (window.lastRouteData) {
         renderTable(window.lastRouteData);
@@ -616,34 +622,7 @@ function bindUI() {
     });
   });
 
-  // 距離限制開關
-  const toggle = document.getElementById('distance-limit-toggle');
-  const sliderContainer = document.getElementById('distance-slider-container');
-  
-  toggle.addEventListener('change', function() {
-    if (this.checked) {
-      sliderContainer.style.display = 'block';
-    } else {
-      sliderContainer.style.display = 'none';
-    }
-    
-    // 如果在規劃模式且有起終點，自動重新規劃
-    if (isPlanningMode && startMarker && endMarker) {
-      planRoutes();
-    }
-  });
-  
-  // 距離限制滑桿
-  const slider = document.getElementById('max-distance-slider');
-  slider.addEventListener('input', function() {
-    const value = this.value;
-    document.getElementById('slider-value').textContent = `+${value}m`;
-    
-    // 如果在規劃模式，自動重新規劃
-    if (isPlanningMode && startMarker && endMarker) {
-      planRoutes();
-    }
-  });
+  // 距離限制功能已移除
   
   // 輸入框事件
   bindInputEvents();
@@ -673,32 +652,71 @@ function bindUI() {
 
 // 綁定輸入框事件
 function bindInputEvents() {
+  // 手機版輸入框
   const startInput = document.getElementById('input-start');
   const endInput = document.getElementById('input-end');
   
-  startInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      geocodeAndSetMarker(this.value, 'start');
-    }
-  });
+  // 桌面版輸入框
+  const startInputDesktop = document.getElementById('input-start-desktop');
+  const endInputDesktop = document.getElementById('input-end-desktop');
   
-  startInput.addEventListener('blur', function() {
-    if (this.value.trim()) {
-      geocodeAndSetMarker(this.value, 'start');
-    }
-  });
+  // 綁定手機版輸入框事件
+  if (startInput) {
+    startInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        geocodeAndSetMarker(this.value, 'start');
+      }
+    });
+    
+    startInput.addEventListener('blur', function() {
+      if (this.value.trim()) {
+        geocodeAndSetMarker(this.value, 'start');
+      }
+    });
+  }
   
-  endInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      geocodeAndSetMarker(this.value, 'end');
-    }
-  });
+  if (endInput) {
+    endInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        geocodeAndSetMarker(this.value, 'end');
+      }
+    });
+    
+    endInput.addEventListener('blur', function() {
+      if (this.value.trim()) {
+        geocodeAndSetMarker(this.value, 'end');
+      }
+    });
+  }
   
-  endInput.addEventListener('blur', function() {
-    if (this.value.trim()) {
-      geocodeAndSetMarker(this.value, 'end');
-    }
-  });
+  // 綁定桌面版輸入框事件
+  if (startInputDesktop) {
+    startInputDesktop.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        geocodeAndSetMarker(this.value, 'start');
+      }
+    });
+    
+    startInputDesktop.addEventListener('blur', function() {
+      if (this.value.trim()) {
+        geocodeAndSetMarker(this.value, 'start');
+      }
+    });
+  }
+  
+  if (endInputDesktop) {
+    endInputDesktop.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        geocodeAndSetMarker(this.value, 'end');
+      }
+    });
+    
+    endInputDesktop.addEventListener('blur', function() {
+      if (this.value.trim()) {
+        geocodeAndSetMarker(this.value, 'end');
+      }
+    });
+  }
 }
 
 // 綁定語言事件
@@ -1150,14 +1168,31 @@ async function reverseGeocode(lat, lng, type) {
     if (!response.ok) throw new Error('Reverse geocoding failed');
     
     const data = await response.json();
-    const inputId = type === 'start' ? 'input-start' : 'input-end';
-    document.getElementById(inputId).value = data.label || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    const value = data.label || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    
+    // 更新手機版和桌面版輸入框
+    const mobileInputId = type === 'start' ? 'input-start' : 'input-end';
+    const desktopInputId = type === 'start' ? 'input-start-desktop' : 'input-end-desktop';
+    
+    const mobileInput = document.getElementById(mobileInputId);
+    const desktopInput = document.getElementById(desktopInputId);
+    
+    if (mobileInput) mobileInput.value = value;
+    if (desktopInput) desktopInput.value = value;
     
   } catch (error) {
     console.error('Reverse geocoding error:', error);
     // 如果反向地理編碼失敗，使用座標
-    const inputId = type === 'start' ? 'input-start' : 'input-end';
-    document.getElementById(inputId).value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    const value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    
+    const mobileInputId = type === 'start' ? 'input-start' : 'input-end';
+    const desktopInputId = type === 'start' ? 'input-start-desktop' : 'input-end-desktop';
+    
+    const mobileInput = document.getElementById(mobileInputId);
+    const desktopInput = document.getElementById(desktopInputId);
+    
+    if (mobileInput) mobileInput.value = value;
+    if (desktopInput) desktopInput.value = value;
   }
 }
 
@@ -1165,8 +1200,10 @@ async function reverseGeocode(lat, lng, type) {
 async function planRoutes() {
   hideError();
   
-  const hasStart = !!startMarker || !!document.getElementById('input-start').value.trim();
-  const hasEnd = !!endMarker || !!document.getElementById('input-end').value.trim();
+  const startInput = document.getElementById('input-start') || document.getElementById('input-start-desktop');
+  const endInput = document.getElementById('input-end') || document.getElementById('input-end-desktop');
+  const hasStart = !!startMarker || (startInput && startInput.value.trim());
+  const hasEnd = !!endMarker || (endInput && endInput.value.trim());
   
   if (!hasStart || !hasEnd) {
     console.log('[debug] planRoutes called but no start/end points, skipping');
@@ -1192,27 +1229,24 @@ async function planRoutes() {
         end: { lat: endPos.lat, lng: endPos.lng }
       };
     } else {
-      // 使用輸入框地址
+      // 使用輸入框地址（手機版和桌面版）
+      const startInput = document.getElementById('input-start') || document.getElementById('input-start-desktop');
+      const endInput = document.getElementById('input-end') || document.getElementById('input-end-desktop');
+      
       payload = {
-        start_address: document.getElementById('input-start').value.trim(),
-        end_address: document.getElementById('input-end').value.trim()
+        start_address: startInput ? startInput.value.trim() : '',
+        end_address: endInput ? endInput.value.trim() : ''
       };
     }
     
     // 添加其他參數
-    // 獲取選中的交通方式
-    const selectedTransport = document.querySelector('input[name="transport-mode"]:checked');
+    // 獲取選中的交通方式（手機版和桌面版）
+    const selectedTransport = document.querySelector('input[name="transport-mode"]:checked') || 
+                             document.querySelector('input[name="transport-mode-desktop"]:checked');
     payload.mode = selectedTransport ? selectedTransport.value : 'bicycle';
     
-    // 距離限制
-    const isDistanceLimitEnabled = document.getElementById('distance-limit-toggle').checked;
-    const maxDistanceSlider = document.getElementById('max-distance-slider');
-    
-    if (isDistanceLimitEnabled && maxDistanceSlider.value > 0) {
-      payload.max_distance_increase = parseInt(maxDistanceSlider.value);
-    } else {
-      payload.max_distance_increase = null;
-    }
+    // 距離限制功能已移除
+    payload.max_distance_increase = null;
     
     console.log('[debug] planRoutes called, sending payload:', payload);
     
