@@ -1311,13 +1311,15 @@ body {
 /* 響應式設計 */
 @media (max-width: 768px) {
   .app-header {
-    padding: 12px 16px; /* 增加上下 padding */
-    min-height: 80px; /* 確保最小高度 */
+    padding: 16px 16px 20px 16px; /* 大幅增加上下 padding */
+    min-height: 120px; /* 大幅增加最小高度 */
     flex-wrap: wrap; /* 允許換行 */
+    align-items: flex-start; /* 頂部對齊 */
   }
   
   .header-left h1 {
     font-size: 18px;
+    margin-bottom: 8px; /* 增加底部間距 */
   }
   
   /* 手機版 header 元素調整 */
@@ -1325,17 +1327,25 @@ body {
     order: 3; /* 模式切換移到下方 */
     width: 100%;
     justify-content: center;
-    margin-top: 8px;
+    margin-top: 12px; /* 增加頂部間距 */
+    padding: 8px 0; /* 增加上下 padding */
+  }
+  
+  /* 手機版模式按鈕調整 */
+  .mode-btn {
+    padding: 10px 20px; /* 增加按鈕大小 */
+    font-size: 14px; /* 增加字體大小 */
   }
   
   .header-right {
     margin-left: auto; /* 推到右側 */
+    margin-top: -4px; /* 微調位置 */
   }
   
   /* 手機版：頂部面板調整 */
   .left-panel {
     position: fixed;
-    top: 100px; /* 調整為新的 header 高度 */
+    top: 140px; /* 調整為新的 header 高度 (120px + 20px margin) */
     left: 0;
     right: 0;
     width: 100vw;
@@ -1360,7 +1370,7 @@ body {
   
   /* 手機版地圖調整 */
   .fullscreen-map {
-    top: 100px; /* 調整為新的 header 高度 */
+    top: 140px; /* 調整為新的 header 高度 (120px + 20px margin) */
     bottom: 60px;
   }
   
