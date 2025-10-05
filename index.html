@@ -10,23 +10,30 @@
 </head>
 <body>
   <header class="app-header">
-    <div class="header-left">
-      <h1 data-i18n="title">舒適路徑系統</h1>
-    </div>
-    <div class="header-center">
-      <div class="mode-switch">
-        <button id="mode-commute" class="mode-btn active" data-i18n="modeCommute">通勤模式</button>
-        <button id="mode-metro" class="mode-btn" data-i18n="modeMetro">捷運模式</button>
-        <div class="mode-indicator"></div>
+    <!-- 第一行：標題 + 右側按鈕 -->
+    <div class="header-row-1">
+      <div class="header-left">
+        <h1 data-i18n="title">舒適路徑系統</h1>
+      </div>
+      <div class="header-right">
+        <button id="help-btn" class="help-btn" data-i18n="helpBtn" title="使用說明">
+          ❓<span class="help-text">說明</span>
+        </button>
+        <div class="language-switcher">
+          <button id="btn-lang-en" class="lang-btn" data-i18n="langEN" type="button">EN</button>
+          <button id="btn-lang-zh" class="lang-btn" data-i18n="langZH" type="button">中文</button>
+        </div>
       </div>
     </div>
-    <div class="header-right">
-      <button id="help-btn" class="help-btn" data-i18n="helpBtn" title="使用說明">
-        ❓<span class="help-text">說明</span>
-      </button>
-      <div class="language-switcher">
-        <button id="btn-lang-en" class="lang-btn" data-i18n="langEN" type="button">EN</button>
-        <button id="btn-lang-zh" class="lang-btn" data-i18n="langZH" type="button">中文</button>
+    
+    <!-- 第二行：模式切換 -->
+    <div class="header-row-2">
+      <div class="header-center">
+        <div class="mode-switch">
+          <button id="mode-commute" class="mode-btn active" data-i18n="modeCommute">通勤模式</button>
+          <button id="mode-metro" class="mode-btn" data-i18n="modeMetro">捷運模式</button>
+          <div class="mode-indicator"></div>
+        </div>
       </div>
     </div>
   </header>
