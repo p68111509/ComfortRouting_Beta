@@ -1338,6 +1338,15 @@ body {
     gap: 12px;
     align-items: center;
   }
+  
+  /* 桌面版：隱藏手機版布局，顯示原版布局 */
+  .mobile-nav-layout {
+    display: none;
+  }
+  
+  .main-row, .distance-limit-section {
+    display: block;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1418,6 +1427,231 @@ body {
   
   .left-panel.expanded {
     transform: translateY(0);
+  }
+  
+  /* 手機版四行導航布局 */
+  .mobile-nav-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+  
+  .nav-row {
+    width: 100%;
+  }
+  
+  /* 第一行和第二行：輸入框 */
+  .nav-row-1, .nav-row-2 {
+    display: flex;
+    align-items: center;
+  }
+  
+  .text-input-mobile {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+  }
+  
+  .text-input-mobile:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(220, 38, 127, 0.1);
+  }
+  
+  .coords-text {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: var(--text-secondary);
+    pointer-events: none;
+  }
+  
+  .input-with-coords {
+    position: relative;
+    width: 100%;
+  }
+  
+  /* 第三行：交通方式 */
+  .nav-row-3 {
+    display: flex;
+    align-items: center;
+  }
+  
+  .transport-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .transport-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  
+  .radio-group-mobile {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .radio-option-mobile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  
+  .radio-option-mobile input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+  }
+  
+  .radio-text {
+    font-size: 16px;
+    color: var(--text-primary);
+  }
+  
+  /* 第四行：距離限制功能 + 按鈕 */
+  .nav-row-4 {
+    display: flex;
+    align-items: center;
+  }
+  
+  .fourth-row-content {
+    display: flex;
+    width: 100%;
+    gap: 12px;
+  }
+  
+  /* 距離限制功能（佔一半） */
+  .distance-limit-mobile {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .toggle-container-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .toggle-text {
+    font-size: 14px;
+    color: var(--text-primary);
+  }
+  
+  .toggle-switch-mobile {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: var(--border);
+    border-radius: 12px;
+    transition: background 0.3s ease;
+  }
+  
+  .toggle-slider-mobile {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+  }
+  
+  .toggle-input:checked + .toggle-label .toggle-switch-mobile {
+    background: var(--primary-color);
+  }
+  
+  .toggle-input:checked + .toggle-label .toggle-slider-mobile {
+    transform: translateX(20px);
+  }
+  
+  .slider-container-mobile {
+    margin-top: 8px;
+  }
+  
+  .slider-mobile {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border);
+    outline: none;
+    -webkit-appearance: none;
+  }
+  
+  .slider-mobile::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+  }
+  
+  .slider-value-mobile {
+    display: block;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+  
+  /* 按鈕區域（佔另一半） */
+  .button-row-mobile {
+    flex: 1;
+    display: flex;
+    gap: 8px;
+  }
+  
+  .btn-primary-mobile, .btn-secondary-mobile {
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 14px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+  }
+  
+  .btn-primary-mobile {
+    background: var(--primary-color);
+    color: white;
+  }
+  
+  .btn-primary-mobile:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+  }
+  
+  .btn-secondary-mobile {
+    background: var(--secondary-color);
+    color: var(--text-primary);
+  }
+  
+  .btn-secondary-mobile:hover {
+    background: var(--secondary-hover);
+    transform: translateY(-1px);
+  }
+  
+  /* 手機版：隱藏原版布局 */
+  .main-row, .distance-limit-section {
+    display: none;
   }
   
   .left-panel .panel-handle {

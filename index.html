@@ -100,64 +100,68 @@
       <div class="handle-arrow">▼</div>
     </div>
     <div class="panel-content">
-      <div class="main-row">
-        <!-- 左側：地址輸入 -->
-        <div class="address-section">
-          <div class="address-group">
-            <div class="input-with-coords">
-              <input type="text" id="input-start" class="text-input-compact" data-i18n-placeholder="startPlaceholderWithIcon" placeholder="🟢 請輸入起點地址">
-              <span id="coords-start" class="coords-text">-</span>
+      <!-- 手機版四行布局 -->
+      <div class="mobile-nav-layout">
+        <!-- 第一行：起點輸入框 -->
+        <div class="nav-row nav-row-1">
+          <div class="input-with-coords">
+            <input type="text" id="input-start" class="text-input-mobile" data-i18n-placeholder="startPlaceholderWithIcon" placeholder="🟢 請輸入起點地址">
+            <span id="coords-start" class="coords-text">-</span>
+          </div>
+        </div>
+
+        <!-- 第二行：終點輸入框 -->
+        <div class="nav-row nav-row-2">
+          <div class="input-with-coords">
+            <input type="text" id="input-end" class="text-input-mobile" data-i18n-placeholder="endPlaceholderWithIcon" placeholder="🔴 請輸入終點地址">
+            <span id="coords-end" class="coords-text">-</span>
+          </div>
+        </div>
+
+        <!-- 第三行：交通方式 -->
+        <div class="nav-row nav-row-3">
+          <div class="transport-row">
+            <label class="transport-label" data-i18n="modeLabel">🚗 交通方式</label>
+            <div class="radio-group-mobile">
+              <label class="radio-option-mobile">
+                <input type="radio" name="transport-mode" value="bicycle" checked>
+                <span class="radio-text" data-i18n="modeBicycle">單車</span>
+              </label>
+              <label class="radio-option-mobile">
+                <input type="radio" name="transport-mode" value="walk">
+                <span class="radio-text" data-i18n="modeWalk">步行</span>
+              </label>
             </div>
           </div>
-          <div class="address-group">
-            <div class="input-with-coords">
-              <input type="text" id="input-end" class="text-input-compact" data-i18n-placeholder="endPlaceholderWithIcon" placeholder="🔴 請輸入終點地址">
-              <span id="coords-end" class="coords-text">-</span>
+        </div>
+
+        <!-- 第四行：距離限制功能 + 按鈕 -->
+        <div class="nav-row nav-row-4">
+          <div class="fourth-row-content">
+            <!-- 距離限制功能（佔一半） -->
+            <div class="distance-limit-mobile">
+              <div class="toggle-container-mobile">
+                <input type="checkbox" id="distance-limit-toggle" class="toggle-input">
+                <label for="distance-limit-toggle" class="toggle-label">
+                  <span class="toggle-text" data-i18n="distanceLimit">距離限制</span>
+                  <span class="toggle-switch-mobile">
+                    <span class="toggle-slider-mobile"></span>
+                  </span>
+                </label>
+              </div>
+              
+              <div id="distance-slider-container" class="slider-container-mobile" style="display: none;">
+                <div class="slider-wrapper-mobile">
+                  <input type="range" id="max-distance-slider" class="slider-mobile" min="0" max="10000" value="10000" step="100">
+                  <span id="slider-value" class="slider-value-mobile">+10000m</span>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <!-- 中間：交通方式 -->
-        <div class="transport-section">
-          <label data-i18n="modeLabel">🚗 交通方式</label>
-          <div class="radio-group">
-            <label class="radio-option">
-              <input type="radio" name="transport-mode" value="bicycle" checked>
-              <span class="radio-text" data-i18n="modeBicycle">單車</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="transport-mode" value="walk">
-              <span class="radio-text" data-i18n="modeWalk">步行</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- 右側：按鈕 -->
-        <div class="button-section">
-          <button id="plan-btn" class="btn btn-primary" data-i18n="planBtn">🔍 規劃路徑</button>
-          <button id="reset-btn" class="btn btn-secondary" data-i18n="resetBtn">🔄 重置</button>
-        </div>
-      </div>
-
-      <!-- 距離限制功能（縮小版） -->
-      <div class="distance-limit-section">
-        <div class="toggle-container-small">
-          <input type="checkbox" id="distance-limit-toggle" class="toggle-input">
-          <label for="distance-limit-toggle" class="toggle-label">
-            <span class="toggle-text" data-i18n="distanceLimit">距離限制</span>
-            <span class="toggle-switch-small">
-              <span class="toggle-slider-small"></span>
-            </span>
-          </label>
-        </div>
-        
-        <div id="distance-slider-container" class="slider-container-small" style="display: none;">
-          <div class="slider-wrapper-small">
-            <div class="slider-group-small">
-              <span class="slider-min-small">0m</span>
-              <input type="range" id="max-distance-slider" class="slider-small" min="0" max="10000" value="10000" step="100">
-              <span class="slider-max-small">+10000m</span>
-              <span id="slider-value" class="slider-value-small">+10000m</span>
+            <!-- 按鈕區域（佔另一半） -->
+            <div class="button-row-mobile">
+              <button id="plan-btn" class="btn btn-primary-mobile" data-i18n="planBtn">🔍 規劃路徑</button>
+              <button id="reset-btn" class="btn btn-secondary-mobile" data-i18n="resetBtn">🔄 重置</button>
             </div>
           </div>
         </div>
