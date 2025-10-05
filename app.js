@@ -1523,11 +1523,16 @@ function updateCircularProgress(circleId, textId, percentage) {
 
 // 重製所有設定
 function resetAll() {
-  // 清除輸入框
+  // 清除輸入框（手機版和桌面版）
   const startInput = document.getElementById('input-start');
   const endInput = document.getElementById('input-end');
+  const startInputDesktop = document.getElementById('input-start-desktop');
+  const endInputDesktop = document.getElementById('input-end-desktop');
+  
   if (startInput) startInput.value = '';
   if (endInput) endInput.value = '';
+  if (startInputDesktop) startInputDesktop.value = '';
+  if (endInputDesktop) endInputDesktop.value = '';
   
   // 清除標記
   if (startMarker) { 
@@ -1542,9 +1547,16 @@ function resetAll() {
   // 清除路徑
   clearGeometries();
   
-  // 清除座標顯示
-  document.getElementById('coords-start').textContent = '-';
-  document.getElementById('coords-end').textContent = '-';
+  // 清除座標顯示（如果元素存在）
+  const coordsStart = document.getElementById('coords-start');
+  const coordsEnd = document.getElementById('coords-end');
+  const coordsStartDesktop = document.getElementById('coords-start-desktop');
+  const coordsEndDesktop = document.getElementById('coords-end-desktop');
+  
+  if (coordsStart) coordsStart.textContent = '-';
+  if (coordsEnd) coordsEnd.textContent = '-';
+  if (coordsStartDesktop) coordsStartDesktop.textContent = '-';
+  if (coordsEndDesktop) coordsEndDesktop.textContent = '-';
   
   // 退出規劃模式
   isPlanningMode = false;
@@ -1553,27 +1565,22 @@ function resetAll() {
   // 啟用輸入框
   if (startInput) startInput.disabled = false;
   if (endInput) endInput.disabled = false;
+  if (startInputDesktop) startInputDesktop.disabled = false;
+  if (endInputDesktop) endInputDesktop.disabled = false;
   
-  // 重置開關和拉桿
-  const toggle = document.getElementById('distance-limit-toggle');
-  const sliderContainer = document.getElementById('distance-slider-container');
-  const slider = document.getElementById('max-distance-slider');
+  // 重置交通方式選擇
+  const transportRadios = document.querySelectorAll('input[name="transport-mode"]');
+  const transportRadiosDesktop = document.querySelectorAll('input[name="transport-mode-desktop"]');
   
-  if (toggle) {
-    toggle.checked = false;
-  }
-  
-  if (sliderContainer) {
-    sliderContainer.style.display = 'none';
-  }
-  
-  if (slider) {
-    slider.value = 10000;
-    const sliderValue = document.getElementById('slider-value');
-    if (sliderValue) {
-      sliderValue.textContent = '+10000m';
+  [...transportRadios, ...transportRadiosDesktop].forEach(radio => {
+    if (radio.value === 'bicycle') {
+      radio.checked = true;
+    } else {
+      radio.checked = false;
     }
-  }
+  });
+  
+  // 距離限制功能已移除
   
   // 展開左側面板
   document.getElementById('leftPanel').classList.add('expanded');

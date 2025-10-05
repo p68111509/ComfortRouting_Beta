@@ -423,8 +423,9 @@ body {
 .main-row {
   display: flex;
   gap: 24px;
-  align-items: center;
+  align-items: stretch; /* 改為 stretch 讓元素可以有不同的高度 */
   flex: 1;
+  padding: 12px 0; /* 增加上下間距 */
 }
 
 /* 地址輸入區域 */
@@ -480,6 +481,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  justify-content: center; /* 垂直置中 */
 }
 
 .transport-section > label {
