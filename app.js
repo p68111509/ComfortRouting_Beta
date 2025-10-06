@@ -543,15 +543,15 @@ function initPanelStates() {
   const bottomPanel = document.getElementById('bottomPanel');
   const fullscreenMap = document.getElementById('map');
   
-  // 左側面板初始展開
-  leftPanel.classList.add('expanded');
+  // 左側面板初始收起
+  // leftPanel.classList.add('expanded');
   
   // 底部面板初始禁用
   bottomPanel.classList.add('disabled');
   
-  // 設置地圖初始位置（面板展開狀態）
+  // 設置地圖初始位置（面板收起狀態）
   if (fullscreenMap) {
-    fullscreenMap.style.top = '360px'; // 80px (header) + 280px (panel)
+    fullscreenMap.style.top = '120px'; // 80px (header) + 40px (handle)
   }
   
   // 更新底部面板提示文字
@@ -1683,8 +1683,8 @@ function resetAll() {
   
   // 距離限制功能已移除
   
-  // 展開左側面板
-  document.getElementById('leftPanel').classList.add('expanded');
+  // 左側面板保持收起狀態
+  // document.getElementById('leftPanel').classList.add('expanded');
   
   // 調整地圖位置（面板展開時）
   const fullscreenMap = document.getElementById('map');
