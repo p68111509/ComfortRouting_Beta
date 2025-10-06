@@ -221,6 +221,7 @@ body {
   gap: 16px;
   box-shadow: var(--shadow);
   z-index: 500;
+  border: 1px solid black;
 }
 
 .legend-item {
@@ -273,11 +274,12 @@ body {
   padding: 16px;
   box-shadow: var(--shadow);
   z-index: 500;
+  border: 1px solid black;
 }
 
 .map-overlay-selector h4 {
   font-size: 14px;
-  margin-bottom: 12px;
+  margin: 0 0 12px 0;
   color: var(--text);
 }
 
@@ -302,9 +304,10 @@ body {
 /* 底圖選擇器 */
 .map-tile-selector {
   position: absolute;
-  top: 20px;
-  left: 120px;
+  top: 110px;
+  left: 20px;
   z-index: 500;
+  border: 1px solid black;
 }
 
 .tile-selector-button {
@@ -403,6 +406,7 @@ body {
   justify-content: center;
   cursor: pointer;
   transition: var(--transition);
+  z-index: 901;
 }
 
 .left-panel .panel-handle:hover {

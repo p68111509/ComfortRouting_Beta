@@ -659,6 +659,36 @@ function bindUI() {
   
   // 捷運站事件
   bindMetroStationEvents();
+  
+  // 阻止地圖元件點擊事件傳播到地圖
+  preventMapElementClickPropagation();
+}
+
+// 阻止地圖元件點擊事件傳播到地圖
+function preventMapElementClickPropagation() {
+  // 底圖樣式選單
+  const tileSelector = document.querySelector('.map-tile-selector');
+  if (tileSelector) {
+    tileSelector.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+  }
+  
+  // 圖例
+  const mapLegend = document.querySelector('.map-legend');
+  if (mapLegend) {
+    mapLegend.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+  }
+  
+  // 疊加圖層選擇器
+  const overlaySelector = document.querySelector('.map-overlay-selector');
+  if (overlaySelector) {
+    overlaySelector.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+  }
 }
 
 // 綁定輸入框事件
