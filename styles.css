@@ -1405,6 +1405,23 @@ body {
   .header-left {
     flex: 1; /* 佔據剩餘空間 */
     order: 1; /* 最左側 */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .header-logo {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+  }
+  
+  .main-logo-img {
+    height: 48px;
+    width: auto;
+    max-width: 72px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
   }
   
   .header-center {
@@ -1494,6 +1511,11 @@ body {
   .header-left h1 {
     font-size: 18px;
     margin: 0; /* 移除底部間距 */
+  }
+  
+  .main-logo-img {
+    height: 38px; /* 手機版較小 */
+    max-width: 58px;
   }
   
   .header-right {
