@@ -1513,14 +1513,83 @@ body {
     margin: 0; /* 移除底部間距 */
   }
   
+  /* 手機版縮小按鈕 */
+  .help-btn {
+    padding: 6px 8px !important;
+    font-size: 12px !important;
+  }
+  
+  .help-btn .help-text {
+    font-size: 11px !important;
+  }
+  
+  /* 手機版縮小語言切換器 */
+  .language-switcher {
+    font-size: 11px !important;
+  }
+  
+  .language-switcher button {
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+    min-width: 24px !important;
+  }
+  
   .main-logo-img {
     height: 38px; /* 手機版較小 */
     max-width: 58px;
   }
   
+  /* 手機版縮小地圖元件 */
+  .leaflet-control-zoom {
+    transform: scale(0.8) !important;
+  }
+  
+  .leaflet-control-zoom a {
+    width: 28px !important;
+    height: 28px !important;
+    line-height: 26px !important;
+    font-size: 16px !important;
+  }
+  
+  /* 手機版縮小底圖樣式選單 */
+  .map-tile-selector {
+    transform: scale(0.8) !important;
+    top: 88px !important; /* 調整位置 */
+  }
+  
+  .tile-selector-button {
+    padding: 8px 10px !important;
+    font-size: 11px !important;
+  }
+  
+  /* 手機版縮小疊加圖層面板 */
+  .map-overlay-selector {
+    transform: scale(0.8) !important;
+    top: 64px !important; /* 調整位置 */
+  }
+  
+  .map-overlay-selector h4 {
+    font-size: 12px !important;
+    margin: 0 0 10px 0 !important;
+  }
+  
+  .overlay-option {
+    font-size: 11px !important;
+    gap: 6px !important;
+  }
+  
+  /* 手機版調整面板把手寬度 */
+  .left-panel .panel-handle {
+    width: 180px !important; /* 統一寬度 */
+  }
+  
+  .bottom-panel .panel-handle {
+    width: 180px !important; /* 統一寬度 */
+  }
+  
   .header-right {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
   }
   
