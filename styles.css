@@ -1552,6 +1552,7 @@ body {
   /* 手機版縮小 Header 左側間距 */
   .header-left {
     gap: 8px !important;
+    flex-wrap: nowrap !important; /* 防止 flex 項目換行 */
   }
   
   /* 手機版縮小測試版文字 */
