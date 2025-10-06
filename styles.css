@@ -1515,28 +1515,37 @@ body {
   
   /* 手機版縮小按鈕 */
   .help-btn {
-    padding: 6px 8px !important;
-    font-size: 12px !important;
+    padding: 4px 6px !important;
+    font-size: 10px !important;
+    min-width: auto !important;
   }
   
   .help-btn .help-text {
-    font-size: 11px !important;
+    font-size: 9px !important;
+    display: none !important; /* 隱藏文字，只顯示圖標 */
   }
   
   /* 手機版縮小語言切換器 */
   .language-switcher {
-    font-size: 11px !important;
+    font-size: 9px !important;
   }
   
   .language-switcher button {
-    padding: 4px 8px !important;
-    font-size: 10px !important;
-    min-width: 24px !important;
+    padding: 3px 6px !important;
+    font-size: 8px !important;
+    min-width: 20px !important;
+    height: 24px !important;
   }
   
   .main-logo-img {
     height: 38px; /* 手機版較小 */
     max-width: 58px;
+  }
+  
+  /* 手機版縮小測試版文字 */
+  .beta-text {
+    font-size: 10px !important;
+    font-weight: 400 !important;
   }
   
   /* 手機版縮小地圖元件 */
@@ -1589,7 +1598,7 @@ body {
   
   .header-right {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     align-items: center;
   }
   
