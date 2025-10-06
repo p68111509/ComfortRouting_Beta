@@ -1542,9 +1542,9 @@ body {
     max-width: 32px;
   }
   
-  /* 手機版縮小標題 */
+  /* 手機版放大標題 */
   .header-left h1 {
-    font-size: 14px !important;
+    font-size: 28px !important; /* 放大兩倍：14px * 2 */
     margin: 0;
     line-height: 1.2;
   }
@@ -1564,6 +1564,12 @@ body {
   /* 手機版縮小地圖元件 */
   .leaflet-control-zoom {
     transform: scale(0.8) !important;
+  }
+  
+  /* 手機版縮小圖例並下移 */
+  .map-legend {
+    transform: scale(0.7) !important; /* 縮小更多 */
+    top: 60px !important; /* 下移 */
   }
   
   .leaflet-control-zoom a {
@@ -1587,7 +1593,7 @@ body {
   /* 手機版縮小疊加圖層面板 */
   .map-overlay-selector {
     transform: scale(0.8) !important;
-    top: 64px !important; /* 調整位置 */
+    top: 80px !important; /* 下移更多 */
   }
   
   .map-overlay-selector h4 {
