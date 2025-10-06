@@ -441,24 +441,32 @@
   <div id="help-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 id="help-modal-title">關於我們</h3>
+        <h3 id="help-modal-title">關於我們 | 使用說明</h3>
         <button id="close-help" class="close-btn">✕</button>
       </div>
       <div class="modal-body">
         <div id="help-content-commute">
-          <div class="help-section">
-            <p>專為台北地區設計的智能路徑規劃系統，幫助您找到最舒適、最健康的出行路線。</p>
+          <!-- Logo 區域 -->
+          <div class="help-section logo-section">
+            <div class="logo-container">
+              <img src="logo/環境部.png" alt="環境部" class="logo-img">
+              <img src="logo/成大_白色水平.jpg" alt="國立成功大學" class="logo-img">
+              <img src="logo/實驗室_紅色長方形.jpg" alt="實驗室" class="logo-img">
+              <img src="logo/北捷文字logo_去背.png" alt="台北捷運" class="logo-img">
+            </div>
           </div>
           
+          <!-- 使用說明按鈕區域 -->
+          <div class="help-section button-section">
+            <button id="commute-help-btn" class="help-mode-btn">通勤模式使用說明</button>
+            <button id="metro-help-btn" class="help-mode-btn">捷運模式使用說明</button>
+          </div>
+          
+          <!-- 關於團隊介紹 -->
           <div class="help-section">
             <h5>開發團隊</h5>
             <p>© 2025 許家瑋 林祐如｜國立成功大學 測量及空間資訊學系｜指導老師：吳治達 教授</p>
             <p>📧 聯絡信箱：p68111509@gs.ncku.edu.tw</p>
-          </div>
-          
-          <div class="help-section">
-            <h5>國立成功大學</h5>
-            <p>實驗室</p>
           </div>
           
           <div class="help-section">
@@ -499,6 +507,76 @@
             <p>本系統僅供展示與研究用途，禁止未經授權之下載、修改、或商業使用。</p>
             <p>所有原始碼、資料與介面設計，皆為作者智慧財產，保留所有權利</p>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 通勤模式使用說明彈窗 -->
+  <div id="commute-help-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>通勤模式使用說明</h3>
+        <button id="close-commute-help" class="close-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="help-section">
+          <h5>🚗 功能概述</h5>
+          <p>通勤模式提供智能路徑規劃功能，幫助您找到最舒適、最健康的出行路線，避開高污染區域。</p>
+        </div>
+        
+        <div class="help-section">
+          <h5>🎯 使用步驟</h5>
+          <p><strong>步驟一：</strong>輸入起點和終點地址，或直接在地圖上點擊選擇位置</p>
+          <p><strong>步驟二：</strong>選擇交通方式（單車、步行）</p>
+          <p><strong>步驟三：</strong>點擊「規劃路徑」按鈕</p>
+          <p><strong>步驟四：</strong>查看路徑比較結果，包括最短路徑和低暴露路徑</p>
+        </div>
+        
+        <div class="help-section">
+          <h5>🗺️ 地圖功能</h5>
+          <p><strong>疊加圖層：</strong>可選擇 PM₂.₅、NO₂、氣溫等空氣品質圖層</p>
+          <p><strong>底圖樣式：</strong>提供淡雅、簡潔、深色、標準等多種地圖樣式</p>
+          <p><strong>路徑顯示：</strong>藍色粗線為最短路徑，綠色粗虛線為低暴露路徑</p>
+        </div>
+        
+        <div class="help-section">
+          <h5>📊 路徑比較</h5>
+          <p>系統會比較兩條路徑的距離、時間、空氣品質暴露程度，並計算改善率，幫助您做出最佳選擇。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 捷運模式使用說明彈窗 -->
+  <div id="metro-help-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>捷運模式使用說明</h3>
+        <button id="close-metro-help" class="close-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="help-section">
+          <h5>🚇 功能概述</h5>
+          <p>捷運模式提供台北捷運路線圖，可查看各站出口資訊並規劃到附近景點的最佳路徑。</p>
+        </div>
+        
+        <div class="help-section">
+          <h5>🎯 使用步驟</h5>
+          <p><strong>步驟一：</strong>點擊捷運地圖上的任一站點</p>
+          <p><strong>步驟二：</strong>在彈出視窗中選擇出口</p>
+          <p><strong>步驟三：</strong>選擇想前往的附近景點</p>
+          <p><strong>步驟四：</strong>點擊「開始導航」查看路徑規劃</p>
+        </div>
+        
+        <div class="help-section">
+          <h5>📍 支援站點</h5>
+          <p>目前支援象山站，提供3個出口選擇和2個熱門景點（豹山步道登山口、富邦美術館）。</p>
+        </div>
+        
+        <div class="help-section">
+          <h5>🗺️ 路徑規劃</h5>
+          <p>系統會計算從選定出口到景點的最短路徑和低暴露路徑，並提供詳細的距離、時間和空氣品質分析。</p>
         </div>
       </div>
     </div>

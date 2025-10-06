@@ -290,7 +290,7 @@ const i18nDict = {
     overlayWBGT: "氣溫",
     modeCommute: "通勤模式",
     modeMetro: "捷運模式",
-    helpBtn: "使用說明",
+    helpBtn: "關於我們 | 說明",
     langEN: "EN",
     langZH: "中文",
     // 面板標題翻譯
@@ -896,6 +896,58 @@ function bindHelpEvents() {
     });
   }
   
+  // 通勤模式使用說明按鈕
+  const commuteHelpBtn = document.getElementById('commute-help-btn');
+  if (commuteHelpBtn) {
+    commuteHelpBtn.addEventListener('click', () => {
+      console.log('[debug] Commute help button clicked');
+      showCommuteHelp();
+    });
+  }
+  
+  // 捷運模式使用說明按鈕
+  const metroHelpBtn = document.getElementById('metro-help-btn');
+  if (metroHelpBtn) {
+    metroHelpBtn.addEventListener('click', () => {
+      console.log('[debug] Metro help button clicked');
+      showMetroHelp();
+    });
+  }
+  
+  // 通勤模式使用說明彈窗關閉按鈕
+  const closeCommuteHelpBtn = document.getElementById('close-commute-help');
+  const commuteHelpModal = document.getElementById('commute-help-modal');
+  if (closeCommuteHelpBtn && commuteHelpModal) {
+    closeCommuteHelpBtn.addEventListener('click', () => {
+      commuteHelpModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+    
+    commuteHelpModal.addEventListener('click', (e) => {
+      if (e.target === commuteHelpModal) {
+        commuteHelpModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    });
+  }
+  
+  // 捷運模式使用說明彈窗關閉按鈕
+  const closeMetroHelpBtn = document.getElementById('close-metro-help');
+  const metroHelpModal = document.getElementById('metro-help-modal');
+  if (closeMetroHelpBtn && metroHelpModal) {
+    closeMetroHelpBtn.addEventListener('click', () => {
+      metroHelpModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+    
+    metroHelpModal.addEventListener('click', (e) => {
+      if (e.target === metroHelpModal) {
+        metroHelpModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    });
+  }
+  
   if (helpModal) {
     helpModal.addEventListener('click', (e) => {
       if (e.target === helpModal) {
@@ -1001,6 +1053,24 @@ function updateHelpContent() {
     if (helpModalTitle) {
       helpModalTitle.textContent = i18nDict[currentLang].helpTitle;
     }
+  }
+}
+
+// 顯示通勤模式使用說明
+function showCommuteHelp() {
+  const commuteHelpModal = document.getElementById('commute-help-modal');
+  if (commuteHelpModal) {
+    commuteHelpModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+// 顯示捷運模式使用說明
+function showMetroHelp() {
+  const metroHelpModal = document.getElementById('metro-help-modal');
+  if (metroHelpModal) {
+    metroHelpModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
   }
 }
 
