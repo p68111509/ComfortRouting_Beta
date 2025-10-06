@@ -64,31 +64,31 @@ const METRO_LINES = {
     color: '#E3002C',
     code: 'R',
     stations: [
-      { id: 'tamsui', name: '淡水', nameEn: 'Tamsui', code: 'R28' },
-      { id: 'hongshulin', name: '紅樹林', nameEn: 'Hongshulin', code: 'R27' },
-      { id: 'zhuwei', name: '竹圍', nameEn: 'Zhuwei', code: 'R26' },
-      { id: 'guandu', name: '關渡', nameEn: 'Guandu', code: 'R25' },
-      { id: 'zhongyi', name: '忠義', nameEn: 'Zhongyi', code: 'R24' },
-      { id: 'fuxinggang', name: '復興崗', nameEn: 'Fuxinggang', code: 'R23' },
-      { id: 'beitou', name: '北投', nameEn: 'Beitou', code: 'R22' },
-      { id: 'qiyan', name: '奇岩', nameEn: 'Qiyan', code: 'R21' },
-      { id: 'shipai', name: '石牌', nameEn: 'Shipai', code: 'R20' },
-      { id: 'mingde', name: '明德', nameEn: 'Mingde', code: 'R19' },
-      { id: 'zhishan', name: '芝山', nameEn: 'Zhishan', code: 'R18' },
-      { id: 'shilin', name: '士林', nameEn: 'Shilin', code: 'R17' },
-      { id: 'jiantan', name: '劍潭', nameEn: 'Jiantan', code: 'R16' },
-      { id: 'yuanshan', name: '圓山', nameEn: 'Yuanshan', code: 'R15' },
-      { id: 'minquan-w-rd', name: '民權西路', nameEn: 'Minquan West Road', code: 'R14' },
-      { id: 'shuanglian', name: '雙連', nameEn: 'Shuanglian', code: 'R13' },
-      { id: 'zhongshan', name: '中山', nameEn: 'Zhongshan', code: 'R12' },
-      { id: 'taipei-main-station', name: '台北車站', nameEn: 'Taipei Main Station', code: 'R10' },
-      { id: 'taida', name: '台大醫院', nameEn: 'National Taiwan University Hospital', code: 'R09' },
-      { id: 'chks', name: '中正紀念堂', nameEn: 'Chiang Kai-shek Memorial Hall', code: 'R08' },
-      { id: 'dongmen', name: '東門', nameEn: 'Dongmen', code: 'R07' },
-      { id: 'daan', name: '大安', nameEn: 'Daan', code: 'R05' },
-      { id: 'xinyi', name: '信義安和', nameEn: 'Xinyi Anhe', code: 'R04' },
-      { id: 'taipei101', name: '台北101/世貿', nameEn: 'Taipei 101/World Trade Center', code: 'R03' },
-      { id: 'xiangshan', name: '象山', nameEn: 'Xiangshan', code: 'R02' }
+      { id: 'xiangshan', name: '象山', nameEn: 'Xiangshan', code: 'R02', enabled: true },
+      { id: 'tamsui', name: '淡水', nameEn: 'Tamsui', code: 'R28', enabled: false },
+      { id: 'hongshulin', name: '紅樹林', nameEn: 'Hongshulin', code: 'R27', enabled: false },
+      { id: 'zhuwei', name: '竹圍', nameEn: 'Zhuwei', code: 'R26', enabled: false },
+      { id: 'guandu', name: '關渡', nameEn: 'Guandu', code: 'R25', enabled: false },
+      { id: 'zhongyi', name: '忠義', nameEn: 'Zhongyi', code: 'R24', enabled: false },
+      { id: 'fuxinggang', name: '復興崗', nameEn: 'Fuxinggang', code: 'R23', enabled: false },
+      { id: 'beitou', name: '北投', nameEn: 'Beitou', code: 'R22', enabled: false },
+      { id: 'qiyan', name: '奇岩', nameEn: 'Qiyan', code: 'R21', enabled: false },
+      { id: 'shipai', name: '石牌', nameEn: 'Shipai', code: 'R20', enabled: false },
+      { id: 'mingde', name: '明德', nameEn: 'Mingde', code: 'R19', enabled: false },
+      { id: 'zhishan', name: '芝山', nameEn: 'Zhishan', code: 'R18', enabled: false },
+      { id: 'shilin', name: '士林', nameEn: 'Shilin', code: 'R17', enabled: false },
+      { id: 'jiantan', name: '劍潭', nameEn: 'Jiantan', code: 'R16', enabled: false },
+      { id: 'yuanshan', name: '圓山', nameEn: 'Yuanshan', code: 'R15', enabled: false },
+      { id: 'minquan-w-rd', name: '民權西路', nameEn: 'Minquan West Road', code: 'R14', enabled: false },
+      { id: 'shuanglian', name: '雙連', nameEn: 'Shuanglian', code: 'R13', enabled: false },
+      { id: 'zhongshan', name: '中山', nameEn: 'Zhongshan', code: 'R12', enabled: false },
+      { id: 'taipei-main-station', name: '台北車站', nameEn: 'Taipei Main Station', code: 'R10', enabled: false },
+      { id: 'taida', name: '台大醫院', nameEn: 'National Taiwan University Hospital', code: 'R09', enabled: false },
+      { id: 'chks', name: '中正紀念堂', nameEn: 'Chiang Kai-shek Memorial Hall', code: 'R08', enabled: false },
+      { id: 'dongmen', name: '東門', nameEn: 'Dongmen', code: 'R07', enabled: false },
+      { id: 'daan', name: '大安', nameEn: 'Daan', code: 'R05', enabled: false },
+      { id: 'xinyi', name: '信義安和', nameEn: 'Xinyi Anhe', code: 'R04', enabled: false },
+      { id: 'taipei101', name: '台北101/世貿', nameEn: 'Taipei 101/World Trade Center', code: 'R03', enabled: false }
     ]
   },
   'bannan': {
@@ -2074,6 +2074,12 @@ function showStationsModal(lineData) {
     stationCard.className = 'station-card';
     stationCard.setAttribute('data-station', station.id);
     
+    // 檢查是否啟用
+    const isEnabled = station.enabled !== false;
+    if (!isEnabled) {
+      stationCard.classList.add('disabled');
+    }
+    
     // 檢查是否有出口資料
     const hasExits = STATION_EXITS[station.id];
     if (hasExits) {
@@ -2088,20 +2094,27 @@ function showStationsModal(lineData) {
     // 設置站點編號框的顏色為捷運線的顏色
     const codeElement = stationCard.querySelector('.station-card-code');
     if (codeElement) {
-      codeElement.style.backgroundColor = lineData.color;
-      codeElement.style.color = 'white';
+      if (isEnabled) {
+        codeElement.style.backgroundColor = lineData.color;
+        codeElement.style.color = 'white';
+      } else {
+        codeElement.style.backgroundColor = '#ccc';
+        codeElement.style.color = '#666';
+      }
       console.log('[metro] Set station code color to:', lineData.color);
     }
     
-    // 添加點擊事件
-    stationCard.addEventListener('click', function() {
-      const stationId = this.getAttribute('data-station');
-      const stationName = METRO_STATIONS[stationId];
-      if (stationName && STATION_EXITS[stationId]) {
-        hideStationsModal();
-        showExitModal(stationName, stationId);
-      }
-    });
+    // 添加點擊事件（只有啟用的站點才能點擊）
+    if (isEnabled) {
+      stationCard.addEventListener('click', function() {
+        const stationId = this.getAttribute('data-station');
+        const stationName = METRO_STATIONS[stationId];
+        if (stationName && STATION_EXITS[stationId]) {
+          hideStationsModal();
+          showExitModal(stationName, stationId);
+        }
+      });
+    }
     
     stationsGrid.appendChild(stationCard);
   });

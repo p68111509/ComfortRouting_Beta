@@ -2055,6 +2055,17 @@ body {
   box-shadow: 0 4px 12px rgba(139, 21, 56, 0.2);
 }
 
+.station-card.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.station-card.disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 .station-card.has-exits {
   border-color: var(--primary);
   background: rgba(139, 21, 56, 0.05);
