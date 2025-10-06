@@ -1931,10 +1931,10 @@ function updateOverlay(overlayType) {
       imagePath = '/static/data/PM25_全台.png';
       break;
     case 'NO2':
-      imagePath = '/static/data/AirPollution/NO2_全台.png';
+      imagePath = '/static/data/NO2_全台.png';
       break;
     case 'WBGT':
-      imagePath = '/static/data/AirPollution/WBGT_全台.png';
+      imagePath = '/static/data/WBGT_全台.png';
       break;
     default:
       return;
@@ -1947,18 +1947,13 @@ function updateOverlay(overlayType) {
   ];
   
   // 創建圖片疊加層
-  try {
-    overlayLayer = L.imageOverlay(imagePath, bounds, {
+  overlayLayer = L.imageOverlay(imagePath, bounds, {
       opacity: 0.5,
-      interactive: false
-    });
-    
-    overlayLayer.addTo(map);
-    console.log(`Switching to overlay: ${overlayType}`);
-  } catch (error) {
-    console.error('Error loading overlay:', error);
-    console.log('Image path:', imagePath);
-  }
+    interactive: false
+  });
+  
+  overlayLayer.addTo(map);
+  console.log(`Switching to overlay: ${overlayType}`);
 }
 
 // 錯誤處理
