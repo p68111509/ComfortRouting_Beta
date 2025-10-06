@@ -1928,13 +1928,13 @@ function updateOverlay(overlayType) {
   let imagePath;
   switch (overlayType) {
     case 'PM25':
-      imagePath = '/static/data/PM25_全台.png';
+      imagePath = '/static/data/AirPollution/PM25_全台.png';
       break;
     case 'NO2':
-      imagePath = '/static/data/NO2_全台.png';
+      imagePath = '/static/data/AirPollution/NO2_全台.png';
       break;
     case 'WBGT':
-      imagePath = '/static/data/WBGT_全台.png';
+      imagePath = '/static/data/AirPollution/WBGT_全台.png';
       break;
     default:
       return;
