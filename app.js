@@ -1823,6 +1823,14 @@ function applyLanguage() {
     }
   });
   
+  // 手機版語言切換特殊處理
+  if (window.innerWidth <= 768) {
+    const zhBtn = document.getElementById('btn-lang-zh');
+    if (zhBtn && currentLang === 'zh') {
+      zhBtn.textContent = '中';
+    }
+  }
+  
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     const key = el.getAttribute('data-i18n-placeholder');
     if (dict[key]) {

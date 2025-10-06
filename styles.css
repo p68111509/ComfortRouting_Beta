@@ -1538,13 +1538,19 @@ body {
   }
   
   .main-logo-img {
-    height: 38px; /* 手機版較小 */
-    max-width: 58px;
+    height: 24px; /* 手機版縮小到原來的 2/3 以下 */
+    max-width: 38px;
+  }
+  
+  /* 手機版縮小標題 */
+  .header-left h1 {
+    font-size: 16px !important;
+    margin: 0;
   }
   
   /* 手機版縮小測試版文字 */
   .beta-text {
-    font-size: 10px !important;
+    font-size: 8px !important;
     font-weight: 400 !important;
   }
   
