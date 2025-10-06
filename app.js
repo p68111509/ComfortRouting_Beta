@@ -315,7 +315,7 @@ const i18nDict = {
     improvementRateExampleCalc: "改善率 = (100 - 80) ÷ 100 × 100% = 20%",
     improvementRateExampleResult: "表示低暴露路徑比最短路徑減少了 20% 的空氣污染暴露",
     // 使用說明翻譯
-    helpTitle: "使用說明",
+    helpTitle: "關於我們 | 使用說明",
     commuteFunctionOverview: "🎯 功能概述",
     commuteFunctionDesc: "通勤模式可以為您規劃兩條路徑：最短路徑和低暴露路徑，幫助您在時間和健康之間做出最佳選擇。",
     commuteSetPoints: "📍 設定起終點",
