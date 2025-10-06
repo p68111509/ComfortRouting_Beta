@@ -1912,6 +1912,8 @@ function updateDashboardFromLastData() {
 
 // 覆蓋層更新
 function updateOverlay(overlayType) {
+  console.log('updateOverlay called with:', overlayType);
+  
   // 移除現有覆蓋層
   if (overlayLayer) {
     map.removeLayer(overlayLayer);
@@ -1921,24 +1923,28 @@ function updateOverlay(overlayType) {
   currentOverlay = overlayType;
   
   if (overlayType === 'none') {
+    console.log('Overlay set to none, removing overlay');
     return;
   }
   
   // 疊加圖層圖片路徑
   let imagePath;
   switch (overlayType) {
-    case 'PM25':
+    case 'pm25':
       imagePath = '/static/data/AirPollution/PM25_全台.png';
       break;
-    case 'NO2':
+    case 'no2':
       imagePath = '/static/data/AirPollution/NO2_全台.png';
       break;
-    case 'WBGT':
+    case 'wbgt':
       imagePath = '/static/data/AirPollution/WBGT_全台.png';
       break;
     default:
+      console.log('Unknown overlay type:', overlayType);
       return;
   }
+  
+  console.log('Selected image path:', imagePath);
   
   // EPSG:3826 (TWD97) 的邊界座標（台灣全島）
   const bounds = [
@@ -1947,13 +1953,14 @@ function updateOverlay(overlayType) {
   ];
   
   // 創建圖片疊加層
+  console.log('Creating image overlay with bounds:', bounds);
   overlayLayer = L.imageOverlay(imagePath, bounds, {
       opacity: 0.5,
     interactive: false
   });
   
   overlayLayer.addTo(map);
-  console.log(`Switching to overlay: ${overlayType}`);
+  console.log(`Successfully switched to overlay: ${overlayType}`);
 }
 
 // 錯誤處理
