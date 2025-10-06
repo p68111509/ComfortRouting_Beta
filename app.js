@@ -251,7 +251,7 @@ let selectedAttraction = null;
 // 多語言字典
 const i18nDict = {
   zh: {
-    title: "舒適路徑系統",
+    title: "低暴露導航系統 <span class=\"beta-text\">(測試版)</span>",
     startLabel: "🟢 起點地址",
     endLabel: "🔴 終點地址", 
     startPlaceholderWithIcon: "🟢 請輸入起點地址",
@@ -392,7 +392,7 @@ const i18nDict = {
     overlayWBGT: "Temperature",
     modeCommute: "Commute Mode",
     modeMetro: "Metro Mode",
-    helpBtn: "Help",
+    helpBtn: "About Us | Help",
     langEN: "EN",
     langZH: "中文",
     // Panel title translations
@@ -417,7 +417,7 @@ const i18nDict = {
     improvementRateExampleCalc: "Improvement Rate = (100 - 80) ÷ 100 × 100% = 20%",
     improvementRateExampleResult: "This means the low exposure path reduces air pollution exposure by 20% compared to the shortest path",
     // Help content translations
-    helpTitle: "Usage Instructions",
+    helpTitle: "About Us | Usage Instructions",
     commuteFunctionOverview: "🎯 Function Overview",
     commuteFunctionDesc: "Commute mode plans two routes for you: shortest path and low exposure path, helping you make the best choice between time and health.",
     commuteSetPoints: "📍 Set Start/End Points",
@@ -452,7 +452,18 @@ const i18nDict = {
     metroSupportedStations: "📍 Supported Stations",
     metroSupportedStationsDesc: "Currently supports Xiangshan Station with 3 exit options and 2 popular attractions (Baoshan Trail Entrance, Fubon Art Museum).",
     metroRoutePlanning: "🗺️ Route Planning",
-    metroRoutePlanningDesc: "The system calculates shortest path and low exposure path from the selected exit to attractions, providing detailed distance, time, and air quality analysis."
+    metroRoutePlanningDesc: "The system calculates shortest path and low exposure path from the selected exit to attractions, providing detailed distance, time, and air quality analysis.",
+    // About Us modal content
+    commuteHelpBtn: "Commute Mode Instructions",
+    metroHelpBtn: "Metro Mode Instructions",
+    developmentTeam: "Development Team",
+    developmentTeamDesc: "© 2025 Hsu Chia-Wei, Lin Yu-Ju | National Cheng Kung University, Department of Geomatics | Advisor: Professor Wu Chih-Ta",
+    contactEmail: "📧 Contact: p68111509@gs.ncku.edu.tw",
+    dataSource: "Data Source",
+    dataSourceDesc: "Some air pollution spatial information refers to public data from the Ministry of Environment",
+    copyright: "Copyright Statement",
+    copyrightDesc1: "This system is for demonstration and research purposes only. Unauthorized downloading, modification, or commercial use is prohibited.",
+    copyrightDesc2: "All source code, data, and interface design are the intellectual property of the authors, all rights reserved."
   }
 };
 
@@ -945,6 +956,24 @@ function bindHelpEvents() {
         metroHelpModal.style.display = 'none';
         document.body.style.overflow = 'auto';
       }
+    });
+  }
+  
+  // 捷運模式中的通勤模式使用說明按鈕
+  const commuteHelpBtnMetro = document.getElementById('commute-help-btn-metro');
+  if (commuteHelpBtnMetro) {
+    commuteHelpBtnMetro.addEventListener('click', () => {
+      console.log('[debug] Commute help button clicked from metro mode');
+      showCommuteHelp();
+    });
+  }
+  
+  // 捷運模式中的捷運模式使用說明按鈕
+  const metroHelpBtnMetro = document.getElementById('metro-help-btn-metro');
+  if (metroHelpBtnMetro) {
+    metroHelpBtnMetro.addEventListener('click', () => {
+      console.log('[debug] Metro help button clicked from metro mode');
+      showMetroHelp();
     });
   }
   
@@ -1755,7 +1784,12 @@ function applyLanguage() {
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (dict[key]) {
-      el.textContent = dict[key];
+      // 特殊處理標題，因為它包含 HTML 標籤
+      if (key === 'title') {
+        el.innerHTML = dict[key];
+      } else {
+        el.textContent = dict[key];
+      }
     }
   });
   
