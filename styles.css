@@ -1547,6 +1547,9 @@ body {
     font-size: 14px !important;
     margin: 0;
     line-height: 1.2;
+    white-space: nowrap !important; /* 防止標題換行 */
+    overflow: hidden !important; /* 隱藏溢出的文字 */
+    text-overflow: ellipsis !important; /* 顯示省略號 */
   }
   
   /* 手機版縮小 Header 左側間距 */
@@ -1556,7 +1559,7 @@ body {
   
   /* 手機版縮小測試版文字 */
   .beta-text {
-    font-size: 8px !important;
+    font-size: 6px !important;
     font-weight: 400 !important;
   }
   
