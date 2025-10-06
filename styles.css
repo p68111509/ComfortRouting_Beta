@@ -1515,37 +1515,43 @@ body {
   
   /* 手機版縮小按鈕 */
   .help-btn {
-    padding: 4px 6px !important;
-    font-size: 10px !important;
+    padding: 3px 5px !important;
+    font-size: 9px !important;
     min-width: auto !important;
   }
   
   .help-btn .help-text {
-    font-size: 9px !important;
+    font-size: 8px !important;
     display: none !important; /* 隱藏文字，只顯示圖標 */
   }
   
   /* 手機版縮小語言切換器 */
   .language-switcher {
-    font-size: 9px !important;
+    font-size: 8px !important;
   }
   
   .language-switcher button {
-    padding: 3px 6px !important;
-    font-size: 8px !important;
-    min-width: 20px !important;
-    height: 24px !important;
+    padding: 2px 4px !important;
+    font-size: 7px !important;
+    min-width: 18px !important;
+    height: 20px !important;
   }
   
   .main-logo-img {
-    height: 24px; /* 手機版縮小到原來的 2/3 以下 */
-    max-width: 38px;
+    height: 20px; /* 手機版進一步縮小 */
+    max-width: 32px;
   }
   
   /* 手機版縮小標題 */
   .header-left h1 {
-    font-size: 16px !important;
+    font-size: 14px !important;
     margin: 0;
+    line-height: 1.2;
+  }
+  
+  /* 手機版縮小 Header 左側間距 */
+  .header-left {
+    gap: 8px !important;
   }
   
   /* 手機版縮小測試版文字 */
@@ -1604,7 +1610,7 @@ body {
   
   .header-right {
     display: flex;
-    gap: 4px;
+    gap: 2px;
     align-items: center;
   }
   

@@ -3,7 +3,7 @@ services:
     name: comfort-routing
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: cd api && uvicorn main:app --host 0.0.0.0 --port $PORT
+    startCommand: python api/main.py
     envVars:
       - key: RENDER
         value: "true"

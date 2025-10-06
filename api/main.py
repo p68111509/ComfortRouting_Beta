@@ -44,12 +44,11 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from scipy.spatial import cKDTree as KDTree
 import requests
+from pathlib import Path
 
 
 # -------------------------- 設定與常數 --------------------------
 # 固定的圖檔路徑（本題指定）
-# 放在檔頭 import 後
-from pathlib import Path
 
 # 專案根：main.py 在 api/，往上一層就是專案根
 BASE_DIR = Path(__file__).resolve().parents[1]
