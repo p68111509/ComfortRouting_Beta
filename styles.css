@@ -1930,33 +1930,56 @@ body {
   
   .modal-content {
     width: 95%;
-    max-height: 75vh; /* 減少高度避免被截斷 */
-    margin: 10px; /* 減少邊距 */
-    bottom: 20px; /* 確保下緣不貼底 */
+    max-height: 65vh; /* 進一步減少高度 */
+    margin: 5px; /* 進一步減少邊距 */
+    bottom: 40px; /* 下緣大幅上提 */
   }
   
   .modal-body {
-    padding: 16px;
-    max-height: calc(75vh - 100px); /* 配合 modal-content 的高度調整 */
+    padding: 12px; /* 減少內邊距 */
+    max-height: calc(65vh - 80px); /* 配合 modal-content 的高度調整 */
   }
   
   /* 手機版其他彈窗調整 */
   .exit-modal-content {
-    max-height: 75vh !important;
-    margin: 10px !important;
-    bottom: 20px !important;
+    max-height: 65vh !important;
+    margin: 5px !important;
+    bottom: 40px !important;
   }
   
   .stations-modal {
-    max-height: 75vh !important;
-    margin: 10px !important;
-    bottom: 20px !important;
+    max-height: 65vh !important;
+    margin: 5px !important;
+    bottom: 40px !important;
   }
   
   .route-result-modal .modal-content {
-    max-height: 75vh !important;
-    margin: 10px !important;
-    bottom: 20px !important;
+    max-height: 65vh !important;
+    margin: 5px !important;
+    bottom: 40px !important;
+  }
+  
+  /* 手機版彈窗字體縮小 */
+  .modal-header h3 {
+    font-size: 14px !important;
+  }
+  
+  .modal-body {
+    font-size: 13px !important;
+  }
+  
+  .modal-body h4 {
+    font-size: 14px !important;
+  }
+  
+  .modal-body p {
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+  
+  .modal-body button {
+    font-size: 12px !important;
+    padding: 8px 12px !important;
   }
 }
 
