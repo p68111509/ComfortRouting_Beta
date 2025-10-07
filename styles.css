@@ -1575,7 +1575,7 @@ body {
   .map-legend {
     transform: scale(0.7) !important; /* 縮小更多 */
     top: 270px !important; /* 套用電腦版間距關係 */
-    left: 20px !important; /* 左對齊 */
+    left: 10px !important; /* 再靠左一點 */
   }
   
   .leaflet-control-zoom a {
@@ -1589,7 +1589,7 @@ body {
   .map-tile-selector {
     transform: scale(0.8) !important;
     top: 85px !important; /* 套用電腦版間距關係 */
-    left: 20px !important; /* 左對齊 */
+    left: 10px !important; /* 再靠左一點 */
   }
   
   .tile-selector-button {
@@ -1601,7 +1601,7 @@ body {
   .map-overlay-selector {
     transform: scale(0.8) !important;
     top: 125px !important; /* 套用電腦版間距關係 */
-    left: 20px !important; /* 左對齊 */
+    left: 10px !important; /* 再靠左一點 */
   }
   
   .map-overlay-selector h4 {
