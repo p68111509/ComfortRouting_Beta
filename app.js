@@ -596,11 +596,13 @@ function toggleRouteComparisonModal() {
   const isShowing = modal.classList.contains('show');
   modal.classList.toggle('show');
   
-  // 如果彈窗正在顯示，禁用導航設定
+  // 如果彈窗正在顯示，禁用導航設定和Header按鈕
   if (!isShowing) {
     disableNavigationSettings();
+    disableHeaderButtons();
   } else {
     enableNavigationSettings();
+    enableHeaderButtons();
   }
 }
 
@@ -608,6 +610,7 @@ function closeRouteComparisonModal() {
   const modal = document.getElementById('routeComparisonModal');
   modal.classList.remove('show');
   enableNavigationSettings();
+  enableHeaderButtons();
 }
 
 // 禁用導航設定
@@ -1122,8 +1125,9 @@ function bindHelpEvents() {
       helpModal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
       
-      // 禁用模式切換按鈕
+      // 禁用模式切換按鈕和Header按鈕
       disableModeSwitching();
+      disableHeaderButtons();
     });
   }
   
@@ -1134,8 +1138,9 @@ function bindHelpEvents() {
       helpModal.style.display = 'none';
       document.body.style.overflow = 'auto';
       
-      // 重新啟用模式切換按鈕
+      // 重新啟用模式切換按鈕和Header按鈕
       enableModeSwitching();
+      enableHeaderButtons();
     });
   }
   
@@ -1216,8 +1221,9 @@ function bindHelpEvents() {
         helpModal.style.display = 'none';
         document.body.style.overflow = 'auto';
         
-        // 重新啟用模式切換按鈕
+        // 重新啟用模式切換按鈕和Header按鈕
         enableModeSwitching();
+        enableHeaderButtons();
       }
     });
   }
@@ -1274,8 +1280,10 @@ function bindImprovementHelpEvents() {
 function openImprovementHelpModal() {
   const modal = document.getElementById('improvement-help-modal');
   if (modal) {
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+  modal.style.display = 'flex';
+  disableHeaderButtons();
+  document.body.style.overflow = 'hidden';
+  disableHeaderButtons();
     console.log('[improvement-help] Improvement help modal opened');
   }
 }
@@ -1284,8 +1292,9 @@ function openImprovementHelpModal() {
 function closeImprovementHelpModal() {
   const modal = document.getElementById('improvement-help-modal');
   if (modal) {
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
+  modal.style.display = 'none';
+  document.body.style.overflow = 'auto';
+  enableHeaderButtons();
     console.log('[improvement-help] Improvement help modal closed');
   }
 }
@@ -1369,6 +1378,46 @@ function enableModeSwitching() {
     metroBtn.style.opacity = '1';
     metroBtn.disabled = false;
   }
+}
+
+// 禁用Header選項按鈕（當彈窗顯示時）
+function disableHeaderButtons() {
+  const helpBtn = document.getElementById('help-btn');
+  const langZhBtn = document.getElementById('btn-lang-zh');
+  const langEnBtn = document.getElementById('btn-lang-en');
+  const commuteBtn = document.getElementById('mode-commute');
+  const metroBtn = document.getElementById('mode-metro');
+  
+  // 禁用所有Header按鈕
+  [helpBtn, langZhBtn, langEnBtn, commuteBtn, metroBtn].forEach(btn => {
+    if (btn) {
+      btn.style.pointerEvents = 'none';
+      btn.style.opacity = '0.5';
+      btn.disabled = true;
+    }
+  });
+  
+  console.log('[header] Header buttons disabled due to modal display');
+}
+
+// 啟用Header選項按鈕（當彈窗關閉時）
+function enableHeaderButtons() {
+  const helpBtn = document.getElementById('help-btn');
+  const langZhBtn = document.getElementById('btn-lang-zh');
+  const langEnBtn = document.getElementById('btn-lang-en');
+  const commuteBtn = document.getElementById('mode-commute');
+  const metroBtn = document.getElementById('mode-metro');
+  
+  // 啟用所有Header按鈕
+  [helpBtn, langZhBtn, langEnBtn, commuteBtn, metroBtn].forEach(btn => {
+    if (btn) {
+      btn.style.pointerEvents = 'auto';
+      btn.style.opacity = '1';
+      btn.disabled = false;
+    }
+  });
+  
+  console.log('[header] Header buttons enabled after modal closed');
 }
 
 // 地圖點擊事件
@@ -1657,7 +1706,7 @@ function renderRoutes(data) {
   // 渲染最短路徑
   if (data.shortest?.geometry) {
     shortestLine = L.polyline(data.shortest.geometry, {
-      color: '#3b82f6',
+      color: '#3C3C9A',
       weight: 8,
       opacity: 0.8
     }).addTo(map);
@@ -1666,10 +1715,9 @@ function renderRoutes(data) {
   // 渲染最低暴露路徑
   if (data.lowest?.geometry) {
     lowestLine = L.polyline(data.lowest.geometry, {
-      color: '#10b981',
+      color: '#2BB1AA',
       weight: 8,
       opacity: 0.8,
-      dashArray: '20, 10'
     }).addTo(map);
   }
   
@@ -2411,6 +2459,7 @@ function showExitModal(stationName, stationId) {
   updateNavigationButton();
   
   modal.style.display = 'flex';
+  disableHeaderButtons();
 }
 
 // 生成景點按鈕
@@ -2487,6 +2536,7 @@ function updateNavigationButton() {
 function closeExitModal() {
   const modal = document.getElementById('exit-modal');
   modal.style.display = 'none';
+  enableHeaderButtons();
   // 清除保存的站點ID
   window.currentSelectedStationId = null;
 }
@@ -2666,6 +2716,7 @@ function showRouteResultModal(routeData, exitData, attractionData, stationName) 
   title.textContent = `${stationName}站 → ${attractionData.name}`;
   
   modal.style.display = 'flex';
+  disableHeaderButtons();
   
   setTimeout(() => {
     // 初始化結果地圖
@@ -2738,7 +2789,7 @@ function initRouteResultMap(routeData, exitData, attractionData) {
     // 添加路徑
     if (routeData.shortest?.geometry) {
       L.polyline(routeData.shortest.geometry, {
-        color: '#3b82f6',
+        color: '#3C3C9A',
         weight: 8,
         opacity: 0.8
       }).addTo(resultMap);
@@ -2746,10 +2797,9 @@ function initRouteResultMap(routeData, exitData, attractionData) {
     
     if (routeData.lowest?.geometry) {
       L.polyline(routeData.lowest.geometry, {
-        color: '#10b981',
+        color: '#2BB1AA',
         weight: 8,
         opacity: 0.8,
-        dashArray: '20, 10'
       }).addTo(resultMap);
     }
     
@@ -2851,6 +2901,7 @@ function updateResultCircularProgress(circleId, textId, percentage) {
 function closeRouteResultModal() {
   const modal = document.getElementById('route-result-modal');
   modal.style.display = 'none';
+  enableHeaderButtons();
   
   // 清理地圖實例
   if (window.routeResultMap) {

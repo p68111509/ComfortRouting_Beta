@@ -242,11 +242,11 @@ body {
 }
 
 .legend-line.shortest {
-  background: #3b82f6;
+  background: #3C3C9A;
 }
 
 .legend-line.lowest {
-  background: #10b981;
+  background: #2BB1AA;
   position: relative;
 }
 
@@ -261,8 +261,8 @@ body {
     90deg,
     transparent,
     transparent 3px,
-    #10b981 3px,
-    #10b981 6px
+    #2BB1AA 3px,
+    #2BB1AA 6px
   );
 }
 
@@ -480,9 +480,9 @@ body {
 
 /* 起點標籤 - 綠色 */
 .start-label {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #2BB1AA 0%, #1A9B94 100%);
   color: white;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 2px 8px rgba(43, 177, 170, 0.3);
 }
 
 /* 終點標籤 - 紅色 */
@@ -1648,7 +1648,7 @@ body {
 .increase-value {
   font-size: 16px;
   font-weight: 700;
-  color: #28a745;
+  color: #2BB1AA;
 }
 
 .increase-unit {
@@ -1677,11 +1677,11 @@ body {
 }
 
 .route-type.shortest {
-  color: #2563eb;
+  color: #3C3C9A;
 }
 
 .route-type.lowest {
-  color: #059669;
+  color: #2BB1AA;
 }
 
 .route-value {
@@ -1706,11 +1706,11 @@ body {
 }
 
 .progress-fill.shortest {
-  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+  background: linear-gradient(90deg, #3C3C9A 0%, #2D2D7A 100%);
 }
 
 .progress-fill.lowest {
-  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(90deg, #2BB1AA 0%, #1A9B94 100%);
 }
 
 .progress-fill::after {
@@ -1792,11 +1792,11 @@ body {
 .improvement-number {
   font-size: 36px;
   font-weight: 900;
-  color: #10b981;
+  color: #2BB1AA;
   line-height: 1;
   text-align: center;
-  text-shadow: 0 2px 4px rgba(16, 185, 129, 0.4);
-  background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
+  text-shadow: 0 2px 4px rgba(43, 177, 170, 0.4);
+  background: linear-gradient(135deg, #2BB1AA 0%, #1A9B94 50%, #0F8B84 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -3396,11 +3396,11 @@ p, span, div, button, input, select, textarea,
 }
 
 .result-route-type.shortest {
-  color: #2563eb;
+  color: #3C3C9A;
 }
 
 .result-route-type.lowest {
-  color: #059669;
+  color: #2BB1AA;
 }
 
 .result-route-value {
@@ -3423,11 +3423,11 @@ p, span, div, button, input, select, textarea,
 }
 
 .result-progress-fill.shortest {
-  background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+  background: linear-gradient(90deg, #3C3C9A 0%, #2D2D7A 100%);
 }
 
 .result-progress-fill.lowest {
-  background: linear-gradient(90deg, #10b981 0%, #047857 100%);
+  background: linear-gradient(90deg, #2BB1AA 0%, #1A9B94 100%);
 }
 
 .result-metric-display {
