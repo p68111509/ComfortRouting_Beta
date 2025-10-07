@@ -691,14 +691,6 @@ body {
   transform: translateY(0);
 }
 
-/* 按鈕區域 */
-.button-section {
-  flex: 1;
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-  align-items: center;
-}
 
 /* 距離限制區域（縮小版） */
 .distance-limit-section {
@@ -802,6 +794,55 @@ body {
   text-align: center;
 }
 
+/* 導航設定按鈕組 */
+.nav-buttons-group {
+  position: fixed;
+  bottom: 120px;
+  right: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1000;
+}
+
+.btn-primary-floating,
+.btn-secondary-floating {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  min-width: 100px;
+  text-align: center;
+}
+
+.btn-primary-floating {
+  background: linear-gradient(135deg, #8B1538 0%, #6B0F2A 100%);
+  color: white;
+  box-shadow: 0 3px 10px rgba(139, 21, 56, 0.4);
+}
+
+.btn-primary-floating:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(139, 21, 56, 0.6);
+}
+
+.btn-secondary-floating {
+  background: white;
+  color: #8B1538;
+  border: 2px solid #8B1538;
+  box-shadow: 0 3px 10px rgba(139, 21, 56, 0.2);
+}
+
+.btn-secondary-floating:hover {
+  transform: translateY(-2px);
+  background: #8B1538;
+  color: white;
+  box-shadow: 0 5px 15px rgba(139, 21, 56, 0.4);
+}
+
 /* 路徑比較按鈕 (右下角) */
 .route-comparison-btn {
   position: fixed;
@@ -878,9 +919,9 @@ body {
 
 .route-comparison-modal.show {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 120px 40px 20px 20px;
 }
 
 .route-modal-content {
@@ -888,13 +929,15 @@ body {
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.08);
   width: 100%;
-  max-width: 500px;
-  max-height: 80vh;
+  max-width: 400px;
+  max-height: 90vh;
   margin: 0;
   animation: modalFadeIn 0.3s ease-out;
   border: 1px solid rgba(0, 0, 0, 0.1);
   pointer-events: auto; /* 彈窗內容可以接收點擊事件 */
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .route-modal-header {
@@ -937,8 +980,8 @@ body {
 }
 
 .route-modal-body {
-  padding: 24px;
-  max-height: calc(70vh - 80px);
+  padding: 20px;
+  flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -1245,8 +1288,9 @@ body {
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(3, auto);
+  gap: 12px;
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -1271,6 +1315,259 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* 合併改善效益卡片 */
+.combined-improvement-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.combined-improvement-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: rotate(45deg);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.combined-improvement-card .card-title {
+  color: white;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.combined-improvement-card .help-icon-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.combined-improvement-card .help-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.combined-improvement-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  height: 100%;
+  min-height: 60px;
+}
+
+.improvement-section, .distance-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.improvement-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  box-shadow: 0 4px 20px rgba(255, 107, 107, 0.4);
+  animation: pulse 2s infinite;
+  position: relative;
+}
+
+.improvement-circle::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  opacity: 0.3;
+  animation: ripple 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes ripple {
+  0% { transform: scale(0.8); opacity: 0.3; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+
+.improvement-percentage {
+  font-size: 18px;
+  font-weight: 800;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  animation: numberGlow 2s infinite alternate;
+}
+
+@keyframes numberGlow {
+  0% { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
+  100% { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 255, 255, 0.5); }
+}
+
+.improvement-label, .distance-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.divider-line {
+  width: 2px;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.5), transparent);
+  margin: 0 16px;
+  position: relative;
+}
+
+.divider-line::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.distance-value-container {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.distance-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: #4ecdc4;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  animation: distanceGlow 2s infinite alternate;
+  line-height: 1;
+}
+
+@keyframes distanceGlow {
+  0% { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
+  100% { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 15px rgba(78, 205, 196, 0.6); }
+}
+
+.distance-unit {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  margin-left: 4px;
+}
+
+.combined-improvement-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+}
+
+/* 簡化版改善效益顯示 */
+.improvement-display-simple {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 16px 6px 16px;
+  height: 100%;
+  min-height: 40px;
+  gap: 12px;
+}
+
+.improvement-circle-large {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.6), 0 0 25px rgba(255, 107, 107, 0.4);
+  animation: pulse 2s infinite;
+  position: relative;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.improvement-circle-large::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  opacity: 0.5;
+  animation: ripple 2s infinite;
+}
+
+.improvement-percentage-large {
+  font-size: 20px;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 255, 255, 0.9);
+  animation: numberGlow 2s infinite alternate;
+  letter-spacing: 0.5px;
+}
+
+.improvement-label-large {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4), 0 0 8px rgba(255, 255, 255, 0.6);
+  text-align: left;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* 背景裝飾元素 */
+.improvement-display-simple::after {
+  content: '✨';
+  font-size: 16px;
+  animation: sparkle 2s infinite;
+  opacity: 0.7;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+@keyframes sparkle {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg);
+    opacity: 0.7;
+  }
+  50% { 
+    transform: scale(1.2) rotate(180deg);
+    opacity: 1;
+  }
+}
+
 /* 改善率卡片懸停效果 */
 .improvement-card:hover {
   transform: translateY(-5px);
@@ -1291,14 +1588,45 @@ body {
 .comparison-bars {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
   width: 100%;
+}
+
+/* 距離增加資訊 */
+.distance-increase-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}
+
+.increase-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c757d;
+}
+
+.increase-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #28a745;
+}
+
+.increase-unit {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6c757d;
 }
 
 .bar-item {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
 }
 
@@ -1805,6 +2133,19 @@ body {
     gap: 6px !important;
   }
   
+  /* 手機版導航按鈕組 */
+  .nav-buttons-group {
+    bottom: 80px !important;
+    right: 20px !important;
+  }
+  
+  .btn-primary-floating,
+  .btn-secondary-floating {
+    padding: 6px 12px !important;
+    font-size: 11px !important;
+    min-width: 80px !important;
+  }
+
   /* 手機版路徑比較按鈕 */
   .route-comparison-btn {
     bottom: 20px !important;
@@ -1824,9 +2165,13 @@ body {
     margin-bottom: 0 !important;
   }
   
+  .route-comparison-modal.show {
+    padding: 140px 10px 20px 10px !important;
+  }
+  
   .route-modal-content {
     max-width: 95% !important;
-    margin: 10px !important;
+    margin: 0 !important;
   }
   
   .route-modal-header {
@@ -1916,8 +2261,8 @@ body {
   .mobile-nav-layout {
     display: flex;
     flex-direction: column;
-    gap: 8px; /* 減少行間距 */
-    padding: 12px; /* 減少內邊距 */
+    gap: 6px; /* 進一步減少行間距 */
+    padding: 8px; /* 進一步減少內邊距 */
   }
   
   .nav-row {
@@ -2026,23 +2371,6 @@ body {
     color: var(--text-primary);
   }
   
-  /* 第四行：按鈕 */
-  .nav-row-4 {
-    display: flex;
-    align-items: center;
-  }
-  
-  .button-row-mobile {
-    width: 100%;
-    display: flex;
-    gap: 12px;
-  }
-  
-  .btn-primary-mobile, .btn-secondary-mobile {
-    flex: 1;
-    padding: 10px 16px; /* 減少按鈕 padding */
-    font-size: 14px;
-    border-radius: 12px;
     border: none;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -2114,11 +2442,35 @@ body {
   
   .dashboard-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    grid-template-rows: auto;
+    gap: 12px;
   }
   
   .dashboard-card {
     padding: 8px;
+  }
+  
+  .combined-improvement-display {
+    padding: 12px 0;
+    min-height: 80px;
+  }
+  
+  .improvement-circle {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .improvement-percentage {
+    font-size: 18px;
+  }
+  
+  .distance-value {
+    font-size: 24px;
+  }
+  
+  .divider-line {
+    height: 40px;
+    margin: 0 12px;
   }
   
   .card-title {
@@ -2156,11 +2508,35 @@ body {
   
   .dashboard-grid {
     grid-template-columns: 1fr;
-    gap: 6px;
+    grid-template-rows: auto;
+    gap: 10px;
   }
   
   .dashboard-card {
     padding: 6px;
+  }
+  
+  .combined-improvement-display {
+    padding: 8px 0;
+    min-height: 60px;
+  }
+  
+  .improvement-circle {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .improvement-percentage {
+    font-size: 16px;
+  }
+  
+  .distance-value {
+    font-size: 20px;
+  }
+  
+  .divider-line {
+    height: 30px;
+    margin: 0 8px;
   }
   
   .card-title {
@@ -2753,7 +3129,8 @@ p, span, div, button, input, select, textarea,
 
 .result-dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(3, auto);
   gap: 12px;
 }
 
@@ -2864,6 +3241,43 @@ p, span, div, button, input, select, textarea,
   font-size: 12px;
   color: rgba(0, 0, 0, 0.6);
   font-weight: 500;
+}
+
+.result-combined-improvement-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.result-combined-improvement-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: rotate(45deg);
+  animation: shimmer 3s infinite;
+}
+
+.result-combined-improvement-card .result-card-title {
+  color: white;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.result-combined-improvement-card .help-icon-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.result-combined-improvement-card .help-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
 }
 
 .result-improvement-card {

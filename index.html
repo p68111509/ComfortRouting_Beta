@@ -144,13 +144,6 @@
           </div>
         </div>
 
-        <!-- 第四行：按鈕 -->
-        <div class="nav-row nav-row-4">
-          <div class="button-row-mobile">
-            <button id="plan-btn" class="btn btn-primary-mobile" data-i18n="planBtn">🔍 規劃路徑</button>
-            <button id="reset-btn" class="btn btn-secondary-mobile" data-i18n="resetBtn">🔄 重置</button>
-          </div>
-        </div>
       </div>
 
       <!-- 桌面版原版布局 -->
@@ -200,14 +193,15 @@
           </div>
         </div>
 
-        <!-- 右側：按鈕 -->
-        <div class="button-section">
-          <button id="plan-btn-desktop" class="btn btn-primary" data-i18n="planBtn">🔍 規劃路徑</button>
-          <button id="reset-btn-desktop" class="btn btn-secondary" data-i18n="resetBtn">🔄 重置</button>
-        </div>
       </div>
 
     </div>
+  </div>
+
+  <!-- 導航設定按鈕組 (右下角) -->
+  <div class="nav-buttons-group">
+    <button id="plan-btn-floating" class="btn btn-primary-floating" data-i18n="planBtn">🔍 規劃路徑</button>
+    <button id="reset-btn-floating" class="btn btn-secondary-floating" data-i18n="resetBtn">🔄 重置</button>
   </div>
 
   <!-- 路徑比較按鈕 (右下角) -->
@@ -227,17 +221,17 @@
         <!-- 視覺化儀表板 -->
         <div class="dashboard-container" id="dashboardContainer">
           <div class="dashboard-grid">
-            <!-- 改善率卡片 - 第一個，使用大數字動畫設計 -->
-            <div class="dashboard-card improvement-card">
+            <!-- 改善效益卡片 -->
+            <div class="dashboard-card combined-improvement-card">
               <h4 class="card-title">
-                <span data-i18n="improvementRate">📈 改善率</span>
+                <span data-i18n="improvementBenefit">📊 改善效益</span>
                 <button class="help-icon-btn" id="improvementHelpBtn" title="改善率說明">❓</button>
               </h4>
-              <div class="improvement-display">
-                <div class="improvement-number-container">
-                <div class="improvement-number" id="dashImprovementRate">0%</div>
-                <div class="improvement-subtitle" data-i18n="exposureImprovement">暴露改善</div>
-              </div>
+              <div class="improvement-display-simple">
+                <div class="improvement-circle-large">
+                  <div class="improvement-percentage-large" id="dashImprovementRate">0%</div>
+                </div>
+                <div class="improvement-label-large" data-i18n="exposureImprovement">暴露改善</div>
               </div>
             </div>
 
@@ -263,6 +257,11 @@
                     <div class="progress-fill lowest" id="dashDistanceBarLowest"></div>
                   </div>
                 </div>
+              </div>
+              <div class="distance-increase-info">
+                <span class="increase-label" data-i18n="distanceIncrease">距離增加</span>
+                <span class="increase-value" id="dashDistanceIncrease">-</span>
+                <span class="increase-unit">公尺</span>
               </div>
             </div>
 
@@ -291,15 +290,6 @@
               </div>
             </div>
 
-            <!-- 額外距離卡片 -->
-            <div class="dashboard-card">
-              <h4 class="card-title" data-i18n="extraDistance">📐 額外距離</h4>
-              <div class="metric-display">
-                <div class="metric-value" id="dashExtraDistance">-</div>
-                <div class="metric-unit">公尺</div>
-                <div class="metric-label" data-i18n="lowExposureRoute">低暴露路徑</div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -386,17 +376,17 @@
         <!-- 視覺化儀表板 -->
         <div class="result-dashboard-container" id="resultDashboardContainer">
           <div class="result-dashboard-grid">
-            <!-- 改善率卡片 - 第一個，使用大數字動畫設計 -->
-            <div class="result-dashboard-card result-improvement-card">
+            <!-- 改善效益卡片 -->
+            <div class="result-dashboard-card result-combined-improvement-card">
               <h4 class="result-card-title">
-                <span data-i18n="improvementRate">📈 改善率</span>
+                <span data-i18n="improvementBenefit">📊 改善效益</span>
                 <button class="help-icon-btn" id="resultImprovementHelpBtn" title="改善率說明">❓</button>
               </h4>
-              <div class="improvement-display">
-                <div class="improvement-number-container">
-                  <div class="improvement-number" id="resultDashImprovementRate">0%</div>
-                  <div class="improvement-subtitle" data-i18n="exposureImprovement">暴露改善</div>
+              <div class="improvement-display-simple">
+                <div class="improvement-circle-large">
+                  <div class="improvement-percentage-large" id="resultDashImprovementRate">0%</div>
                 </div>
+                <div class="improvement-label-large" data-i18n="exposureImprovement">暴露改善</div>
               </div>
             </div>
 
@@ -422,6 +412,11 @@
                     <div class="result-progress-fill lowest" id="resultDashDistanceBarLowest"></div>
                   </div>
                 </div>
+              </div>
+              <div class="distance-increase-info">
+                <span class="increase-label" data-i18n="distanceIncrease">距離增加</span>
+                <span class="increase-value" id="resultDashDistanceIncrease">-</span>
+                <span class="increase-unit">公尺</span>
               </div>
             </div>
 
@@ -450,15 +445,6 @@
               </div>
             </div>
 
-            <!-- 額外距離卡片 -->
-            <div class="result-dashboard-card">
-              <h4 class="result-card-title" data-i18n="extraDistance">📐 額外距離</h4>
-              <div class="result-metric-display">
-                <div class="result-metric-value" id="resultDashExtraDistance">-</div>
-                <div class="result-metric-unit">公尺</div>
-                <div class="result-metric-label" data-i18n="lowExposureRoute">低暴露路徑</div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

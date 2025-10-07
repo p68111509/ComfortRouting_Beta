@@ -316,8 +316,10 @@ const i18nDict = {
     improvementRateExampleResult: "表示低暴露路徑比最短路徑減少了 20% 的空氣污染暴露",
     // 按鈕翻譯
     locate: "定位",
-    startPoint: "起點",
-    endPoint: "終點",
+        startPoint: "起點",
+        endPoint: "終點",
+        improvementBenefit: "改善效益",
+        distanceIncrease: "距離增加",
     // 使用說明翻譯
     helpTitle: "關於我們 | 使用說明",
     commuteFunctionOverview: "🎯 功能概述",
@@ -422,8 +424,10 @@ const i18nDict = {
     improvementRateExampleResult: "This means the low exposure path reduces air pollution exposure by 20% compared to the shortest path",
     // Button translations
     locate: "Locate",
-    startPoint: "Start",
-    endPoint: "End",
+        startPoint: "Start",
+        endPoint: "End",
+        improvementBenefit: "Improvement Benefit",
+        distanceIncrease: "Distance Increase",
     // Help content translations
     helpTitle: "About Us | Usage Instructions",
     commuteFunctionOverview: "🎯 Function Overview",
@@ -589,12 +593,81 @@ function toggleRouteComparisonModal() {
     return;
   }
   
+  const isShowing = modal.classList.contains('show');
   modal.classList.toggle('show');
+  
+  // 如果彈窗正在顯示，禁用導航設定
+  if (!isShowing) {
+    disableNavigationSettings();
+  } else {
+    enableNavigationSettings();
+  }
 }
 
 function closeRouteComparisonModal() {
   const modal = document.getElementById('routeComparisonModal');
   modal.classList.remove('show');
+  enableNavigationSettings();
+}
+
+// 禁用導航設定
+function disableNavigationSettings() {
+  // 禁用輸入框
+  const inputs = ['input-start', 'input-end', 'input-start-desktop', 'input-end-desktop'];
+  inputs.forEach(id => {
+    const input = document.getElementById(id);
+    if (input) {
+      input.disabled = true;
+      input.style.opacity = '0.5';
+      input.style.cursor = 'not-allowed';
+    }
+  });
+  
+  // 禁用定位按鈕
+  const locationBtns = document.querySelectorAll('.location-btn');
+  locationBtns.forEach(btn => {
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+    btn.style.cursor = 'not-allowed';
+  });
+  
+  // 禁用規劃路徑按鈕
+  const planBtn = document.getElementById('planBtn');
+  if (planBtn) {
+    planBtn.disabled = true;
+    planBtn.style.opacity = '0.5';
+    planBtn.style.cursor = 'not-allowed';
+  }
+}
+
+// 啟用導航設定
+function enableNavigationSettings() {
+  // 啟用輸入框
+  const inputs = ['input-start', 'input-end', 'input-start-desktop', 'input-end-desktop'];
+  inputs.forEach(id => {
+    const input = document.getElementById(id);
+    if (input) {
+      input.disabled = false;
+      input.style.opacity = '1';
+      input.style.cursor = 'text';
+    }
+  });
+  
+  // 啟用定位按鈕
+  const locationBtns = document.querySelectorAll('.location-btn');
+  locationBtns.forEach(btn => {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  });
+  
+  // 啟用規劃路徑按鈕
+  const planBtn = document.getElementById('planBtn');
+  if (planBtn) {
+    planBtn.disabled = false;
+    planBtn.style.opacity = '1';
+    planBtn.style.cursor = 'pointer';
+  }
 }
 
 // 定位地址功能
@@ -617,7 +690,7 @@ function locateAddress(inputType) {
       break;
     default:
       console.error('Invalid input type:', inputType);
-      return;
+    return;
   }
   
   const address = inputElement.value.trim();
@@ -658,7 +731,7 @@ function locateAddress(inputType) {
           // 更新起點坐標
           window.startCoords = latlng;
           nextPointIsStart = false; // 下一個點是終點
-        } else {
+  } else {
           if (window.endMarker) {
             map.removeLayer(window.endMarker);
           }
@@ -731,17 +804,13 @@ function bindUI() {
   
   // 路徑比較彈窗事件綁定已通過HTML的onclick處理
   
-  // 規劃路徑按鈕（手機版和桌面版）
-  const planBtn = document.getElementById('plan-btn');
-  const planBtnDesktop = document.getElementById('plan-btn-desktop');
-  if (planBtn) planBtn.addEventListener('click', planRoutes);
-  if (planBtnDesktop) planBtnDesktop.addEventListener('click', planRoutes);
+  // 規劃路徑按鈕（浮動按鈕）
+  const planBtnFloating = document.getElementById('plan-btn-floating');
+  if (planBtnFloating) planBtnFloating.addEventListener('click', planRoutes);
   
-  // 重製按鈕（手機版和桌面版）
-  const resetBtn = document.getElementById('reset-btn');
-  const resetBtnDesktop = document.getElementById('reset-btn-desktop');
-  if (resetBtn) resetBtn.addEventListener('click', resetAll);
-  if (resetBtnDesktop) resetBtnDesktop.addEventListener('click', resetAll);
+  // 重製按鈕（浮動按鈕）
+  const resetBtnFloating = document.getElementById('reset-btn-floating');
+  if (resetBtnFloating) resetBtnFloating.addEventListener('click', resetAll);
   
   // 交通方式選擇（Radio 按鈕）
   const transportRadios = document.querySelectorAll('input[name="transport-mode"]');
@@ -936,7 +1005,7 @@ function switchMode(mode) {
     
     // 重新初始化地圖（如果需要）
     if (window.map) {
-      setTimeout(() => {
+  setTimeout(() => {
         window.map.invalidateSize();
       }, 300);
     }
@@ -966,8 +1035,8 @@ function switchMode(mode) {
     // 重新初始化捷運卡片（因為可能在面板隱藏時沒有綁定成功）
     setTimeout(() => {
       initMetroList();
-    }, 100);
-    
+  }, 100);
+  
     console.log('[debug] Switched to metro mode, metro panel should be visible');
   }
   
@@ -1368,11 +1437,15 @@ function setEnd(lat, lng) {
 
 // 更新規劃按鈕狀態
 function updatePlanButtonState() {
-  const planBtn = document.getElementById('plan-btn');
-  const hasStart = !!startMarker || !!document.getElementById('input-start').value.trim();
-  const hasEnd = !!endMarker || !!document.getElementById('input-end').value.trim();
+  const planBtnFloating = document.getElementById('plan-btn-floating');
+  const startInput = document.getElementById('input-start') || document.getElementById('input-start-desktop');
+  const endInput = document.getElementById('input-end') || document.getElementById('input-end-desktop');
+  const hasStart = !!startMarker || (startInput && startInput.value.trim());
+  const hasEnd = !!endMarker || (endInput && endInput.value.trim());
   
-  planBtn.disabled = !(hasStart && hasEnd);
+  if (planBtnFloating) {
+    planBtnFloating.disabled = !(hasStart && hasEnd);
+  }
 }
 
 // 地理編碼
@@ -1461,10 +1534,12 @@ async function planRoutes() {
   
   try {
     // 顯示載入狀態
-    const planBtn = document.getElementById('plan-btn');
-    const originalText = planBtn.textContent;
-    planBtn.textContent = '計算中...';
-    planBtn.disabled = true;
+    const planBtnFloating = document.getElementById('plan-btn-floating');
+    const originalText = planBtnFloating ? planBtnFloating.textContent : '';
+    if (planBtnFloating) {
+      planBtnFloating.textContent = '計算中...';
+      planBtnFloating.disabled = true;
+    }
     
     // 準備請求數據
     let payload;
@@ -1496,9 +1571,9 @@ async function planRoutes() {
     
     // 距離限制功能已移除
     payload.max_distance_increase = null;
-    
-    console.log('[debug] planRoutes called, sending payload:', payload);
-    
+
+  console.log('[debug] planRoutes called, sending payload:', payload);
+  
     // 調用 API
     const response = await fetch(`${API_BASE}/api/routes`, {
       method: 'POST',
@@ -1549,9 +1624,11 @@ async function planRoutes() {
     showError(`路徑計算失敗：${error.message}`);
   } finally {
     // 恢復按鈕狀態
-    const planBtn = document.getElementById('plan-btn');
-    planBtn.textContent = '🔍 規劃路徑';
-    planBtn.disabled = false;
+    const planBtnFloating = document.getElementById('plan-btn-floating');
+    if (planBtnFloating) {
+      planBtnFloating.textContent = '🔍 規劃路徑';
+      planBtnFloating.disabled = false;
+    }
   }
 }
 
@@ -1653,13 +1730,15 @@ function updateDashboard(data, shortestTime, lowestTime, improvementRate, extraD
 
   // 暴露減少已移除
 
-  // 更新額外距離
-  const extraEl = document.getElementById('dashExtraDistance');
-  const extraUnitEl = document.querySelector('#dashExtraDistance').parentElement.querySelector('.metric-unit');
-  if (extraEl && extraUnitEl) {
-    const distanceData = formatDistanceSeparated(extraDistance);
-    extraEl.textContent = distanceData.value;
-    extraUnitEl.textContent = distanceData.unit;
+  // 更新距離增加
+  const distanceIncreaseEl = document.getElementById('dashDistanceIncrease');
+  if (distanceIncreaseEl) {
+    const distanceIncrease = computeExtraDistance(data.shortest, data.lowest);
+    if (distanceIncrease >= 1000) {
+      distanceIncreaseEl.textContent = (distanceIncrease / 1000).toFixed(1) + '公里';
+    } else {
+      distanceIncreaseEl.textContent = Math.round(distanceIncrease) + '公尺';
+    }
   }
 
   // 更新改善率大數字動畫
@@ -1674,7 +1753,7 @@ function updateDashboardBar(barId, valueId, value, maxValue, unit) {
   if (bar && valueEl) {
     const percentage = maxValue > 0 ? Math.max(5, (value / maxValue) * 100) : 0;
     
-    // 動畫更新進度條
+    // 動畫更新進度條（水平方向）
     setTimeout(() => {
       bar.style.width = `${percentage}%`;
     }, 100);
@@ -1831,18 +1910,23 @@ function resetAll() {
   
   // 距離限制功能已移除
   
-  // 左側面板保持收起狀態
-  // document.getElementById('leftPanel').classList.add('expanded');
+  // 收起左側面板
+  const leftPanel = document.getElementById('leftPanel');
+  if (leftPanel) {
+    leftPanel.classList.remove('expanded');
+  }
   
-  // 調整地圖位置（面板展開時）
+  // 調整地圖位置（面板收起時）
   const fullscreenMap = document.getElementById('map');
   if (fullscreenMap) {
-    fullscreenMap.style.top = '360px'; // 80px (header) + 280px (panel)
+    fullscreenMap.style.top = '120px'; // 80px (header) + 40px (handle)
     
     // 重新調整地圖大小
     if (window.map) {
-  setTimeout(() => {
-        window.map.invalidateSize();
+      setTimeout(() => {
+        if (window.map && typeof window.map.invalidateSize === 'function') {
+          window.map.invalidateSize();
+        }
       }, 300);
     }
   }
@@ -2092,7 +2176,7 @@ function showError(message) {
     errorBox.style.display = 'flex';
     
     // 自動隱藏
-    setTimeout(() => {
+      setTimeout(() => {
       hideError();
     }, 5000);
   }
@@ -2262,7 +2346,7 @@ function hideStationsModal() {
   const overlay = document.getElementById('stations-overlay');
   if (overlay) {
     overlay.style.display = 'none';
-    document.body.style.overflow = 'auto';
+      document.body.style.overflow = 'auto';
     // 清除保存的線路ID
     window.currentSelectedLineId = null;
   }
