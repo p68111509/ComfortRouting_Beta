@@ -251,7 +251,7 @@ let selectedAttraction = null;
 // 多語言字典
 const i18nDict = {
   zh: {
-    title: "低暴露導航系統<span class=\"beta-text\">(測試版)</span>",
+    title: "低暴露導航系統 <span class=\"beta-text\">(測試版)</span>",
     startLabel: "🟢 起點地址",
     endLabel: "🔴 終點地址", 
     startPlaceholderWithIcon: "🟢 請輸入起點地址",
