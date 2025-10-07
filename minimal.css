@@ -1,0 +1,48 @@
+/* 最小化CSS測試 */
+body {
+  background-color: #f8f4f4;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.app-header {
+  background-color: rgba(255,255,255,0.7);
+  padding: 18px 22px;
+  border-bottom: 1px solid rgba(139, 21, 56, 0.2);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-header h1 {
+  font-size: 24px;
+  margin: 0;
+  color: #2d1b1b;
+}
+
+.dashboard-card {
+  background: rgba(255,255,255,0.9);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+  background-color: #8B1538;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #6B0F2A;
+}

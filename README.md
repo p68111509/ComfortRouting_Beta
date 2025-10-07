@@ -12,13 +12,19 @@
 
 ## 🚀 快速開始
 
-### 線上使用
-直接開啟 `index.html` 即可在瀏覽器中使用。
+### 線上部署 (Render)
+1. 將代碼推送到 GitHub 倉庫
+2. 在 Render 中連接倉庫並使用 `render.yaml` 配置
+3. 設置環境變量：`GOOGLE_API_KEY`
+4. 自動部署完成後訪問 Render 提供的 URL
 
 ### 本地開發
-1. 下載所有檔案到本地資料夾
-2. 用瀏覽器開啟 `index.html`
-3. 如需後端功能，請參考 `api/` 資料夾中的說明
+1. 安裝 Python 依賴：`pip install -r requirements.txt`
+2. 啟動後端服務：`python api/main.py`
+3. 訪問 `http://localhost:8000`
+
+### 離線使用
+直接開啟 `index.html` 即可在瀏覽器中使用（無後端功能）。
 
 ## 📁 檔案結構
 

@@ -11,3 +11,4 @@ services:
         value: data/雙北基隆路網_濃度與暴露_最大連通版.pkl
       - key: GOOGLE_API_KEY
         value: AIzaSyDnbTu8PgUkue5A9uO5aJa3lHZuNUwj6z0
+    healthCheckPath: /health
