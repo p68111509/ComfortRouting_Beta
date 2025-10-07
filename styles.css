@@ -312,6 +312,7 @@ body {
   left: 20px;
   z-index: 500;
   border: 1px solid black;
+  border-radius: 8px; /* 添加圓弧角 */
   transform: scale(0.85); /* 進一步縮小 */
 }
 
