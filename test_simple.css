@@ -1,0 +1,19 @@
+/* 簡單測試CSS */
+body {
+  background-color: #f0f0f0 !important;
+  font-family: Arial, sans-serif !important;
+}
+
+.app-header {
+  background-color: #333 !important;
+  color: white !important;
+  padding: 20px !important;
+}
+
+.mobile-nav-layout {
+  display: none !important;
+}
+
+.main-row {
+  display: block !important;
+}
