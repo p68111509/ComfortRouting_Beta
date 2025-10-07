@@ -2,7 +2,7 @@ services:
   - type: web
     name: comfort-routing
     env: python
-    buildCommand: pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
+    buildCommand: pip install --upgrade pip setuptools wheel && pip install -r requirements.txt --only-binary=all
     startCommand: python api/main.py
     envVars:
       - key: RENDER
