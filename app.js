@@ -15,10 +15,22 @@ let currentTileLayer = null;
 const DEFAULT_CENTER = [25.0330, 121.5654];
 const DEFAULT_ZOOM = 13;
 // 自動檢測 API 基礎 URL
-const API_BASE = window.location.protocol + '//' + window.location.host;
+const API_BASE = (window.location.protocol === 'file:' || 
+                  window.location.hostname === 'localhost' || 
+                  window.location.hostname === '127.0.0.1') 
+  ? 'http://localhost:8000' 
+  : window.location.protocol + '//' + window.location.host;
 
 // 離線模式：直接使用mock數據
 const OFFLINE_MODE = false;
+
+// 調試：印出 API 基礎 URL
+console.log('API_BASE:', API_BASE);
+console.log('Current protocol:', window.location.protocol);
+console.log('Current hostname:', window.location.hostname);
+
+// 全域變數
+let currentMode = 'commute'; // 預設為通勤模式
 
 // 手機版 Header 高度自適應
 function updateHeaderHeight() {
@@ -100,26 +112,26 @@ const METRO_LINES = {
     color: '#0070BD',
     code: 'BL',
     stations: [
-      { id: 'dingpu', name: '頂埔', nameEn: 'Dingpu', code: 'BL01' },
-      { id: 'yongning', name: '永寧', nameEn: 'Yongning', code: 'BL02' },
-      { id: 'tucheng', name: '土城', nameEn: 'Tucheng', code: 'BL03' },
-      { id: 'haishan', name: '海山', nameEn: 'Haishan', code: 'BL04' },
-      { id: 'banqiao', name: '板橋', nameEn: 'Banqiao', code: 'BL05' },
-      { id: 'fuzhong', name: '府中', nameEn: 'Fuzhong', code: 'BL06' },
-      { id: 'jiangzicui', name: '江子翠', nameEn: 'Jiangzicui', code: 'BL07' },
-      { id: 'longshan-temple', name: '龍山寺', nameEn: 'Longshan Temple', code: 'BL10' },
-      { id: 'ximen', name: '西門', nameEn: 'Ximen', code: 'BL11' },
-      { id: 'taipei-main-station', name: '台北車站', nameEn: 'Taipei Main Station', code: 'BL12' },
-      { id: 'shanxi', name: '善導寺', nameEn: 'Shanxi', code: 'BL14' },
-      { id: 'zhongxiao-xinsheng', name: '忠孝新生', nameEn: 'Zhongxiao Xinsheng', code: 'BL15' },
-      { id: 'zhongxiao-fuxing', name: '忠孝復興', nameEn: 'Zhongxiao Fuxing', code: 'BL16' },
-      { id: 'zhongxiao-dunhua', name: '忠孝敦化', nameEn: 'Zhongxiao Dunhua', code: 'BL17' },
-      { id: 'sun-yat-sen-memorial-hall', name: '國父紀念館', nameEn: 'Sun Yat-sen Memorial Hall', code: 'BL18' },
-      { id: 'yongchun', name: '永春', nameEn: 'Yongchun', code: 'BL19' },
-      { id: 'houshanpi', name: '後山埤', nameEn: 'Houshanpi', code: 'BL20' },
-      { id: 'kunyang', name: '昆陽', nameEn: 'Kunyang', code: 'BL21' },
-      { id: 'nangang', name: '南港', nameEn: 'Nangang', code: 'BL22' },
-      { id: 'nangang-exhibition', name: '南港展覽館', nameEn: 'Nangang Exhibition Center', code: 'BL23' }
+      { id: 'dingpu', name: '頂埔', nameEn: 'Dingpu', code: 'BL01', enabled: false },
+      { id: 'yongning', name: '永寧', nameEn: 'Yongning', code: 'BL02', enabled: false },
+      { id: 'tucheng', name: '土城', nameEn: 'Tucheng', code: 'BL03', enabled: false },
+      { id: 'haishan', name: '海山', nameEn: 'Haishan', code: 'BL04', enabled: false },
+      { id: 'banqiao', name: '板橋', nameEn: 'Banqiao', code: 'BL05', enabled: false },
+      { id: 'fuzhong', name: '府中', nameEn: 'Fuzhong', code: 'BL06', enabled: false },
+      { id: 'jiangzicui', name: '江子翠', nameEn: 'Jiangzicui', code: 'BL07', enabled: false },
+      { id: 'longshan-temple', name: '龍山寺', nameEn: 'Longshan Temple', code: 'BL10', enabled: false },
+      { id: 'ximen', name: '西門', nameEn: 'Ximen', code: 'BL11', enabled: false },
+      { id: 'taipei-main-station', name: '台北車站', nameEn: 'Taipei Main Station', code: 'BL12', enabled: false },
+      { id: 'shanxi', name: '善導寺', nameEn: 'Shanxi', code: 'BL14', enabled: false },
+      { id: 'zhongxiao-xinsheng', name: '忠孝新生', nameEn: 'Zhongxiao Xinsheng', code: 'BL15', enabled: false },
+      { id: 'zhongxiao-fuxing', name: '忠孝復興', nameEn: 'Zhongxiao Fuxing', code: 'BL16', enabled: false },
+      { id: 'zhongxiao-dunhua', name: '忠孝敦化', nameEn: 'Zhongxiao Dunhua', code: 'BL17', enabled: false },
+      { id: 'sun-yat-sen-memorial-hall', name: '國父紀念館', nameEn: 'Sun Yat-sen Memorial Hall', code: 'BL18', enabled: false },
+      { id: 'yongchun', name: '永春', nameEn: 'Yongchun', code: 'BL19', enabled: false },
+      { id: 'houshanpi', name: '後山埤', nameEn: 'Houshanpi', code: 'BL20', enabled: false },
+      { id: 'kunyang', name: '昆陽', nameEn: 'Kunyang', code: 'BL21', enabled: false },
+      { id: 'nangang', name: '南港', nameEn: 'Nangang', code: 'BL22', enabled: false },
+      { id: 'nangang-exhibition', name: '南港展覽館', nameEn: 'Nangang Exhibition Center', code: 'BL23', enabled: false }
     ]
   },
   'songshan-xindian': {
@@ -528,7 +540,7 @@ function initMap() {
     zoom: DEFAULT_ZOOM,
     zoomControl: true
   });
-
+  
   // 載入預設底圖
   loadTileLayer('cartodb-voyager');
   
@@ -696,7 +708,7 @@ function locateAddress(inputType) {
       break;
     default:
       console.error('Invalid input type:', inputType);
-    return;
+      return;
   }
   
   const address = inputElement.value.trim();
@@ -737,7 +749,7 @@ function locateAddress(inputType) {
           // 更新起點坐標
           window.startCoords = latlng;
           nextPointIsStart = false; // 下一個點是終點
-  } else {
+        } else {
           if (window.endMarker) {
             map.removeLayer(window.endMarker);
           }
@@ -802,7 +814,9 @@ function bindUI() {
       // 重新調整地圖大小
       if (window.map) {
         setTimeout(() => {
+          if (window.map && typeof window.map.invalidateSize === 'function') {
           window.map.invalidateSize();
+        }
         }, 300);
       }
     }
@@ -900,31 +914,31 @@ function bindInputEvents() {
   
   // 綁定手機版輸入框事件
   if (startInput) {
-    startInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        geocodeAndSetMarker(this.value, 'start');
-      }
-    });
-    
-    startInput.addEventListener('blur', function() {
-      if (this.value.trim()) {
-        geocodeAndSetMarker(this.value, 'start');
-      }
-    });
+  startInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      geocodeAndSetMarker(this.value, 'start');
+    }
+  });
+  
+  startInput.addEventListener('blur', function() {
+    if (this.value.trim()) {
+      geocodeAndSetMarker(this.value, 'start');
+    }
+  });
   }
   
   if (endInput) {
-    endInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        geocodeAndSetMarker(this.value, 'end');
-      }
-    });
-    
-    endInput.addEventListener('blur', function() {
-      if (this.value.trim()) {
-        geocodeAndSetMarker(this.value, 'end');
-      }
-    });
+  endInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      geocodeAndSetMarker(this.value, 'end');
+    }
+  });
+  
+  endInput.addEventListener('blur', function() {
+    if (this.value.trim()) {
+      geocodeAndSetMarker(this.value, 'end');
+    }
+  });
   }
   
   // 綁定桌面版輸入框事件
@@ -1017,8 +1031,10 @@ function switchMode(mode) {
     
     // 重新初始化地圖（如果需要）
     if (window.map) {
-  setTimeout(() => {
+      setTimeout(() => {
+        if (window.map && typeof window.map.invalidateSize === 'function') {
         window.map.invalidateSize();
+        }
       }, 300);
     }
     
@@ -1056,8 +1072,8 @@ function switchMode(mode) {
     // 重新初始化捷運卡片（因為可能在面板隱藏時沒有綁定成功）
     setTimeout(() => {
       initMetroList();
-  }, 100);
-  
+    }, 100);
+    
     console.log('[debug] Switched to metro mode, metro panel should be visible');
   }
   
@@ -1102,14 +1118,32 @@ function bindTileSelectorEvents() {
 
 // 綁定覆蓋層事件
 function bindOverlayEvents() {
+  console.log('bindOverlayEvents called');
+  
   const overlayInputs = document.querySelectorAll('input[name="overlay"]');
-  overlayInputs.forEach(input => {
+  console.log('Found overlay inputs:', overlayInputs.length);
+  
+  if (overlayInputs.length === 0) {
+    console.error('No overlay inputs found! Check HTML structure.');
+    return;
+  }
+  
+  overlayInputs.forEach((input, index) => {
+    console.log(`Input ${index}:`, {
+      value: input.value,
+      checked: input.checked,
+      element: input
+    });
+    
     input.addEventListener('change', function() {
+      console.log('Overlay input changed:', this.value, 'checked:', this.checked);
       if (this.checked) {
         updateOverlay(this.value);
       }
     });
   });
+  
+  console.log('Overlay events bound successfully');
 }
 
 // 綁定幫助事件
@@ -1172,12 +1206,14 @@ function bindHelpEvents() {
     closeCommuteHelpBtn.addEventListener('click', () => {
       commuteHelpModal.style.display = 'none';
       document.body.style.overflow = 'auto';
+      enableHeaderButtons();
     });
     
     commuteHelpModal.addEventListener('click', (e) => {
       if (e.target === commuteHelpModal) {
         commuteHelpModal.style.display = 'none';
         document.body.style.overflow = 'auto';
+        enableHeaderButtons();
       }
     });
   }
@@ -1189,12 +1225,14 @@ function bindHelpEvents() {
     closeMetroHelpBtn.addEventListener('click', () => {
       metroHelpModal.style.display = 'none';
       document.body.style.overflow = 'auto';
+      enableHeaderButtons();
     });
     
     metroHelpModal.addEventListener('click', (e) => {
       if (e.target === metroHelpModal) {
         metroHelpModal.style.display = 'none';
         document.body.style.overflow = 'auto';
+        enableHeaderButtons();
       }
     });
   }
@@ -1283,10 +1321,10 @@ function bindImprovementHelpEvents() {
 function openImprovementHelpModal() {
   const modal = document.getElementById('improvement-help-modal');
   if (modal) {
-  modal.style.display = 'flex';
+    modal.style.display = 'flex';
   disableHeaderButtons();
-  document.body.style.overflow = 'hidden';
-  disableHeaderButtons();
+    document.body.style.overflow = 'hidden';
+    disableHeaderButtons();
     console.log('[improvement-help] Improvement help modal opened');
   }
 }
@@ -1295,9 +1333,9 @@ function openImprovementHelpModal() {
 function closeImprovementHelpModal() {
   const modal = document.getElementById('improvement-help-modal');
   if (modal) {
-  modal.style.display = 'none';
-  document.body.style.overflow = 'auto';
-  enableHeaderButtons();
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    enableHeaderButtons();
     console.log('[improvement-help] Improvement help modal closed');
   }
 }
@@ -1335,6 +1373,7 @@ function showCommuteHelp() {
   if (commuteHelpModal) {
     commuteHelpModal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    disableHeaderButtons();
   }
 }
 
@@ -1344,6 +1383,7 @@ function showMetroHelp() {
   if (metroHelpModal) {
     metroHelpModal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    disableHeaderButtons();
   }
 }
 
@@ -1450,7 +1490,7 @@ function setStart(lat, lng) {
   
   const startIcon = L.divIcon({
     html: `<div style="
-        width: 48px;
+      width: 48px;
       height: 48px;
       background: #10b981;
       border: 6px solid white;
@@ -1480,7 +1520,7 @@ function setEnd(lat, lng) {
   
   const endIcon = L.divIcon({
     html: `<div style="
-        width: 48px;
+      width: 48px;
       height: 48px;
       background: #ef4444;
       border: 6px solid white;
@@ -1520,19 +1560,11 @@ async function geocodeAndSetMarker(address, type) {
   if (!address.trim()) return;
   
   try {
-    let response;
-    try {
-      response = await fetch(`${API_BASE}/api/geocode`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address, language: 'zh-TW' })
-      });
-    } catch (fetchError) {
-      console.warn('[debug] Geocode API fetch failed, using mock coordinates:', fetchError);
-      // 使用mock坐標
-      const mockData = { lat: 25.0330, lng: 121.5654 };
-      response = { ok: true, json: () => Promise.resolve(mockData) };
-    }
+    const response = await fetch(`${API_BASE}/api/geocode`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ address, language: 'zh-TW' })
+    });
     
     if (!response.ok) throw new Error('Geocoding failed');
     
@@ -1556,19 +1588,11 @@ async function geocodeAndSetMarker(address, type) {
 // 反向地理編碼
 async function reverseGeocode(lat, lng, type) {
   try {
-    let response;
-    try {
-      response = await fetch(`${API_BASE}/api/reverse`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ point: { lat, lng }, language: 'zh-TW' })
-      });
-    } catch (fetchError) {
-      console.warn('[debug] Reverse geocode API fetch failed, using mock address:', fetchError);
-      // 使用mock地址
-      const mockData = { label: `${lat.toFixed(6)}, ${lng.toFixed(6)}` };
-      response = { ok: true, json: () => Promise.resolve(mockData) };
-    }
+    const response = await fetch(`${API_BASE}/api/reverse`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ point: { lat, lng }, language: 'zh-TW' })
+    });
     
     if (!response.ok) throw new Error('Reverse geocoding failed');
     
@@ -1653,16 +1677,19 @@ async function planRoutes() {
     payload.mode = selectedTransport ? selectedTransport.value : 'bicycle';
     
     // 距離限制功能已移除
-    payload.max_distance_increase = null;
-
-  console.log('[debug] planRoutes called, sending payload:', payload);
-  
+      payload.max_distance_increase = null;
+    
+    console.log('[debug] planRoutes called, sending payload:', payload);
+    
     // 調用 API
     const response = await fetch(`${API_BASE}/api/routes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
+    
+    console.log('[debug] Response status:', response.status);
+    console.log('[debug] Response headers:', response.headers);
     
     if (!response.ok) {
       const errorData = await response.json();
@@ -1694,7 +1721,9 @@ async function planRoutes() {
       // 重新調整地圖大小
       if (window.map) {
         setTimeout(() => {
+          if (window.map && typeof window.map.invalidateSize === 'function') {
           window.map.invalidateSize();
+        }
         }, 300);
       }
     }
@@ -1848,7 +1877,7 @@ function updateDashboardBar(barId, valueId, value, maxValue, unit) {
   }
 }
 
-// 更新改善率大數字動畫
+// 更新改善率大數字動畫（支援水平進度條）
 function updateImprovementProgress(progressId, textId, percentage) {
   const textEl = document.getElementById(textId);
   const progressBar = document.getElementById('improvementProgressBar');
@@ -1916,20 +1945,20 @@ function updateHorizontalProgressDisplay(textEl, progressBar, progressGlow, perc
 
 // 更新傳統進度顯示
 function updateTraditionalProgress(textEl, percentage) {
-  // 重置為0並添加初始動畫效果
-  textEl.textContent = '0%';
-  textEl.style.transform = 'scale(0.8)';
-  textEl.style.opacity = '0.7';
-  
-  // 延遲後開始動畫
-  setTimeout(() => {
-    textEl.style.transition = 'all 0.3s ease-out';
-    textEl.style.transform = 'scale(1)';
-    textEl.style.opacity = '1';
+    // 重置為0並添加初始動畫效果
+    textEl.textContent = '0%';
+    textEl.style.transform = 'scale(0.8)';
+    textEl.style.opacity = '0.7';
     
-    // 動畫從0跑到實際值
+    // 延遲後開始動畫
+    setTimeout(() => {
+      textEl.style.transition = 'all 0.3s ease-out';
+      textEl.style.transform = 'scale(1)';
+      textEl.style.opacity = '1';
+      
+      // 動畫從0跑到實際值
     animateNumber(textEl, 0, percentage, 2000, '%');
-  }, 100);
+    }, 100);
 }
 
 // 數字動畫函數
@@ -2070,7 +2099,7 @@ function resetAll() {
     if (window.map) {
       setTimeout(() => {
         if (window.map && typeof window.map.invalidateSize === 'function') {
-          window.map.invalidateSize();
+        window.map.invalidateSize();
         }
       }, 300);
     }
@@ -2165,7 +2194,7 @@ function applyLanguage() {
       if (key === 'title') {
         el.innerHTML = dict[key];
       } else {
-        el.textContent = dict[key];
+      el.textContent = dict[key];
       }
     }
   });
@@ -2274,8 +2303,37 @@ function updateOverlay(overlayType) {
     return;
   }
   
-  // 疊加圖層圖片路徑
+  // 使用 API 獲取疊加圖層資訊
+  loadOverlayFromAPI(overlayType);
+}
+
+// 從 API 載入疊加圖層
+function loadOverlayFromAPI(overlayType) {
+  console.log(`Loading overlay from API: ${overlayType}`);
+  
+  fetch(`${API_BASE}/api/overlay/${overlayType}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Overlay data received:', data);
+      // 使用 base64 圖片數據，不需要 HTTP 服務器
+      loadPngOverlayFromData(data.image_data, overlayType, data.bounds, data.opacity);
+    })
+    .catch(error => {
+      console.error('Error loading overlay from API:', error);
+      // 回退到直接載入
+      loadPngOverlayDirect(overlayType);
+    });
+}
+
+// 直接載入疊加圖層（回退方案）
+function loadPngOverlayDirect(overlayType) {
   let imagePath;
+  
   switch (overlayType) {
     case 'pm25':
       imagePath = '/static/data/AirPollution/PM25_全台.png';
@@ -2287,27 +2345,112 @@ function updateOverlay(overlayType) {
       imagePath = '/static/data/AirPollution/WBGT_全台.png';
       break;
     default:
-      console.log('Unknown overlay type:', overlayType);
       return;
   }
   
-  console.log('Selected image path:', imagePath);
+  const bounds = [[21.9, 120.1], [25.3, 122.0]];
+  loadPngOverlay(imagePath, overlayType, bounds, 0.5);
+}
+
+// 載入 PNG 疊加層（從 base64 數據）
+function loadPngOverlayFromData(imageData, overlayType, bounds = null, opacity = 0.5) {
+  console.log(`Loading PNG overlay from base64 data: ${overlayType}`);
   
-  // EPSG:3826 (TWD97) 的邊界座標（台灣全島）
-  const bounds = [
+  // 使用提供的邊界或預設邊界
+  if (!bounds) {
+    bounds = [
     [21.9, 120.1],  // 西南角
     [25.3, 122.0]   // 東北角
   ];
+  }
   
-  // 創建圖片疊加層
-  console.log('Creating image overlay with bounds:', bounds);
-  overlayLayer = L.imageOverlay(imagePath, bounds, {
-      opacity: 0.5,
+  console.log('Image bounds:', bounds);
+  console.log('Image opacity:', opacity);
+  
+  // 創建圖片疊加層（使用 base64 數據）
+  overlayLayer = L.imageOverlay(imageData, bounds, {
+    opacity: opacity,
     interactive: false
   });
   
+  console.log('Created overlay layer:', overlayLayer);
+  
   overlayLayer.addTo(map);
-  console.log(`Successfully switched to overlay: ${overlayType}`);
+  console.log(`Switching to PNG overlay: ${overlayType}`);
+  
+  // 檢查圖片是否載入成功
+  overlayLayer.on('load', function() {
+    console.log('PNG overlay loaded successfully from base64 data');
+  });
+  
+  overlayLayer.on('error', function(e) {
+    console.error('PNG overlay failed to load from base64 data:', e);
+  });
+}
+
+// 載入 PNG 疊加層（從 URL 路徑）
+function loadPngOverlay(imagePath, overlayType, bounds = null, opacity = 0.5) {
+  console.log(`Loading PNG overlay: ${imagePath}`);
+  
+  // 使用提供的邊界或預設邊界
+  if (!bounds) {
+    bounds = [
+      [21.9, 120.1],  // 西南角
+      [25.3, 122.0]   // 東北角
+    ];
+  }
+  
+  console.log('Image bounds:', bounds);
+  console.log('Image opacity:', opacity);
+  
+  // 創建圖片疊加層
+  overlayLayer = L.imageOverlay(imagePath, bounds, {
+    opacity: opacity,
+    interactive: false
+  });
+  
+  console.log('Created overlay layer:', overlayLayer);
+  
+  overlayLayer.addTo(map);
+  console.log(`Switching to PNG overlay: ${overlayType}`);
+  
+  // 檢查圖片是否載入成功
+  overlayLayer.on('load', function() {
+    console.log('PNG overlay loaded successfully');
+  });
+  
+  overlayLayer.on('error', function(e) {
+    console.error('PNG overlay failed to load:', e);
+  });
+}
+
+// 載入 TIF 疊加層
+function loadTifOverlay(imagePath, overlayType) {
+  console.log(`Loading TIF overlay: ${imagePath}`);
+  
+  // 由於瀏覽器不直接支援 TIF，我們需要先檢查檔案是否存在
+  // 如果 TIF 載入失敗，則回退到 PNG
+  const pngFallback = '/static/data/AirPollution/PM25_全台.png';
+  
+  // 嘗試載入 TIF 檔案
+  fetch(imagePath)
+    .then(response => {
+      if (response.ok) {
+        console.log('TIF file found, but browser cannot display TIF directly');
+        // 顯示提示訊息
+        showError('TIF 檔案格式不支援直接在地圖上顯示，自動切換到 PNG 格式');
+        // 回退到 PNG
+        loadPngOverlay(pngFallback, overlayType);
+      } else {
+        console.log('TIF file not found, using PNG fallback');
+        loadPngOverlay(pngFallback, overlayType);
+      }
+    })
+    .catch(error => {
+      console.log('Error loading TIF file:', error);
+      console.log('Using PNG fallback');
+      loadPngOverlay(pngFallback, overlayType);
+    });
 }
 
 // 錯誤處理
@@ -2321,7 +2464,7 @@ function showError(message) {
     errorBox.style.display = 'flex';
     
     // 自動隱藏
-      setTimeout(() => {
+    setTimeout(() => {
       hideError();
     }, 5000);
   }
@@ -2457,8 +2600,8 @@ function showStationsModal(lineData) {
     const codeElement = stationCard.querySelector('.station-card-code');
     if (codeElement) {
       if (isEnabled) {
-        codeElement.style.backgroundColor = lineData.color;
-        codeElement.style.color = 'white';
+      codeElement.style.backgroundColor = lineData.color;
+      codeElement.style.color = 'white';
       } else {
         codeElement.style.backgroundColor = '#ccc';
         codeElement.style.color = '#666';
@@ -2468,14 +2611,14 @@ function showStationsModal(lineData) {
     
     // 添加點擊事件（只有啟用的站點才能點擊）
     if (isEnabled) {
-      stationCard.addEventListener('click', function() {
-        const stationId = this.getAttribute('data-station');
-        const stationName = METRO_STATIONS[stationId];
-        if (stationName && STATION_EXITS[stationId]) {
-          hideStationsModal();
-          showExitModal(stationName, stationId);
-        }
-      });
+    stationCard.addEventListener('click', function() {
+      const stationId = this.getAttribute('data-station');
+      const stationName = METRO_STATIONS[stationId];
+      if (stationName && STATION_EXITS[stationId]) {
+        hideStationsModal();
+        showExitModal(stationName, stationId);
+      }
+    });
     }
     
     stationsGrid.appendChild(stationCard);
@@ -2484,6 +2627,7 @@ function showStationsModal(lineData) {
   // 顯示彈出層
   overlay.style.display = 'flex';
   document.body.style.overflow = 'hidden';
+  disableHeaderButtons();
 }
 
 // 隱藏站點彈出層
@@ -2491,7 +2635,8 @@ function hideStationsModal() {
   const overlay = document.getElementById('stations-overlay');
   if (overlay) {
     overlay.style.display = 'none';
-      document.body.style.overflow = 'auto';
+    document.body.style.overflow = 'auto';
+    enableHeaderButtons();
     // 清除保存的線路ID
     window.currentSelectedLineId = null;
   }
@@ -2953,7 +3098,7 @@ function updateResultDashboard(data, shortestTime, lowestTime, improvementRate, 
     );
   } else {
     // 傳統模式
-    updateImprovementProgress(null, 'resultDashImprovementRate', improvementRate);
+  updateImprovementProgress(null, 'resultDashImprovementRate', improvementRate);
   }
 }
 
@@ -2967,7 +3112,7 @@ function updateResultDashboardBar(barId, valueId, value, maxValue, unit) {
     
     // 動畫更新進度條（水平方向）
     setTimeout(() => {
-      bar.style.width = `${percentage}%`;
+    bar.style.width = `${percentage}%`;
     }, 100);
     
     // 更新數值（只顯示數字，不加單位）
