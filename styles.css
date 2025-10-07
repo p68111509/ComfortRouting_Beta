@@ -211,25 +211,28 @@ body {
 /* 地圖圖例 */
 .map-legend {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 270px; /* 再下移更多 */
+  left: 20px;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  border-radius: 999px;
-  padding: 8px 12px;
-  display: inline-flex;
-  gap: 16px;
+  border-radius: 12px;
+  padding: 10px; /* 進一步減少內邊距 */
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* 進一步減少間距 */
   box-shadow: var(--shadow);
   z-index: 500;
   border: 1px solid black;
+  transform: scale(0.85); /* 進一步縮小 */
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
+  gap: 5px; /* 進一步減少間距 */
+  font-size: 10px; /* 進一步縮小字體 */
   font-weight: 600;
+  justify-content: flex-start;
 }
 
 .legend-line {
@@ -266,20 +269,21 @@ body {
 /* 覆蓋層選擇器 */
 .map-overlay-selector {
   position: absolute;
-  top: 80px;
-  right: 20px;
+  top: 125px; /* 再下移一點 */
+  left: 20px;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 12px;
-  padding: 16px;
+  padding: 10px; /* 進一步減少內邊距 */
   box-shadow: var(--shadow);
   z-index: 500;
   border: 1px solid black;
+  transform: scale(0.85); /* 進一步縮小 */
 }
 
 .map-overlay-selector h4 {
-  font-size: 14px;
-  margin: 0 0 12px 0;
+  font-size: 11px; /* 進一步縮小字體 */
+  margin: 0 0 6px 0; /* 進一步減少底部間距 */
   color: var(--text);
 }
 
@@ -304,10 +308,11 @@ body {
 /* 底圖選擇器 */
 .map-tile-selector {
   position: absolute;
-  top: 110px;
+  top: 85px; /* 再下移一咪咪 */
   left: 20px;
   z-index: 500;
   border: 1px solid black;
+  transform: scale(0.85); /* 進一步縮小 */
 }
 
 .tile-selector-button {
@@ -1538,8 +1543,8 @@ body {
   }
   
   .main-logo-img {
-    height: 20px; /* 手機版進一步縮小 */
-    max-width: 32px;
+    height: 32px; /* 手機版放大 */
+    max-width: 48px;
   }
   
   /* 手機版標題 */
@@ -1569,7 +1574,8 @@ body {
   /* 手機版縮小圖例並下移 */
   .map-legend {
     transform: scale(0.7) !important; /* 縮小更多 */
-    top: 60px !important; /* 下移 */
+    top: 270px !important; /* 套用電腦版間距關係 */
+    left: 20px !important; /* 左對齊 */
   }
   
   .leaflet-control-zoom a {
@@ -1582,7 +1588,8 @@ body {
   /* 手機版縮小底圖樣式選單 */
   .map-tile-selector {
     transform: scale(0.8) !important;
-    top: 88px !important; /* 調整位置 */
+    top: 85px !important; /* 套用電腦版間距關係 */
+    left: 20px !important; /* 左對齊 */
   }
   
   .tile-selector-button {
@@ -1593,7 +1600,8 @@ body {
   /* 手機版縮小疊加圖層面板 */
   .map-overlay-selector {
     transform: scale(0.8) !important;
-    top: 80px !important; /* 下移更多 */
+    top: 125px !important; /* 套用電腦版間距關係 */
+    left: 20px !important; /* 左對齊 */
   }
   
   .map-overlay-selector h4 {
