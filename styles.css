@@ -53,7 +53,7 @@ body {
 }
 
 .app-header h1 { 
-  font-size: 32px; 
+  font-size: 24px; /* 從 32px 縮小 */
   line-height: 1.2; 
   margin: 0; 
   font-weight: 800; 
@@ -1542,9 +1542,9 @@ body {
     max-width: 32px;
   }
   
-  /* 手機版放大標題 */
+  /* 手機版標題 */
   .header-left h1 {
-    font-size: 28px !important; /* 放大兩倍：14px * 2 */
+    font-size: 20px !important; /* 縮小：從 28px 調整 */
     margin: 0;
     line-height: 1.2;
   }
