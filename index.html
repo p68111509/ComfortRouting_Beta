@@ -261,7 +261,7 @@
               <div class="distance-increase-info">
                 <span class="increase-label" data-i18n="distanceIncrease">距離增加</span>
                 <span class="increase-value" id="dashDistanceIncrease">-</span>
-                <span class="increase-unit">公尺</span>
+                <span class="increase-unit" id="dashDistanceUnit">公尺</span>
               </div>
             </div>
 
@@ -377,10 +377,9 @@
         <div class="result-dashboard-container" id="resultDashboardContainer">
           <div class="result-dashboard-grid">
             <!-- 改善效益卡片 -->
-            <div class="result-dashboard-card result-combined-improvement-card">
-              <h4 class="result-card-title">
+            <div class="result-dashboard-card">
+              <h4 class="card-title">
                 <span data-i18n="improvementBenefit">📊 改善效益</span>
-                <button class="help-icon-btn" id="resultImprovementHelpBtn" title="改善率說明">❓</button>
               </h4>
               <div class="improvement-display-simple">
                 <div class="improvement-circle-large">
@@ -392,54 +391,54 @@
 
             <!-- 距離比較卡片 -->
             <div class="result-dashboard-card">
-              <h4 class="result-card-title" data-i18n="distanceComparison">📏 距離比較</h4>
-              <div class="result-comparison-bars">
-                <div class="result-bar-item">
-                  <div class="result-bar-header">
-                    <span class="result-route-type shortest" data-i18n="shortest">最短路徑</span>
-                    <span class="result-route-value" id="resultDashDistanceShortest">-</span>
+              <h4 class="card-title" data-i18n="distanceComparison">📏 距離比較</h4>
+              <div class="comparison-bars">
+                <div class="bar-item">
+                  <div class="bar-header">
+                    <span class="route-type shortest" data-i18n="shortest">最短路徑</span>
+                    <span class="route-value" id="resultDashDistanceShortest">-</span>
                   </div>
-                  <div class="result-progress-bar">
-                    <div class="result-progress-fill shortest" id="resultDashDistanceBarShortest"></div>
+                  <div class="progress-bar">
+                    <div class="progress-fill shortest" id="resultDashDistanceBarShortest"></div>
                   </div>
                 </div>
-                <div class="result-bar-item">
-                  <div class="result-bar-header">
-                    <span class="result-route-type lowest" data-i18n="lowest">低暴露路徑</span>
-                    <span class="result-route-value" id="resultDashDistanceLowest">-</span>
+                <div class="bar-item">
+                  <div class="bar-header">
+                    <span class="route-type lowest" data-i18n="lowest">低暴露路徑</span>
+                    <span class="route-value" id="resultDashDistanceLowest">-</span>
                   </div>
-                  <div class="result-progress-bar">
-                    <div class="result-progress-fill lowest" id="resultDashDistanceBarLowest"></div>
+                  <div class="progress-bar">
+                    <div class="progress-fill lowest" id="resultDashDistanceBarLowest"></div>
                   </div>
                 </div>
               </div>
               <div class="distance-increase-info">
                 <span class="increase-label" data-i18n="distanceIncrease">距離增加</span>
                 <span class="increase-value" id="resultDashDistanceIncrease">-</span>
-                <span class="increase-unit">公尺</span>
+                <span class="increase-unit" id="resultDashDistanceUnit">公尺</span>
               </div>
             </div>
 
             <!-- 時間比較卡片 -->
             <div class="result-dashboard-card">
-              <h4 class="result-card-title" data-i18n="timeComparison">⏱️ 時間比較</h4>
-              <div class="result-comparison-bars">
-                <div class="result-bar-item">
-                  <div class="result-bar-header">
-                    <span class="result-route-type shortest" data-i18n="shortest">最短路徑</span>
-                    <span class="result-route-value" id="resultDashTimeShortest">-</span>
+              <h4 class="card-title" data-i18n="timeComparison">⏱️ 時間比較</h4>
+              <div class="comparison-bars">
+                <div class="bar-item">
+                  <div class="bar-header">
+                    <span class="route-type shortest" data-i18n="shortest">最短路徑</span>
+                    <span class="route-value" id="resultDashTimeShortest">-</span>
                   </div>
-                  <div class="result-progress-bar">
-                    <div class="result-progress-fill shortest" id="resultDashTimeBarShortest"></div>
+                  <div class="progress-bar">
+                    <div class="progress-fill shortest" id="resultDashTimeBarShortest"></div>
                   </div>
                 </div>
-                <div class="result-bar-item">
-                  <div class="result-bar-header">
-                    <span class="result-route-type lowest" data-i18n="lowest">低暴露路徑</span>
-                    <span class="result-route-value" id="resultDashTimeLowest">-</span>
+                <div class="bar-item">
+                  <div class="bar-header">
+                    <span class="route-type lowest" data-i18n="lowest">低暴露路徑</span>
+                    <span class="route-value" id="resultDashTimeLowest">-</span>
                   </div>
-                  <div class="result-progress-bar">
-                    <div class="result-progress-fill lowest" id="resultDashTimeBarLowest"></div>
+                  <div class="progress-bar">
+                    <div class="progress-fill lowest" id="resultDashTimeBarLowest"></div>
                   </div>
                 </div>
               </div>
@@ -655,3 +654,4 @@
   <script src="/static/app.js"></script>
 </body>
 </html>
+

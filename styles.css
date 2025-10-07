@@ -1296,6 +1296,40 @@ body {
   min-width: 0;
 }
 
+/* 電腦版通勤模式：橫向長條佈局 */
+@media (min-width: 769px) {
+  .route-comparison-modal .dashboard-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, auto);
+    gap: 12px;
+  }
+  
+  /* 改善效益卡片：橫向長條 */
+  .route-comparison-modal .dashboard-card:first-child {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-height: 60px;
+    padding: 12px 16px;
+  }
+  
+  /* 距離比較和時間比較卡片：垂直佈局 */
+  .route-comparison-modal .dashboard-card:not(:first-child) {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+  }
+  
+  .route-comparison-modal .dashboard-card:not(:first-child) .card-title {
+    margin-bottom: 12px;
+    text-align: left;
+  }
+  
+  .route-comparison-modal .dashboard-card:not(:first-child) .comparison-bars {
+    margin-bottom: 12px;
+  }
+}
+
 .dashboard-card {
   background: white;
   border-radius: 8px;
@@ -2144,6 +2178,38 @@ body {
     padding: 6px 12px !important;
     font-size: 11px !important;
     min-width: 80px !important;
+  }
+
+  /* 手機版通勤模式路徑比較彈窗：與電腦版相同的佈局 */
+  .route-comparison-modal .dashboard-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: repeat(3, auto) !important;
+    gap: 12px !important;
+  }
+  
+  /* 改善效益卡片：橫向長條 */
+  .route-comparison-modal .dashboard-card:first-child {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    min-height: 60px !important;
+    padding: 12px 16px !important;
+  }
+  
+  /* 距離比較和時間比較卡片：垂直佈局 */
+  .route-comparison-modal .dashboard-card:not(:first-child) {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 16px !important;
+  }
+  
+  .route-comparison-modal .dashboard-card:not(:first-child) .card-title {
+    margin-bottom: 12px !important;
+    text-align: left !important;
+  }
+  
+  .route-comparison-modal .dashboard-card:not(:first-child) .comparison-bars {
+    margin-bottom: 12px !important;
   }
 
   /* 手機版路徑比較按鈕 */
@@ -3125,6 +3191,7 @@ p, span, div, button, input, select, textarea,
 /* 結果儀表板樣式（捷運模式） */
 .result-dashboard-container {
   margin-top: 20px;
+  width: 100%;
 }
 
 .result-dashboard-grid {
@@ -3132,6 +3199,145 @@ p, span, div, button, input, select, textarea,
   grid-template-columns: 1fr;
   grid-template-rows: repeat(3, auto);
   gap: 12px;
+}
+
+/* 電腦版捷運模式：3:2橫向長方形三塊並排 */
+@media (min-width: 769px) {
+  .route-comparison-modal .result-dashboard-grid,
+  .route-result-modal .result-dashboard-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-rows: 1fr !important;
+    gap: 16px !important;
+    width: 100% !important;
+    max-width: 700px !important;
+    margin: 0 auto !important;
+  }
+  
+  .route-comparison-modal .result-dashboard-card,
+  .route-result-modal .result-dashboard-card {
+    aspect-ratio: 3/2;
+    min-height: auto;
+    height: auto;
+    width: auto;
+  }
+  
+  /* 改善效益卡片：有標題的橫向長條 */
+  .route-comparison-modal .result-dashboard-card:first-child,
+  .route-result-modal .result-dashboard-card:first-child {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+  }
+  
+  .route-comparison-modal .result-dashboard-card:first-child .card-title,
+  .route-result-modal .result-dashboard-card:first-child .card-title {
+    margin-bottom: 12px;
+    text-align: left;
+    color: white;
+    font-size: 14px;
+  }
+  
+  .route-comparison-modal .result-dashboard-card:first-child .improvement-display-simple,
+  .route-result-modal .result-dashboard-card:first-child .improvement-display-simple {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+  }
+  
+  /* 距離比較和時間比較卡片：垂直佈局 */
+  .route-comparison-modal .result-dashboard-card:not(:first-child),
+  .route-result-modal .result-dashboard-card:not(:first-child) {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+  }
+  
+  .route-comparison-modal .result-dashboard-card:not(:first-child) .card-title,
+  .route-result-modal .result-dashboard-card:not(:first-child) .card-title {
+    margin-bottom: 12px;
+    text-align: left;
+  }
+  
+  .route-comparison-modal .result-dashboard-card:not(:first-child) .comparison-bars,
+  .route-result-modal .result-dashboard-card:not(:first-child) .comparison-bars {
+    margin-bottom: 12px;
+  }
+}
+
+/* 手機版捷運模式：3:2橫向長方形三塊並排 */
+@media (max-width: 768px) {
+  .route-comparison-modal .result-dashboard-grid,
+  .route-result-modal .result-dashboard-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-rows: 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 600px !important;
+    margin: 0 auto !important;
+  }
+  
+  .route-comparison-modal .result-dashboard-card,
+  .route-result-modal .result-dashboard-card {
+    aspect-ratio: 3/2 !important;
+    min-height: auto !important;
+    height: auto !important;
+    width: auto !important;
+    padding: 12px !important;
+  }
+  
+  /* 改善效益卡片：有標題的橫向長條 */
+  .route-comparison-modal .result-dashboard-card:first-child,
+  .route-result-modal .result-dashboard-card:first-child {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 16px !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3) !important;
+  }
+  
+  .route-comparison-modal .result-dashboard-card:first-child .card-title,
+  .route-result-modal .result-dashboard-card:first-child .card-title {
+    margin-bottom: 12px !important;
+    text-align: left !important;
+    color: white !important;
+    font-size: 14px !important;
+  }
+  
+  .route-comparison-modal .result-dashboard-card:first-child .improvement-display-simple,
+  .route-result-modal .result-dashboard-card:first-child .improvement-display-simple {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 1 !important;
+  }
+  
+  /* 距離比較和時間比較卡片：垂直佈局 */
+  .route-comparison-modal .result-dashboard-card:not(:first-child),
+  .route-result-modal .result-dashboard-card:not(:first-child) {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 16px !important;
+  }
+  
+  .route-comparison-modal .result-dashboard-card:not(:first-child) .card-title,
+  .route-result-modal .result-dashboard-card:not(:first-child) .card-title {
+    margin-bottom: 12px !important;
+    text-align: left !important;
+  }
+  
+  .route-comparison-modal .result-dashboard-card:not(:first-child) .comparison-bars,
+  .route-result-modal .result-dashboard-card:not(:first-child) .comparison-bars {
+    margin-bottom: 12px !important;
+  }
 }
 
 .result-dashboard-card {
@@ -3142,6 +3348,15 @@ p, span, div, button, input, select, textarea,
   border: 1px solid rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   min-height: 120px;
+}
+
+/* 確保捷運模式資訊卡使用3:2比例 */
+.route-comparison-modal .result-dashboard-card,
+.route-result-modal .result-dashboard-card {
+  aspect-ratio: 3/2 !important;
+  min-height: auto !important;
+  height: auto !important;
+  width: auto !important;
 }
 
 .result-dashboard-card:hover {

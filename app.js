@@ -1003,6 +1003,12 @@ function switchMode(mode) {
       metroPanel.classList.remove('active');
     }
     
+    // 顯示通勤模式的浮動按鈕
+    const navButtonsGroup = document.querySelector('.nav-buttons-group');
+    const routeComparisonBtn = document.getElementById('routeComparisonBtn');
+    if (navButtonsGroup) navButtonsGroup.style.display = 'flex';
+    if (routeComparisonBtn) routeComparisonBtn.style.display = 'flex';
+    
     // 重新初始化地圖（如果需要）
     if (window.map) {
   setTimeout(() => {
@@ -1028,6 +1034,15 @@ function switchMode(mode) {
       console.log('[debug] Metro panel style.display:', metroPanel.style.display);
       console.log('[debug] Metro panel computed style:', window.getComputedStyle(metroPanel).display);
     }
+    
+    // 隱藏通勤模式的浮動按鈕
+    const navButtonsGroup = document.querySelector('.nav-buttons-group');
+    const routeComparisonBtn = document.getElementById('routeComparisonBtn');
+    if (navButtonsGroup) navButtonsGroup.style.display = 'none';
+    if (routeComparisonBtn) routeComparisonBtn.style.display = 'none';
+    
+    // 關閉路徑比較彈窗
+    closeRouteComparisonModal();
     
     // 清除通勤模式的數據（但不影響捷運模式）
     // resetAll();
@@ -1732,12 +1747,15 @@ function updateDashboard(data, shortestTime, lowestTime, improvementRate, extraD
 
   // 更新距離增加
   const distanceIncreaseEl = document.getElementById('dashDistanceIncrease');
-  if (distanceIncreaseEl) {
+  const distanceUnitEl = document.getElementById('dashDistanceUnit');
+  if (distanceIncreaseEl && distanceUnitEl) {
     const distanceIncrease = computeExtraDistance(data.shortest, data.lowest);
     if (distanceIncrease >= 1000) {
-      distanceIncreaseEl.textContent = (distanceIncrease / 1000).toFixed(1) + '公里';
+      distanceIncreaseEl.textContent = (distanceIncrease / 1000).toFixed(1);
+      distanceUnitEl.textContent = '公里';
     } else {
-      distanceIncreaseEl.textContent = Math.round(distanceIncrease) + '公尺';
+      distanceIncreaseEl.textContent = Math.round(distanceIncrease);
+      distanceUnitEl.textContent = '公尺';
     }
   }
 
@@ -1758,8 +1776,8 @@ function updateDashboardBar(barId, valueId, value, maxValue, unit) {
       bar.style.width = `${percentage}%`;
     }, 100);
     
-    // 更新數值
-    valueEl.textContent = `${formatNumber(value, 1)} ${unit}`;
+    // 更新數值（只顯示數字，不加單位）
+    valueEl.textContent = formatNumber(value, 1);
   }
 }
 
@@ -2779,16 +2797,18 @@ function updateResultDashboard(data, shortestTime, lowestTime, improvementRate, 
   updateResultDashboardBar('resultDashTimeBarShortest', 'resultDashTimeShortest', shortestTime, maxTime, 'min');
   updateResultDashboardBar('resultDashTimeBarLowest', 'resultDashTimeLowest', lowestTime, maxTime, 'min');
   
-  // 暴露減少已移除
-  
-  // 額外距離
-  const extraDistanceElement = document.getElementById('resultDashExtraDistance');
-  const extraDistanceUnitElement = document.querySelector('#resultDashExtraDistance').parentElement.querySelector('.result-metric-unit');
-  if (extraDistanceElement && extraDistanceUnitElement) {
-    const distanceData = formatDistanceSeparated(extraDistance);
-    const dict = i18nDict[currentLang];
-    extraDistanceElement.textContent = extraDistance > 0 ? distanceData.value : '0';
-    extraDistanceUnitElement.textContent = extraDistance > 0 ? distanceData.unit : dict.unitMeters;
+  // 更新距離增加
+  const distanceIncreaseEl = document.getElementById('resultDashDistanceIncrease');
+  const distanceUnitEl = document.getElementById('resultDashDistanceUnit');
+  if (distanceIncreaseEl && distanceUnitEl) {
+    const distanceIncrease = computeExtraDistance(data.shortest, data.lowest);
+    if (distanceIncrease >= 1000) {
+      distanceIncreaseEl.textContent = (distanceIncrease / 1000).toFixed(1);
+      distanceUnitEl.textContent = '公里';
+    } else {
+      distanceIncreaseEl.textContent = Math.round(distanceIncrease);
+      distanceUnitEl.textContent = '公尺';
+    }
   }
   
   // 改善率大數字動畫
@@ -2801,16 +2821,15 @@ function updateResultDashboardBar(barId, valueId, value, maxValue, unit) {
   const valueElement = document.getElementById(valueId);
   
   if (bar && valueElement) {
-    const percentage = maxValue > 0 ? (value / maxValue) * 100 : 0;
-    bar.style.width = `${percentage}%`;
+    const percentage = maxValue > 0 ? Math.max(5, (value / maxValue) * 100) : 0;
     
-    if (unit === 'km') {
-      valueElement.textContent = `${value.toFixed(1)} km`;
-    } else if (unit === 'min') {
-      valueElement.textContent = `${Math.round(value)} min`;
-    } else {
-      valueElement.textContent = `${value} ${unit}`;
-    }
+    // 動畫更新進度條（水平方向）
+    setTimeout(() => {
+      bar.style.width = `${percentage}%`;
+    }, 100);
+    
+    // 更新數值（只顯示數字，不加單位）
+    valueElement.textContent = formatNumber(value, 1);
   }
 }
 
