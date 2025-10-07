@@ -227,11 +227,22 @@
                 <span data-i18n="improvementBenefit">📊 改善效益</span>
                 <button class="help-icon-btn" id="improvementHelpBtn" title="改善率說明">❓</button>
               </h4>
-              <div class="improvement-display-simple">
-                <div class="improvement-circle-large">
-                  <div class="improvement-percentage-large" id="dashImprovementRate">0%</div>
+              <div class="horizontal-progress-container">
+                <div class="progress-header">
+                  <span class="progress-label" data-i18n="exposureImprovement">暴露改善</span>
+                  <span class="progress-percentage" id="dashImprovementRate">0%</span>
                 </div>
-                <div class="improvement-label-large" data-i18n="exposureImprovement">暴露改善</div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar">
+                    <div class="progress-fill" id="improvementProgressBar"></div>
+                    <div class="progress-glow" id="improvementProgressGlow"></div>
+                  </div>
+                  <div class="progress-scale">
+                    <span>0%</span>
+                    <span>50%</span>
+                    <span>100%</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -377,15 +388,26 @@
         <div class="result-dashboard-container" id="resultDashboardContainer">
           <div class="result-dashboard-grid">
             <!-- 改善效益卡片 -->
-            <div class="result-dashboard-card">
+            <div class="result-dashboard-card result-combined-improvement-card">
               <h4 class="card-title">
                 <span data-i18n="improvementBenefit">📊 改善效益</span>
               </h4>
-              <div class="improvement-display-simple">
-                <div class="improvement-circle-large">
-                  <div class="improvement-percentage-large" id="resultDashImprovementRate">0%</div>
+              <div class="horizontal-progress-container">
+                <div class="progress-header">
+                  <span class="progress-label" data-i18n="exposureImprovement">暴露改善</span>
+                  <span class="progress-percentage" id="resultDashImprovementRate">0%</span>
                 </div>
-                <div class="improvement-label-large" data-i18n="exposureImprovement">暴露改善</div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar">
+                    <div class="progress-fill" id="resultImprovementProgressBar"></div>
+                    <div class="progress-glow" id="resultImprovementProgressGlow"></div>
+                  </div>
+                  <div class="progress-scale">
+                    <span>0%</span>
+                    <span>50%</span>
+                    <span>100%</span>
+                  </div>
+                </div>
               </div>
             </div>
 

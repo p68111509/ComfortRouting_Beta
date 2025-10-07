@@ -1,4 +1,145 @@
 /* Base layout */
+
+/* 改善效益卡片特殊樣式 - 綠粗框白底 */
+.dashboard-card.combined-improvement-card {
+  background: white !important;
+  border: 6px solid #4CAF50 !important;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2) !important;
+  min-height: 53px !important;
+}
+
+.combined-improvement-card .card-title {
+  color: black !important;
+  font-weight: 700;
+  text-shadow: none !important;
+}
+
+.combined-improvement-card .help-icon-btn {
+  background: rgba(0, 0, 0, 0.1);
+  color: #333;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.combined-improvement-card .help-icon-btn:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+/* 水平進度條樣式 */
+.horizontal-progress-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  height: 100%;
+  min-height: 53px;
+  padding: 8px;
+  gap: 6px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  gap: 20px;
+}
+
+.progress-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.progress-percentage {
+  font-size: 24px;
+  font-weight: bold;
+  color: #4CAF50;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.progress-bar-container {
+  position: relative;
+  height: 10px;
+  background: #f0f0f0;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+  position: relative;
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%);
+  border-radius: 5px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%);
+  border-radius: 5px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  animation: shimmer 2s infinite;
+}
+
+.progress-glow {
+  position: absolute;
+  top: -2px;
+  left: 0;
+  height: 14px;
+  background: linear-gradient(90deg, rgba(76, 175, 80, 0.6) 0%, rgba(76, 175, 80, 0.8) 50%, rgba(76, 175, 80, 0.6) 100%);
+  border-radius: 7px;
+  filter: blur(2px);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-scale {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  padding: 0 4px;
+}
+
+.progress-scale span {
+  font-size: 11px;
+  color: #666;
+  font-weight: 500;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* 捷運模式改善效益卡片樣式 - 白底綠粗框黑標題進度條 */
+.result-dashboard-card.result-combined-improvement-card {
+  background: white !important;
+  border: 6px solid #4CAF50 !important;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2) !important;
+}
+
+.result-combined-improvement-card .card-title {
+  color: black !important;
+  font-weight: 700;
+  text-shadow: none !important;
+}
+
 :root {
   --panel-width: 380px;
   --bg: #f8f4f4; /* 淺米色背景 */
