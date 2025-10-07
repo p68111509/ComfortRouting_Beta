@@ -2000,10 +2000,12 @@ body {
   /* 桌面版：隱藏手機版布局，顯示原版布局 */
   .mobile-nav-layout {
     display: none !important;
+    visibility: hidden !important;
   }
   
   .main-row {
     display: block !important;
+    visibility: visible !important;
   }
   
   /* 桌面版交通方式布局 */
