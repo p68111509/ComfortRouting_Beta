@@ -200,10 +200,10 @@ body {
 /* 全屏地圖 */
 .fullscreen-map {
   position: fixed;
-  top: 120px; /* 面板收起時的位置：80px (header) + 40px (handle) */
+  top: 80px; /* 只保留 header 高度 */
   left: 0;
   right: 0;
-  bottom: 60px;
+  bottom: 0; /* 延展到底部 */
   z-index: 1;
   transition: top 0.3s ease; /* 添加平滑過渡 */
 }
@@ -458,10 +458,52 @@ body {
   gap: 8px;
 }
 
+/* 輸入框與標籤容器 */
+.input-with-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+/* 輸入框標籤樣式 */
+.input-label {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  min-width: 50px;
+  text-align: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* 起點標籤 - 綠色 */
+.start-label {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+/* 終點標籤 - 紅色 */
+.end-label {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+/* 輸入框與定位按鈕容器 */
+.input-with-location-btn {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
 /* 緊湊輸入框樣式 */
 .text-input-compact {
   width: 100%;
-  padding: 10px 14px;
+  padding: 10px 50px 10px 14px; /* 右邊留出按鈕空間 */
   border: 2px solid var(--border);
   border-radius: var(--border-radius);
   font-size: 14px;
@@ -471,6 +513,40 @@ body {
   font-family: inherit;
   height: 42px;
   box-sizing: border-box;
+}
+
+/* 定位按鈕樣式 */
+.location-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  min-width: 48px;
+  height: 32px;
+  padding: 0 8px;
+  border: none;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(139, 21, 56, 0.2);
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.location-btn:hover {
+  transform: translateY(-50%) scale(1.05);
+  box-shadow: 0 4px 12px rgba(139, 21, 56, 0.3);
+}
+
+.location-btn:active {
+  transform: translateY(-50%) scale(0.95);
 }
 
 .text-input-compact:focus {
@@ -726,53 +802,155 @@ body {
   text-align: center;
 }
 
-/* 底部結果卡 */
-.bottom-panel {
+/* 路徑比較按鈕 (右下角) */
+.route-comparison-btn {
   position: fixed;
-  bottom: 0;
+  bottom: 30px;
+  right: 30px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 16px 24px;
+  box-shadow: 0 8px 25px rgba(139, 21, 56, 0.3), 0 4px 10px rgba(139, 21, 56, 0.2);
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.route-comparison-btn:hover:not(.disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(139, 21, 56, 0.4), 0 6px 15px rgba(139, 21, 56, 0.3);
+}
+
+.route-comparison-btn.disabled {
+  background: rgba(139, 21, 56, 0.3);
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+  box-shadow: 0 4px 15px rgba(139, 21, 56, 0.2);
+}
+
+.route-comparison-btn.available {
+  animation: routeBtnPulse 2s infinite;
+}
+
+.route-btn-icon {
+  font-size: 20px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.route-btn-text {
+  font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* 路徑比較按鈕動畫 */
+@keyframes routeBtnPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 25px rgba(139, 21, 56, 0.3), 0 4px 10px rgba(139, 21, 56, 0.2);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 12px 35px rgba(139, 21, 56, 0.5), 0 6px 15px rgba(139, 21, 56, 0.4);
+  }
+}
+
+/* 路徑比較彈窗 */
+.route-comparison-modal {
+  position: fixed;
+  top: 0;
   left: 0;
   right: 0;
-  height: 350px;
-  background: var(--card-bg);
-  backdrop-filter: saturate(200%) blur(18px);
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
-  box-shadow: var(--shadow-strong);
-  z-index: 800;
-  transform: translateY(300px);
-  transition: var(--transition);
+  bottom: 0;
+  z-index: 2000;
+  display: none;
+  pointer-events: none; /* 預設不接收點擊事件 */
 }
 
-.bottom-panel.disabled {
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-.bottom-panel.expanded {
-  transform: translateY(0);
-}
-
-.bottom-panel .panel-handle {
-  position: absolute;
-  top: -40px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 300px;
-  height: 40px;
-  background: var(--card-bg);
-  backdrop-filter: saturate(200%) blur(18px);
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
-  box-shadow: var(--shadow-strong);
+.route-comparison-modal.show {
   display: flex;
-  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 60px; /* 往上提一些 */
+}
+
+.route-modal-content {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  backdrop-filter: saturate(200%) blur(18px);
+  border-radius: var(--border-radius);
+  box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.15), 0 -4px 10px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 800px;
+  max-height: 70vh;
+  margin-bottom: 0;
+  animation: modalSlideUp 0.3s ease-out;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  pointer-events: auto; /* 彈窗內容可以接收點擊事件 */
+}
+
+.route-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 249, 250, 0.8) 100%);
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.route-modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
+  font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: var(--transition);
-  z-index: 10;
+  transition: all 0.2s ease;
 }
 
-.bottom-panel.disabled .panel-handle {
-  cursor: not-allowed;
+.close-btn:hover {
+  background: rgba(139, 21, 56, 0.1);
+  color: var(--primary);
+}
+
+.route-modal-body {
+  padding: 24px;
+  max-height: calc(70vh - 80px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 彈窗動畫 */
+@keyframes modalSlideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 .left-panel .handle-icon,
@@ -808,13 +986,13 @@ body {
 }
 
 .bottom-panel .panel-content {
-  padding: 30px 24px;
+  padding: 20px 18px;
   height: calc(100% - 60px);
   overflow-x: auto;
   overflow-y: auto; /* 允許垂直滾動 */
   width: 100%;
   box-sizing: border-box;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 /* 表單元素 */
@@ -1047,7 +1225,7 @@ body {
 
 /* 儀表板樣式 */
 .dashboard-container {
-  margin-top: 20px;
+  margin-top: 12px;
   width: 100%;
   max-width: 100%;
   overflow-x: auto;
@@ -1057,24 +1235,25 @@ body {
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  gap: 8px;
   width: 100%;
   max-width: 100%;
   min-width: 0;
 }
 
 .dashboard-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 249, 250, 0.9) 100%);
   border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05);
-  border: none;
+  padding: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
   overflow: hidden;
-  min-height: 180px;
+  min-height: 120px;
+  backdrop-filter: blur(10px);
 }
 
 .dashboard-card:hover {
@@ -1089,13 +1268,13 @@ body {
 }
 
 .card-title {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--primary);
-  margin: 0 0 20px 0;
+  margin: 0 0 8px 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
 }
 
 /* 比較長條圖 */
@@ -1187,7 +1366,7 @@ body {
 }
 
 .metric-value {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--primary);
   line-height: 1;
@@ -1195,13 +1374,13 @@ body {
 }
 
 .metric-unit {
-  font-size: 12px;
+  font-size: 10px;
   color: rgba(0, 0, 0, 0.6);
   margin-bottom: 4px;
 }
 
 .metric-label {
-  font-size: 10px;
+  font-size: 9px;
   color: rgba(0, 0, 0, 0.5);
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -1209,9 +1388,10 @@ body {
 
 /* 改善率圓形進度條 */
 .improvement-card {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  border: none;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05);
+  background: linear-gradient(135deg, rgba(240, 249, 255, 0.9) 0%, rgba(224, 242, 254, 0.9) 100%);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  box-shadow: 0 4px 20px rgba(14, 165, 233, 0.1), 0 2px 8px rgba(14, 165, 233, 0.06);
+  backdrop-filter: blur(10px);
 }
 
 /* 改善率大數字動畫設計 */
@@ -1221,8 +1401,8 @@ body {
   align-items: center;
   justify-content: center;
   height: 100%;
-  min-height: 140px;
-  padding: 20px;
+  min-height: 80px;
+  padding: 12px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -1238,7 +1418,7 @@ body {
 }
 
 .improvement-number {
-  font-size: 56px;
+  font-size: 36px;
   font-weight: 900;
   color: #10b981;
   line-height: 1;
@@ -1278,7 +1458,7 @@ body {
 }
 
 .improvement-subtitle {
-  font-size: 16px;
+  font-size: 12px;
   color: var(--muted);
   text-align: center;
   font-weight: 600;
@@ -1615,12 +1795,40 @@ body {
     gap: 6px !important;
   }
   
-  /* 手機版調整面板把手寬度 */
-  .left-panel .panel-handle {
-    width: 180px !important; /* 統一寬度 */
+  /* 手機版路徑比較按鈕 */
+  .route-comparison-btn {
+    bottom: 20px !important;
+    right: 20px !important;
+    padding: 12px 18px !important;
+    font-size: 14px !important;
+    gap: 8px !important;
   }
   
-  .bottom-panel .panel-handle {
+  .route-btn-icon {
+    font-size: 16px !important;
+  }
+
+  /* 手機版路徑比較彈窗 */
+  .route-modal-content {
+    max-height: 80vh !important;
+    margin-bottom: 0 !important;
+  }
+  
+  .route-modal-header {
+    padding: 16px 20px !important;
+  }
+  
+  .route-modal-header h3 {
+    font-size: 18px !important;
+  }
+  
+  .route-modal-body {
+    padding: 20px !important;
+    max-height: calc(80vh - 60px) !important;
+  }
+
+  /* 手機版調整面板把手寬度 */
+  .left-panel .panel-handle {
     width: 180px !important; /* 統一寬度 */
   }
   
@@ -1709,7 +1917,7 @@ body {
   
   .text-input-mobile {
     width: 100%;
-    padding: 6px 16px; /* 進一步減少上下 padding */
+    padding: 6px 50px 6px 16px; /* 右邊留出按鈕空間 */
     font-size: 16px;
     border: 2px solid var(--border);
     border-radius: 12px;
@@ -1723,6 +1931,22 @@ body {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(220, 38, 127, 0.1);
+  }
+  
+  /* 手機版定位按鈕樣式 */
+  .location-btn {
+    min-width: 40px !important;
+    height: 28px !important;
+    font-size: 10px !important;
+    padding: 0 6px !important;
+    right: 6px !important;
+  }
+  
+  /* 手機版標籤樣式 */
+  .input-label {
+    font-size: 12px !important;
+    padding: 4px 8px !important;
+    min-width: 40px !important;
   }
   
   .coords-text {

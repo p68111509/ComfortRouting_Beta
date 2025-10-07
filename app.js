@@ -254,8 +254,8 @@ const i18nDict = {
     title: "低暴露導航系統 <span class=\"beta-text\">(測試版)</span>",
     startLabel: "🟢 起點地址",
     endLabel: "🔴 終點地址", 
-    startPlaceholderWithIcon: "🟢 請輸入起點地址",
-    endPlaceholderWithIcon: "🔴 請輸入終點地址",
+    startPlaceholderWithIcon: "🟢 輸入起點地址 / 地標",
+    endPlaceholderWithIcon: "🔴 輸入終點地址 / 地標",
     modeLabel: "🚗 交通方式",
     modeMotorcycle: "機車",
     modeBicycle: "單車",
@@ -314,6 +314,10 @@ const i18nDict = {
     improvementRateExampleText: "假設最短路徑暴露為 100 μg/m³·min，低暴露路徑暴露為 80 μg/m³·min",
     improvementRateExampleCalc: "改善率 = (100 - 80) ÷ 100 × 100% = 20%",
     improvementRateExampleResult: "表示低暴露路徑比最短路徑減少了 20% 的空氣污染暴露",
+    // 按鈕翻譯
+    locate: "定位",
+    startPoint: "起點",
+    endPoint: "終點",
     // 使用說明翻譯
     helpTitle: "關於我們 | 使用說明",
     commuteFunctionOverview: "🎯 功能概述",
@@ -356,8 +360,8 @@ const i18nDict = {
     title: "Comfort Routing System",
     startLabel: "🟢 Start Address",
     endLabel: "🔴 End Address",
-    startPlaceholderWithIcon: "🟢 Enter start address",
-    endPlaceholderWithIcon: "🔴 Enter end address",
+    startPlaceholderWithIcon: "🟢 Enter start address / landmark",
+    endPlaceholderWithIcon: "🔴 Enter end address / landmark",
     modeLabel: "🚗 Transport Mode",
     modeMotorcycle: "Motorcycle",
     modeBicycle: "Bicycle", 
@@ -416,6 +420,10 @@ const i18nDict = {
     improvementRateExampleText: "Assuming shortest path exposure is 100 μg/m³·min, low exposure path exposure is 80 μg/m³·min",
     improvementRateExampleCalc: "Improvement Rate = (100 - 80) ÷ 100 × 100% = 20%",
     improvementRateExampleResult: "This means the low exposure path reduces air pollution exposure by 20% compared to the shortest path",
+    // Button translations
+    locate: "Locate",
+    startPoint: "Start",
+    endPoint: "End",
     // Help content translations
     helpTitle: "About Us | Usage Instructions",
     commuteFunctionOverview: "🎯 Function Overview",
@@ -540,33 +548,155 @@ function loadTileLayer(layerKey) {
 // 初始化面板狀態
 function initPanelStates() {
   const leftPanel = document.getElementById('leftPanel');
-  const bottomPanel = document.getElementById('bottomPanel');
   const fullscreenMap = document.getElementById('map');
+  const routeComparisonBtn = document.getElementById('routeComparisonBtn');
   
   // 左側面板初始收起
   // leftPanel.classList.add('expanded');
   
-  // 底部面板初始禁用
-  bottomPanel.classList.add('disabled');
+  // 路徑比較按鈕初始禁用
+  routeComparisonBtn.classList.add('disabled');
   
   // 設置地圖初始位置（面板收起狀態）
   if (fullscreenMap) {
     fullscreenMap.style.top = '120px'; // 80px (header) + 40px (handle)
   }
   
-  // 更新底部面板提示文字
-  updateBottomPanelState(false);
+  // 更新路徑比較按鈕狀態
+  updateRouteComparisonBtnState(false);
 }
 
-// 更新底部面板狀態
-function updateBottomPanelState(hasResults) {
-  const bottomPanel = document.getElementById('bottomPanel');
+// 更新路徑比較按鈕狀態
+function updateRouteComparisonBtnState(hasResults) {
+  const routeComparisonBtn = document.getElementById('routeComparisonBtn');
   
   if (hasResults) {
-    bottomPanel.classList.remove('disabled');
+    routeComparisonBtn.classList.remove('disabled');
+    routeComparisonBtn.classList.add('available');
   } else {
-    bottomPanel.classList.add('disabled');
+    routeComparisonBtn.classList.add('disabled');
+    routeComparisonBtn.classList.remove('available');
   }
+}
+
+// 路徑比較彈窗控制
+function toggleRouteComparisonModal() {
+  const routeComparisonBtn = document.getElementById('routeComparisonBtn');
+  const modal = document.getElementById('routeComparisonModal');
+  
+  // 如果按鈕被禁用，不執行任何操作
+  if (routeComparisonBtn.classList.contains('disabled')) {
+    return;
+  }
+  
+  modal.classList.toggle('show');
+}
+
+function closeRouteComparisonModal() {
+  const modal = document.getElementById('routeComparisonModal');
+  modal.classList.remove('show');
+}
+
+// 定位地址功能
+function locateAddress(inputType) {
+  let inputElement;
+  
+  // 根據輸入框類型選擇對應的元素
+  switch(inputType) {
+    case 'start':
+      inputElement = document.getElementById('input-start');
+      break;
+    case 'end':
+      inputElement = document.getElementById('input-end');
+      break;
+    case 'start-desktop':
+      inputElement = document.getElementById('input-start-desktop');
+      break;
+    case 'end-desktop':
+      inputElement = document.getElementById('input-end-desktop');
+      break;
+    default:
+      console.error('Invalid input type:', inputType);
+      return;
+  }
+  
+  const address = inputElement.value.trim();
+  
+  if (!address) {
+    showError('請先輸入地址');
+    return;
+  }
+  
+  // 顯示載入狀態
+  const button = inputElement.nextElementSibling;
+  const originalContent = button.innerHTML;
+  button.innerHTML = '⏳';
+  button.disabled = true;
+  
+  // 調用地理編碼API
+  geocodeAddress(address)
+    .then(result => {
+      if (result && result.lat && result.lng) {
+        // 在地圖上標記位置
+        const latlng = [result.lat, result.lng];
+        
+        // 清除現有標記
+        if (inputType === 'start' || inputType === 'start-desktop') {
+          if (window.startMarker) {
+            map.removeLayer(window.startMarker);
+          }
+          // 創建新的起點標記
+          window.startMarker = L.marker(latlng, {
+            icon: L.divIcon({
+              className: 'custom-marker',
+              html: '<div class="marker-icon start-marker">🟢</div>',
+              iconSize: [30, 30],
+              iconAnchor: [15, 30]
+            })
+          }).addTo(map);
+          
+          // 更新起點坐標
+          window.startCoords = latlng;
+          nextPointIsStart = false; // 下一個點是終點
+        } else {
+          if (window.endMarker) {
+            map.removeLayer(window.endMarker);
+          }
+          // 創建新的終點標記
+          window.endMarker = L.marker(latlng, {
+            icon: L.divIcon({
+              className: 'custom-marker',
+              html: '<div class="marker-icon end-marker">🔴</div>',
+              iconSize: [30, 30],
+              iconAnchor: [15, 30]
+            })
+          }).addTo(map);
+          
+          // 更新終點坐標
+          window.endCoords = latlng;
+          nextPointIsStart = true; // 下一個點是起點
+        }
+        
+        // 移動地圖視野到標記位置
+        map.setView(latlng, Math.max(map.getZoom(), 15));
+        
+        // 更新坐標顯示
+        updateCoordsDisplay();
+        
+        showSuccess(`地址定位成功：${result.formatted_address || address}`);
+      } else {
+        showError('無法找到該地址，請檢查地址是否正確');
+      }
+    })
+    .catch(error => {
+      console.error('Geocoding error:', error);
+      showError('地址定位失敗，請稍後再試');
+    })
+    .finally(() => {
+      // 恢復按鈕狀態
+      button.innerHTML = originalContent;
+      button.disabled = false;
+    });
 }
 
 
@@ -599,15 +729,7 @@ function bindUI() {
     }
   });
   
-  // 底部面板切換
-  const bottomPanelHandle = document.getElementById('bottomPanelHandle');
-  const bottomPanel = document.getElementById('bottomPanel');
-  
-  bottomPanelHandle.addEventListener('click', function() {
-    if (!bottomPanel.classList.contains('disabled')) {
-      bottomPanel.classList.toggle('expanded');
-    }
-  });
+  // 路徑比較彈窗事件綁定已通過HTML的onclick處理
   
   // 規劃路徑按鈕（手機版和桌面版）
   const planBtn = document.getElementById('plan-btn');
@@ -787,7 +909,6 @@ function switchMode(mode) {
   const indicator = document.querySelector('.mode-indicator');
   const metroPanel = document.getElementById('metro-panel');
   const leftPanel = document.querySelector('.left-panel');
-  const bottomPanel = document.querySelector('.bottom-panel');
   const fullscreenMap = document.getElementById('map');
   
   console.log('[debug] Elements found:', {
@@ -796,7 +917,6 @@ function switchMode(mode) {
     indicator: !!indicator,
     metroPanel: !!metroPanel,
     leftPanel: !!leftPanel,
-    bottomPanel: !!bottomPanel,
     fullscreenMap: !!fullscreenMap
   });
   
@@ -809,7 +929,6 @@ function switchMode(mode) {
     // 顯示通勤模式界面
     if (fullscreenMap) fullscreenMap.style.display = 'block';
     if (leftPanel) leftPanel.style.display = 'block';
-    if (bottomPanel) bottomPanel.style.display = 'block';
     if (metroPanel) {
       metroPanel.style.display = 'none';
       metroPanel.classList.remove('active');
@@ -833,7 +952,6 @@ function switchMode(mode) {
     // 隱藏通勤模式界面，顯示捷運模式
     if (fullscreenMap) fullscreenMap.style.display = 'none';
     if (leftPanel) leftPanel.style.display = 'none';
-    if (bottomPanel) bottomPanel.style.display = 'none';
     if (metroPanel) {
       metroPanel.classList.add('active');
       metroPanel.style.display = 'block';
@@ -1423,8 +1541,8 @@ async function planRoutes() {
       }
     }
     
-    // 啟用底部面板
-    updateBottomPanelState(true);
+    // 啟用路徑比較按鈕
+    updateRouteComparisonBtnState(true);
     
   } catch (error) {
     console.error('Route planning error:', error);
@@ -1729,9 +1847,9 @@ function resetAll() {
     }
   }
   
-  // 禁用底部面板
-  updateBottomPanelState(false);
-  document.getElementById('bottomPanel').classList.remove('expanded');
+  // 禁用路徑比較按鈕
+  updateRouteComparisonBtnState(false);
+  closeRouteComparisonModal();
   
   // 重置地圖視野
   nextPointIsStart = true;
