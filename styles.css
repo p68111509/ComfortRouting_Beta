@@ -1575,7 +1575,7 @@ body {
   .map-legend {
     transform: scale(0.7) !important; /* 縮小更多 */
     top: 270px !important; /* 套用電腦版間距關係 */
-    left: 10px !important; /* 再靠左一點 */
+    left: 5px !important; /* 圖例再往左一點點 */
   }
   
   .leaflet-control-zoom a {
