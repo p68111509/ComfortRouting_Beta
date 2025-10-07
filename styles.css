@@ -1621,15 +1621,22 @@ body {
     align-items: center;
   }
   
-  /* 手機版第二行：模式切換 */
+  /* 手機版第二行：Logo + 模式切換 */
   .header-row-2 {
     display: flex;
-    justify-content: flex-end; /* 右側對齊 */
+    justify-content: space-between; /* Logo 左邊，模式切換置中 */
+    align-items: center;
     width: 100%;
   }
   
   .header-center {
     width: auto;
+  }
+  
+  /* 手機版第二行的 Logo */
+  .header-row-2 .header-logo {
+    display: flex;
+    align-items: center;
   }
   
   /* 手機版模式切換器 - 水平排列 */
