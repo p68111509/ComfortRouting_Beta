@@ -5,7 +5,7 @@
   background: white !important;
   border: 6px solid #4CAF50 !important;
   box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2) !important;
-  min-height: 53px !important;
+  min-height: 120px !important;
 }
 
 .combined-improvement-card .card-title {
@@ -32,7 +32,7 @@
   align-items: stretch;
   justify-content: center;
   height: 100%;
-  min-height: 53px;
+  min-height: 80px;
   padding: 8px;
   gap: 6px;
 }
@@ -68,12 +68,31 @@
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+.progress-bar-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, #f0f0f0 0%, #e8e8e8 100%);
+  border-radius: 5px;
+}
+
 .progress-bar {
   position: relative;
   height: 100%;
   background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%);
   border-radius: 5px;
   transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%);
+  border-radius: 5px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
   overflow: hidden;
 }
 
@@ -122,6 +141,12 @@
   font-weight: 500;
 }
 
+.scale-label {
+  font-size: 11px;
+  color: #666;
+  font-weight: 500;
+}
+
 @keyframes shimmer {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
@@ -132,12 +157,24 @@
   background: white !important;
   border: 6px solid #4CAF50 !important;
   box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2) !important;
+  min-height: 120px !important;
 }
 
 .result-combined-improvement-card .card-title {
   color: black !important;
   font-weight: 700;
   text-shadow: none !important;
+}
+
+.result-combined-improvement-card .help-icon-btn {
+  background: rgba(0, 0, 0, 0.1);
+  color: #333;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.result-combined-improvement-card .help-icon-btn:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
 }
 
 :root {
@@ -2578,6 +2615,7 @@ body {
     color: var(--text-primary);
   }
   
+  .btn {
     border: none;
     cursor: pointer;
     transition: all 0.2s ease;

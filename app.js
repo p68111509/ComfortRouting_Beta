@@ -1920,17 +1920,16 @@ function updateTraditionalProgress(textEl, percentage) {
   textEl.textContent = '0%';
   textEl.style.transform = 'scale(0.8)';
   textEl.style.opacity = '0.7';
+  
+  // 延遲後開始動畫
+  setTimeout(() => {
+    textEl.style.transition = 'all 0.3s ease-out';
+    textEl.style.transform = 'scale(1)';
+    textEl.style.opacity = '1';
     
-    // 延遲後開始動畫
-    setTimeout(() => {
-      textEl.style.transition = 'all 0.3s ease-out';
-      textEl.style.transform = 'scale(1)';
-      textEl.style.opacity = '1';
-      
-      // 動畫從0跑到實際值
-      animateNumber(textEl, 0, validPercentage, 2000, '%');
-    }, 100);
-  }
+    // 動畫從0跑到實際值
+    animateNumber(textEl, 0, percentage, 2000, '%');
+  }, 100);
 }
 
 // 數字動畫函數
