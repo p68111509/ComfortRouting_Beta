@@ -3272,13 +3272,6 @@ p, span, div, button, input, select, textarea,
 
 /* 手機版捷運模式：與通勤模式相同的垂直佈局 */
 @media (max-width: 768px) {
-  /* 手機版彈窗寬度設定 */
-  .route-result-content {
-    width: 95% !important;
-    max-width: 95% !important;
-    margin: 10px !important;
-  }
-  
   .route-comparison-modal .result-dashboard-grid,
   .route-result-modal .result-dashboard-grid {
     display: grid !important;
@@ -3286,21 +3279,16 @@ p, span, div, button, input, select, textarea,
     grid-template-rows: repeat(3, auto) !important;
     gap: 16px !important;
     width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 10px !important;
-    box-sizing: border-box !important;
+    justify-items: center !important;
   }
   
   .route-comparison-modal .result-dashboard-card,
   .route-result-modal .result-dashboard-card {
     min-height: auto !important;
     height: auto !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    width: auto !important;
     padding: 12px !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
+    max-width: 80% !important;
   }
   
   /* 改善效益卡片：垂直佈局 */
