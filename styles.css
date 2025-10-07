@@ -3272,6 +3272,13 @@ p, span, div, button, input, select, textarea,
 
 /* 手機版捷運模式：與通勤模式相同的垂直佈局 */
 @media (max-width: 768px) {
+  /* 手機版彈窗寬度設定 */
+  .route-result-content {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin: 10px !important;
+  }
+  
   .route-comparison-modal .result-dashboard-grid,
   .route-result-modal .result-dashboard-grid {
     display: grid !important;
@@ -3279,14 +3286,21 @@ p, span, div, button, input, select, textarea,
     grid-template-rows: repeat(3, auto) !important;
     gap: 16px !important;
     width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    box-sizing: border-box !important;
   }
   
   .route-comparison-modal .result-dashboard-card,
   .route-result-modal .result-dashboard-card {
     min-height: auto !important;
     height: auto !important;
-    width: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
     padding: 12px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
   }
   
   /* 改善效益卡片：垂直佈局 */
@@ -3295,9 +3309,9 @@ p, span, div, button, input, select, textarea,
     display: flex !important;
     flex-direction: column !important;
     padding: 16px !important;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    border: 2px solid rgba(255, 255, 255, 0.2) !important;
-    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3) !important;
+    background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 100%) !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 8px 32px rgba(135, 206, 235, 0.4) !important;
   }
   
   .route-comparison-modal .result-dashboard-card:first-child .card-title,
