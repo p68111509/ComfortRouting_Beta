@@ -4,7 +4,7 @@ services:
     env: python
     pythonVersion: "3.12"
     buildCommand: pip install --upgrade pip setuptools wheel && pip install -r requirements.txt --only-binary=all --no-cache-dir
-    startCommand: python api/main.py
+    startCommand: cd api && python -m uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: RENDER
         value: "true"
