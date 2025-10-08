@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=65.0.0", "wheel>=0.38.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "comfort-routing"
+version = "1.0.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "networkx",
+    "numpy",
+    "requests",
+    "pydantic",
+    "pyproj",
+    "shapely",
+    "scipy",
+    "Pillow",
+    "rasterio",
+    "matplotlib",
+]
