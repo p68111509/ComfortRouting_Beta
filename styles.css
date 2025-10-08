@@ -478,11 +478,11 @@ body {
   flex-shrink: 0;
 }
 
-/* 起點標籤 - 綠色 */
+/* 起點標籤 - 一般綠色 */
 .start-label {
-  background: linear-gradient(135deg, #2BB1AA 0%, #1A9B94 100%);
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
   color: white;
-  box-shadow: 0 2px 8px rgba(43, 177, 170, 0.3);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
 }
 
 /* 終點標籤 - 紅色 */
@@ -2015,6 +2015,7 @@ body {
     justify-content: space-between;
     width: 100%;
     padding: 12px 16px;
+    margin-top: 16px;
     border: 2px solid var(--border);
     border-radius: 12px;
     background: var(--input-bg);
