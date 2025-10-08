@@ -305,6 +305,21 @@ body {
   margin: 0;
 }
 
+/* 禁用狀態的疊加圖層選項 */
+.overlay-option:has(input[disabled]) {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: var(--muted);
+}
+
+.overlay-option:has(input[disabled]) input[type="radio"] {
+  cursor: not-allowed;
+}
+
+.overlay-option:has(input[disabled]):hover {
+  background: none;
+}
+
 /* PM2.5顏色圖例 */
 .pm25-color-legend {
   position: absolute;

@@ -2408,6 +2408,14 @@ function setOverlayToNone() {
   currentOverlay = 'none';
 }
 
+// 載入自定義顏色範圍的PM2.5疊加圖層
+function loadCustomPM25Overlay(colorMin = 10, colorMax = 15, opacity = 0.7) {
+  console.log(`Loading custom PM2.5 overlay: ${colorMin}-${colorMax}, opacity: ${opacity}`);
+  
+  // 直接調用API載入
+  loadOverlayFromAPI('pm25');
+}
+
 // 從 API 載入疊加圖層
 function loadOverlayFromAPI(overlayType) {
   console.log(`Loading overlay from API: ${overlayType}`);
@@ -2466,8 +2474,11 @@ function loadPngOverlayDirect(overlayType) {
   
   switch (overlayType) {
     case 'pm25':
-      imagePath = '/static/data/AirPollution/PM25_全台.png';
-      break;
+      // PM2.5暫時無法載入，顯示錯誤並切換回"無"狀態
+      console.log('PM2.5 overlay failed, switching to none');
+      showError('PM2.5疊加圖層暫時無法載入：需要安裝Pillow庫來處理TIFF文件');
+      setOverlayToNone();
+      return;
     case 'no2':
       imagePath = '/static/data/AirPollution/NO2_全台.png';
       break;
