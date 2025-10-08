@@ -733,8 +733,8 @@ async def get_overlay(overlay_type: str):
                     print(f"[DEBUG] TIFF CRS: {src.crs}")
                     print(f"[DEBUG] TIFF bounds: {src.bounds}")
                     
-                    # 讀取數據
-                    data = src.read(1)  # 讀取第一個波段
+                    # 讀取第一個波段（使用 masked=True 處理 NaN 值）
+                    data = src.read(1, masked=True).filled(np.nan)
                     print(f"[DEBUG] Data shape: {data.shape}")
                     print(f"[DEBUG] Data range: {data.min()} - {data.max()}")
                     
@@ -749,8 +749,13 @@ async def get_overlay(overlay_type: str):
                     print(f"[DEBUG] Original bounds: {src.bounds}")
                     print(f"[DEBUG] WGS84 bounds: [{bottom_wgs}, {left_wgs}, {top_wgs}, {right_wgs}]")
                     
-                    # 數據範圍
-                    data_min, data_max = float(data.min()), float(data.max())
+                    # 獲取數據統計信息（使用 percentile 更準確）
+                    valid_data = data[~np.isnan(data)]
+                    if len(valid_data) > 0:
+                        data_min, data_max = np.nanpercentile(data, [2, 98])
+                        print(f"[DEBUG] Data range (percentile): {data_min:.2f} to {data_max:.2f}")
+                    else:
+                        data_min, data_max = 0, 100
                     
                     # 使用精確的色碼對應表
                     color_map = {
@@ -778,16 +783,21 @@ async def get_overlay(overlay_type: str):
                     # 創建RGBA數組
                     rgba_data = np.zeros((data.shape[0], data.shape[1], 4), dtype=np.uint8)
                     
-                    # 正規化數據到0-18範圍
-                    normalized = (data - data_min) / (data_max - data_min) * 18
+                    # 正規化數據到0-1範圍，然後轉換為0-18索引
+                    normalized = (data - data_min) / (data_max - data_min)
+                    normalized = np.clip(normalized, 0, 1)
                     
                     for i in range(data.shape[0]):
                         for j in range(data.shape[1]):
-                            if not np.isnan(normalized[i, j]):
-                                val_index = int(normalized[i, j])
+                            if not np.isnan(data[i, j]):
+                                # 將標準化值轉換為0-18的整數索引
+                                val_index = int(normalized[i, j] * 18)
                                 val_index = max(0, min(18, val_index))
                                 r, g, b = color_map[val_index]
                                 rgba_data[i, j] = [r, g, b, 128]  # 50% opacity
+                            else:
+                                # 處理 NaN 值（透明）
+                                rgba_data[i, j] = [0, 0, 0, 0]
                     
                     # 創建PIL圖像
                     img = Image.fromarray(rgba_data, 'RGBA')
@@ -854,7 +864,8 @@ async def get_pm25_overlay_custom(color_min: float = 10, color_max: float = 15, 
         
         # 讀取GeoTIFF
         with rasterio.open(file_path) as src:
-            data = src.read(1)
+            # 讀取第一個波段（使用 masked=True 處理 NaN 值）
+            data = src.read(1, masked=True).filled(np.nan)
             
             # 轉換座標系統到WGS84
             transformer = pyproj.Transformer.from_crs(src.crs, "EPSG:4326", always_xy=True)
@@ -887,18 +898,29 @@ async def get_pm25_overlay_custom(color_min: float = 10, color_max: float = 15, 
             
             # 創建RGBA數組
             rgba_data = np.zeros((data.shape[0], data.shape[1], 4), dtype=np.uint8)
-            data_min, data_max = float(data.min()), float(data.max())
             
-            # 正規化數據
-            normalized = (data - data_min) / (data_max - data_min) * 18
+            # 獲取數據統計信息（使用 percentile 更準確）
+            valid_data = data[~np.isnan(data)]
+            if len(valid_data) > 0:
+                data_min, data_max = np.nanpercentile(data, [2, 98])
+            else:
+                data_min, data_max = 0, 100
+            
+            # 正規化數據到0-1範圍，然後轉換為0-18索引
+            normalized = (data - data_min) / (data_max - data_min)
+            normalized = np.clip(normalized, 0, 1)
             
             for i in range(data.shape[0]):
                 for j in range(data.shape[1]):
-                    if not np.isnan(normalized[i, j]):
-                        val_index = int(normalized[i, j])
+                    if not np.isnan(data[i, j]):
+                        # 將標準化值轉換為0-18的整數索引
+                        val_index = int(normalized[i, j] * 18)
                         val_index = max(0, min(18, val_index))
                         r, g, b = color_map[val_index]
                         rgba_data[i, j] = [r, g, b, 128]
+                    else:
+                        # 處理 NaN 值（透明）
+                        rgba_data[i, j] = [0, 0, 0, 0]
             
             # 創建PIL圖像
             img = Image.fromarray(rgba_data, 'RGBA')
