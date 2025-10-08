@@ -681,6 +681,10 @@ def api_routes(req: RoutesReq):
 async def get_overlay(overlay_type: str):
     """獲取疊加圖層資訊（完全像 .pkl 檔案的處理方式）"""
     
+    print(f"[DEBUG] Received overlay request for type: {overlay_type}")
+    print(f"[DEBUG] BASE_DIR: {BASE_DIR}")
+    print(f"[DEBUG] Current working directory: {os.getcwd()}")
+    
     # 定義疊加圖層檔案路徑（相對路徑，後端直接讀取）
     overlay_files = {
         "pm25": "data/AirPollution/PM25__20241130.tif",
@@ -689,14 +693,17 @@ async def get_overlay(overlay_type: str):
     }
     
     if overlay_type not in overlay_files:
+        print(f"[ERROR] Overlay type not found: {overlay_type}")
         raise HTTPException(status_code=404, detail="Overlay type not found")
     
     # 檢查檔案是否存在（像 .pkl 檔案一樣）
     file_path = BASE_DIR / overlay_files[overlay_type]
     print(f"[DEBUG] Looking for overlay file: {file_path}")
     print(f"[DEBUG] File exists: {file_path.exists()}")
+    print(f"[DEBUG] File path absolute: {file_path.resolve()}")
     
     if not file_path.exists():
+        print(f"[WARNING] Primary file path not found, trying alternatives...")
         # 嘗試其他可能的路徑
         alternative_paths = [
             BASE_DIR.parent / overlay_files[overlay_type],
@@ -705,10 +712,16 @@ async def get_overlay(overlay_type: str):
         
         for alt_path in alternative_paths:
             print(f"[DEBUG] Trying alternative path: {alt_path}")
+            print(f"[DEBUG] Alternative path exists: {alt_path.exists()}")
             if alt_path.exists():
                 file_path = alt_path
+                print(f"[DEBUG] Using alternative path: {file_path}")
                 break
         else:
+            print(f"[ERROR] All file paths failed:")
+            print(f"[ERROR] Primary: {BASE_DIR / overlay_files[overlay_type]}")
+            print(f"[ERROR] Alt1: {BASE_DIR.parent / overlay_files[overlay_type]}")
+            print(f"[ERROR] Alt2: {Path(overlay_files[overlay_type])}")
             raise HTTPException(status_code=404, detail=f"Overlay file not found: {file_path}")
     
     # 讀取圖片檔案並轉換為 base64（像 .pkl 檔案一樣處理）
@@ -721,12 +734,14 @@ async def get_overlay(overlay_type: str):
         if file_extension == '.tif' or file_extension == '.tiff':
             print(f"[DEBUG] Processing GeoTIFF to PNG: {file_path}")
             try:
+                print(f"[DEBUG] Importing required packages...")
                 import rasterio
                 import numpy as np
                 from PIL import Image
                 import io
                 from matplotlib import cm
                 import pyproj
+                print(f"[DEBUG] All packages imported successfully")
                 
                 # 讀取GeoTIFF
                 with rasterio.open(file_path) as src:

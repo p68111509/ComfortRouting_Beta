@@ -1,6 +1,14 @@
 # 使用官方 Python 3.9 映像
 FROM python:3.9-slim
 
+# 安裝系統依賴（rasterio 需要）
+RUN apt-get update && apt-get install -y \
+    gdal-bin \
+    libgdal-dev \
+    libproj-dev \
+    libgeos-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # 設定工作目錄
 WORKDIR /app
 
