@@ -9,7 +9,7 @@ services:
       - key: RENDER
         value: "true"
       - key: GRAPH_PATH
-        value: data/雙北基隆路網_濃度與暴露_最大連通版.pkl
+        value: data/雙北基隆_一類暴露源_最大連通版.pkl
       - key: GOOGLE_API_KEY
         value: AIzaSyDnbTu8PgUkue5A9uO5aJa3lHZuNUwj6z0
     healthCheckPath: /health
