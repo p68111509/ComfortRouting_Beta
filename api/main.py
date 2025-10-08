@@ -52,12 +52,12 @@ from pathlib import Path
 
 # 專案根：main.py 在 api/，往上一層就是專案根
 BASE_DIR = Path(__file__).resolve().parents[1]
-DEFAULT_GRAPH = BASE_DIR / "data" / "雙北基隆_一類暴露源_最大連通版.pkl"
+DEFAULT_GRAPH = BASE_DIR / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl"
 
 # 嘗試多個可能的路徑
 possible_paths = [
     DEFAULT_GRAPH,  # api/data/...
-    BASE_DIR.parent / "data" / "雙北基隆_一類暴露源_最大連通版.pkl",  # ../data/...
+    BASE_DIR.parent / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl",  # ../data/...
     Path(os.environ.get("GRAPH_PATH", "")).resolve() if os.environ.get("GRAPH_PATH") else None
 ]
 
