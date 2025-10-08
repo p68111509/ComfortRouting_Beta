@@ -52,12 +52,12 @@ from pathlib import Path
 
 # 專案根：main.py 在 api/，往上一層就是專案根
 BASE_DIR = Path(__file__).resolve().parents[1]
-DEFAULT_GRAPH = BASE_DIR / "data" / "雙北基隆_一類暴露源_最大連通版.pkl"
+DEFAULT_GRAPH = BASE_DIR / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl"
 
-# 嘗試多個可能的路徑
+# 嘗試多個可能的路徑（Render 部署環境）
 possible_paths = [
-    DEFAULT_GRAPH,  # api/data/...
-    BASE_DIR.parent / "data" / "雙北基隆_一類暴露源_最大連通版.pkl",  # ../data/...
+    BASE_DIR / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl",  # 專案根/data/...
+    BASE_DIR.parent / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl",  # ../data/...
     Path(os.environ.get("GRAPH_PATH", "")).resolve() if os.environ.get("GRAPH_PATH") else None
 ]
 
@@ -420,10 +420,10 @@ app.add_middleware(
     expose_headers=["*"],
 )
 
-# 靜態檔案服務 - 嘗試多個可能的目錄
+# 靜態檔案服務 - 嘗試多個可能的目錄（Render 部署環境）
 possible_static_dirs = [
-    BASE_DIR.parent,  # ../ (專案根目錄)
-    BASE_DIR,         # ./ (api目錄)
+    BASE_DIR,         # 專案根目錄（Render 部署時）
+    BASE_DIR.parent,  # ../ (備用)
     Path(".")         # 當前目錄
 ]
 
@@ -434,7 +434,7 @@ for dir_path in possible_static_dirs:
         break
 
 if not static_dir:
-    static_dir = BASE_DIR.parent  # 預設使用專案根目錄
+    static_dir = BASE_DIR  # 預設使用專案根目錄
 
 print(f"[config] Static files directory: {static_dir}")
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
@@ -442,10 +442,10 @@ app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 # 根路徑返回前端頁面
 @app.get("/")
 async def read_index():
-    # 嘗試多個可能的 index.html 路徑
+    # 嘗試多個可能的 index.html 路徑（Render 部署環境）
     possible_index_paths = [
-        BASE_DIR.parent / "index.html",  # ../index.html
-        BASE_DIR / "index.html",         # ./index.html
+        BASE_DIR / "index.html",         # 專案根目錄（Render 部署時）
+        BASE_DIR.parent / "index.html",  # ../index.html (備用)
         Path("index.html")               # 當前目錄
     ]
     
@@ -692,14 +692,14 @@ async def get_overlay(overlay_type: str):
         raise HTTPException(status_code=404, detail="Overlay type not found")
     
     # 檢查檔案是否存在（像 .pkl 檔案一樣）
-    file_path = BASE_DIR.parent / overlay_files[overlay_type]
+    file_path = BASE_DIR / overlay_files[overlay_type]
     print(f"[DEBUG] Looking for overlay file: {file_path}")
     print(f"[DEBUG] File exists: {file_path.exists()}")
     
     if not file_path.exists():
         # 嘗試其他可能的路徑
         alternative_paths = [
-            BASE_DIR / overlay_files[overlay_type],
+            BASE_DIR.parent / overlay_files[overlay_type],
             Path(overlay_files[overlay_type])
         ]
         
@@ -840,7 +840,7 @@ async def get_overlay(overlay_type: str):
 async def get_pm25_overlay_custom(color_min: float = 10, color_max: float = 15, opacity: float = 0.7):
     """獲取自定義顏色範圍的PM2.5疊加圖層"""
     
-    file_path = BASE_DIR.parent / "data/AirPollution/PM25__20241130.tif"
+    file_path = BASE_DIR / "data/AirPollution/PM25__20241130.tif"
     
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="PM2.5 TIFF file not found")
