@@ -3,7 +3,7 @@ services:
     name: comfort-routing
     env: python
     pythonVersion: "3.12"
-    buildCommand: pip install --upgrade pip setuptools wheel && pip install -r requirements.txt --only-binary=all --no-cache-dir
+    buildCommand: python -m pip install --upgrade pip setuptools wheel && python -m pip install -r requirements_simple.txt
     startCommand: cd api && python -m uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: RENDER
