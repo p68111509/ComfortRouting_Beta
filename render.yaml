@@ -2,9 +2,8 @@ services:
   - type: web
     name: comfort-routing
     env: python
-    pythonVersion: "3.12"
-    buildCommand: chmod +x build.sh && ./build.sh
-    startCommand: cd api && python -m uvicorn main:app --host 0.0.0.0 --port $PORT
+    buildCommand: pip install -r api/requirements.txt
+    startCommand: cd api && uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: RENDER
         value: "true"
@@ -12,4 +11,3 @@ services:
         value: data/雙北基隆_一類暴露源_最大連通版.pkl
       - key: GOOGLE_API_KEY
         value: AIzaSyDnbTu8PgUkue5A9uO5aJa3lHZuNUwj6z0
-    healthCheckPath: /health

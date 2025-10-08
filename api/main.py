@@ -681,12 +681,9 @@ def api_routes(req: RoutesReq):
 async def get_overlay(overlay_type: str):
     """獲取疊加圖層資訊（完全像 .pkl 檔案的處理方式）"""
     
-    # 暫時禁用PM2.5處理
-    if overlay_type == "pm25":
-        raise HTTPException(status_code=501, detail="PM2.5 overlay temporarily disabled during deployment")
-    
     # 定義疊加圖層檔案路徑（相對路徑，後端直接讀取）
     overlay_files = {
+        "pm25": "data/AirPollution/PM25__20241130.tif",
         "no2": "data/AirPollution/NO2_全台.png", 
         "wbgt": "data/AirPollution/WBGT_全台.png"
     }
