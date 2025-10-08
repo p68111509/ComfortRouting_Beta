@@ -799,7 +799,7 @@ async def get_overlay(overlay_type: str):
                     
                     return {
                         "image_data": f"data:image/png;base64,{img_base64}",
-                        "bounds": [bottom_wgs, left_wgs, top_wgs, right_wgs],
+                        "bounds": [[bottom_wgs, left_wgs], [top_wgs, right_wgs]],
                         "opacity": 0.5,
                         "data_range": {"min": data_min, "max": data_max},
                         "color_range": {"min": 0, "max": 18},
@@ -910,7 +910,7 @@ async def get_pm25_overlay_custom(color_min: float = 10, color_max: float = 15, 
             
             return {
                 "image_data": f"data:image/png;base64,{img_base64}",
-                "bounds": [bottom_wgs, left_wgs, top_wgs, right_wgs],
+                "bounds": [[bottom_wgs, left_wgs], [top_wgs, right_wgs]],
                 "opacity": opacity,
                 "data_range": {"min": data_min, "max": data_max},
                 "color_range": {"min": 0, "max": 18}
