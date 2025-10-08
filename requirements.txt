@@ -7,3 +7,6 @@ pydantic
 pyproj
 shapely
 scipy
+Pillow
+rasterio
+matplotlib

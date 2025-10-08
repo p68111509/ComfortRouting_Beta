@@ -677,6 +677,249 @@ def api_routes(req: RoutesReq):
 
 
 # 啟動代碼 - 確保在 Render 環境中正確綁定端口
+@app.get("/api/overlay/{overlay_type}")
+async def get_overlay(overlay_type: str):
+    """獲取疊加圖層資訊（完全像 .pkl 檔案的處理方式）"""
+    
+    # 定義疊加圖層檔案路徑（相對路徑，後端直接讀取）
+    overlay_files = {
+        "pm25": "data/AirPollution/PM25__20241130.tif",
+        "no2": "data/AirPollution/NO2_全台.png", 
+        "wbgt": "data/AirPollution/WBGT_全台.png"
+    }
+    
+    if overlay_type not in overlay_files:
+        raise HTTPException(status_code=404, detail="Overlay type not found")
+    
+    # 檢查檔案是否存在（像 .pkl 檔案一樣）
+    file_path = BASE_DIR.parent / overlay_files[overlay_type]
+    print(f"[DEBUG] Looking for overlay file: {file_path}")
+    print(f"[DEBUG] File exists: {file_path.exists()}")
+    
+    if not file_path.exists():
+        # 嘗試其他可能的路徑
+        alternative_paths = [
+            BASE_DIR / overlay_files[overlay_type],
+            Path(overlay_files[overlay_type])
+        ]
+        
+        for alt_path in alternative_paths:
+            print(f"[DEBUG] Trying alternative path: {alt_path}")
+            if alt_path.exists():
+                file_path = alt_path
+                break
+        else:
+            raise HTTPException(status_code=404, detail=f"Overlay file not found: {file_path}")
+    
+    # 讀取圖片檔案並轉換為 base64（像 .pkl 檔案一樣處理）
+    import base64
+    
+    try:
+        file_extension = file_path.suffix.lower()
+        
+        # 如果是TIFF文件，需要轉換為PNG並處理地理座標
+        if file_extension == '.tif' or file_extension == '.tiff':
+            print(f"[DEBUG] Processing GeoTIFF to PNG: {file_path}")
+            try:
+                import rasterio
+                import numpy as np
+                from PIL import Image
+                import io
+                from matplotlib import cm
+                import pyproj
+                
+                # 讀取GeoTIFF
+                with rasterio.open(file_path) as src:
+                    print(f"[DEBUG] TIFF CRS: {src.crs}")
+                    print(f"[DEBUG] TIFF bounds: {src.bounds}")
+                    
+                    # 讀取數據
+                    data = src.read(1)  # 讀取第一個波段
+                    print(f"[DEBUG] Data shape: {data.shape}")
+                    print(f"[DEBUG] Data range: {data.min()} - {data.max()}")
+                    
+                    # 轉換座標系統到WGS84 (EPSG:4326)
+                    transformer = pyproj.Transformer.from_crs(src.crs, "EPSG:4326", always_xy=True)
+                    
+                    # 轉換邊界座標
+                    left, bottom, right, top = src.bounds
+                    left_wgs, bottom_wgs = transformer.transform(left, bottom)
+                    right_wgs, top_wgs = transformer.transform(right, top)
+                    
+                    print(f"[DEBUG] Original bounds: {src.bounds}")
+                    print(f"[DEBUG] WGS84 bounds: [{bottom_wgs}, {left_wgs}, {top_wgs}, {right_wgs}]")
+                    
+                    # 數據範圍
+                    data_min, data_max = float(data.min()), float(data.max())
+                    
+                    # 使用精確的色碼對應表
+                    color_map = {
+                        0: (107, 182, 250),   # #6BB6FA
+                        1: (123, 189, 242),   # #7BBDF2
+                        2: (139, 196, 234),   # #8BC4EA
+                        3: (155, 204, 225),   # #9BCCE1
+                        4: (171, 211, 217),   # #ABD3D9
+                        5: (188, 218, 209),   # #BCDAD1
+                        6: (204, 225, 201),   # #CCE1C9
+                        7: (220, 233, 192),   # #DCE9C0
+                        8: (236, 240, 184),   # #ECF0B8
+                        9: (252, 247, 176),   # #FCF7B0
+                        10: (252, 231, 168),  # #FCE7A8
+                        11: (252, 216, 161),  # #FCD8A1
+                        12: (251, 200, 153),  # #FBC899
+                        13: (251, 185, 145),  # #FBB991
+                        14: (251, 169, 138),  # #FBA98A
+                        15: (251, 154, 130),  # #FB9A82
+                        16: (250, 138, 122),  # #FA8A7A
+                        17: (250, 123, 115),  # #FA7B73
+                        18: (250, 107, 107),  # #FA6B6B
+                    }
+                    
+                    # 創建RGBA數組
+                    rgba_data = np.zeros((data.shape[0], data.shape[1], 4), dtype=np.uint8)
+                    
+                    # 正規化數據到0-18範圍
+                    normalized = (data - data_min) / (data_max - data_min) * 18
+                    
+                    for i in range(data.shape[0]):
+                        for j in range(data.shape[1]):
+                            if not np.isnan(normalized[i, j]):
+                                val_index = int(normalized[i, j])
+                                val_index = max(0, min(18, val_index))
+                                r, g, b = color_map[val_index]
+                                rgba_data[i, j] = [r, g, b, 128]  # 50% opacity
+                    
+                    # 創建PIL圖像
+                    img = Image.fromarray(rgba_data, 'RGBA')
+                    
+                    # 轉換為PNG並編碼為base64
+                    img_buffer = io.BytesIO()
+                    img.save(img_buffer, format='PNG')
+                    img_base64 = base64.b64encode(img_buffer.getvalue()).decode()
+                    
+                    return {
+                        "image_data": f"data:image/png;base64,{img_base64}",
+                        "bounds": [bottom_wgs, left_wgs, top_wgs, right_wgs],
+                        "opacity": 0.5,
+                        "data_range": {"min": data_min, "max": data_max},
+                        "color_range": {"min": 0, "max": 18},
+                        "coordinate_info": {
+                            "original_crs": str(src.crs),
+                            "original_bounds": list(src.bounds),
+                            "wgs84_bounds": [bottom_wgs, left_wgs, top_wgs, right_wgs]
+                        }
+                    }
+                    
+            except ImportError as e:
+                print(f"[ERROR] Missing required packages: {e}")
+                raise HTTPException(status_code=500, detail=f"Missing required packages for TIFF processing: {e}")
+            except Exception as e:
+                print(f"[ERROR] Error processing TIFF: {e}")
+                raise HTTPException(status_code=500, detail=f"Error processing TIFF file: {e}")
+        
+        # 處理PNG文件
+        else:
+            with open(file_path, 'rb') as f:
+                img_data = f.read()
+                img_base64 = base64.b64encode(img_data).decode()
+                
+                # 預設邊界（台灣全島）
+                default_bounds = [21.9, 120.1, 25.3, 122.0]
+                
+                return {
+                    "image_data": f"data:image/png;base64,{img_base64}",
+                    "bounds": default_bounds,
+                    "opacity": 0.5
+                }
+                
+    except Exception as e:
+        print(f"[ERROR] Error reading overlay file: {e}")
+        raise HTTPException(status_code=500, detail=f"Error reading overlay file: {e}")
+
+@app.get("/api/overlay/pm25/custom")
+async def get_pm25_overlay_custom(color_min: float = 10, color_max: float = 15, opacity: float = 0.7):
+    """獲取自定義顏色範圍的PM2.5疊加圖層"""
+    
+    file_path = BASE_DIR.parent / "data/AirPollution/PM25__20241130.tif"
+    
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="PM2.5 TIFF file not found")
+    
+    try:
+        import rasterio
+        import numpy as np
+        from PIL import Image
+        import io
+        import pyproj
+        
+        # 讀取GeoTIFF
+        with rasterio.open(file_path) as src:
+            data = src.read(1)
+            
+            # 轉換座標系統到WGS84
+            transformer = pyproj.Transformer.from_crs(src.crs, "EPSG:4326", always_xy=True)
+            left, bottom, right, top = src.bounds
+            left_wgs, bottom_wgs = transformer.transform(left, bottom)
+            right_wgs, top_wgs = transformer.transform(right, top)
+            
+            # 使用相同的顏色映射邏輯
+            color_map = {
+                0: (107, 182, 250),   # #6BB6FA
+                1: (123, 189, 242),   # #7BBDF2
+                2: (139, 196, 234),   # #8BC4EA
+                3: (155, 204, 225),   # #9BCCE1
+                4: (171, 211, 217),   # #ABD3D9
+                5: (188, 218, 209),   # #BCDAD1
+                6: (204, 225, 201),   # #CCE1C9
+                7: (220, 233, 192),   # #DCE9C0
+                8: (236, 240, 184),   # #ECF0B8
+                9: (252, 247, 176),   # #FCF7B0
+                10: (252, 231, 168),  # #FCE7A8
+                11: (252, 216, 161),  # #FCD8A1
+                12: (251, 200, 153),  # #FBC899
+                13: (251, 185, 145),  # #FBB991
+                14: (251, 169, 138),  # #FBA98A
+                15: (251, 154, 130),  # #FB9A82
+                16: (250, 138, 122),  # #FA8A7A
+                17: (250, 123, 115),  # #FA7B73
+                18: (250, 107, 107),  # #FA6B6B
+            }
+            
+            # 創建RGBA數組
+            rgba_data = np.zeros((data.shape[0], data.shape[1], 4), dtype=np.uint8)
+            data_min, data_max = float(data.min()), float(data.max())
+            
+            # 正規化數據
+            normalized = (data - data_min) / (data_max - data_min) * 18
+            
+            for i in range(data.shape[0]):
+                for j in range(data.shape[1]):
+                    if not np.isnan(normalized[i, j]):
+                        val_index = int(normalized[i, j])
+                        val_index = max(0, min(18, val_index))
+                        r, g, b = color_map[val_index]
+                        rgba_data[i, j] = [r, g, b, 128]
+            
+            # 創建PIL圖像
+            img = Image.fromarray(rgba_data, 'RGBA')
+            
+            # 轉換為PNG並編碼為base64
+            img_buffer = io.BytesIO()
+            img.save(img_buffer, format='PNG')
+            img_base64 = base64.b64encode(img_buffer.getvalue()).decode()
+            
+            return {
+                "image_data": f"data:image/png;base64,{img_base64}",
+                "bounds": [bottom_wgs, left_wgs, top_wgs, right_wgs],
+                "opacity": opacity,
+                "data_range": {"min": data_min, "max": data_max},
+                "color_range": {"min": 0, "max": 18}
+            }
+            
+    except Exception as e:
+        print(f"[ERROR] Error processing custom PM2.5 overlay: {e}")
+        raise HTTPException(status_code=500, detail=f"Error processing custom PM2.5 overlay: {e}")
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8000))

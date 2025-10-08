@@ -305,6 +305,89 @@ body {
   margin: 0;
 }
 
+/* PM2.5顏色圖例 */
+.pm25-color-legend {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 500;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: var(--shadow-strong);
+  min-width: 180px;
+}
+
+.legend-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.color-bar-container {
+  margin: 8px 0;
+  height: 20px;
+  width: 120px;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.color-bar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    #6BB6FA 0%,      /* 藍色 (0) */
+    #7BBDF2 5.5%,    /* 藍-青 */
+    #8BC4EA 11%,     /* 青藍 */
+    #9BCCE1 16.5%,   /* 青 */
+    #ABD3D9 22%,     /* 青綠 */
+    #BCDAD1 27.5%,   /* 綠青 */
+    #CCE1C9 33%,     /* 綠 */
+    #DCE9C0 38.5%,   /* 黃綠 */
+    #ECF0B8 44%,     /* 淡黃綠 */
+    #FCF7B0 50%,     /* 黃色 (9) */
+    #FCE7A8 55.5%,   /* 黃橙 */
+    #FCD8A1 61%,     /* 橙黃 */
+    #FBC899 66.5%,   /* 橙色 */
+    #FBB991 72%,     /* 紅橙 */
+    #FBA98A 77.5%,   /* 橙紅 */
+    #FB9A82 83%,     /* 紅橙 */
+    #FA8A7A 88.5%,   /* 淡紅 */
+    #FA7B73 94%,     /* 紅色 */
+    #FA6B6B 100%     /* 紅色 (18) */
+  );
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.legend-labels {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text);
+  margin-top: 4px;
+  width: 120px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.label-min {
+  color: #6BB6FA; /* 藍色 */
+  font-weight: 600;
+}
+
+.label-max {
+  color: #FA6B6B; /* 紅色 */
+  font-weight: 600;
+}
+
 /* 底圖選擇器 */
 .map-tile-selector {
   position: absolute;

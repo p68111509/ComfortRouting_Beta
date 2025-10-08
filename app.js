@@ -1490,7 +1490,7 @@ function setStart(lat, lng) {
   
   const startIcon = L.divIcon({
     html: `<div style="
-      width: 48px;
+        width: 48px;
       height: 48px;
       background: #10b981;
       border: 6px solid white;
@@ -1520,7 +1520,7 @@ function setEnd(lat, lng) {
   
   const endIcon = L.divIcon({
     html: `<div style="
-      width: 48px;
+        width: 48px;
       height: 48px;
       background: #ef4444;
       border: 6px solid white;
@@ -2097,10 +2097,10 @@ function resetAll() {
     
     // 重新調整地圖大小
     if (window.map) {
-      setTimeout(() => {
+  setTimeout(() => {
         if (window.map && typeof window.map.invalidateSize === 'function') {
         window.map.invalidateSize();
-        }
+    }
       }, 300);
     }
   }
@@ -2296,6 +2296,9 @@ function updateOverlay(overlayType) {
     overlayLayer = null;
   }
   
+  // 隱藏PM2.5顏色圖例
+  hidePM25ColorLegend();
+  
   currentOverlay = overlayType;
   
   if (overlayType === 'none') {
@@ -2303,8 +2306,106 @@ function updateOverlay(overlayType) {
     return;
   }
   
+  // 如果是PM2.5，顯示載入中狀態
+  if (overlayType === 'pm25') {
+    showOverlayLoadingState('pm25');
+  }
+  
   // 使用 API 獲取疊加圖層資訊
   loadOverlayFromAPI(overlayType);
+}
+
+// 顯示疊加圖層載入中狀態
+function showOverlayLoadingState(overlayType) {
+  const overlayInputs = document.querySelectorAll('input[name="overlay"]');
+  overlayInputs.forEach(input => {
+    if (input.value === overlayType) {
+      const label = input.closest('label');
+      const span = label.querySelector('span');
+      if (span) {
+        span.textContent = '計算中...';
+        span.style.color = '#666';
+        span.style.fontStyle = 'italic';
+      }
+    }
+  });
+}
+
+// 恢復疊加圖層正常狀態
+function restoreOverlayNormalState(overlayType) {
+  const overlayInputs = document.querySelectorAll('input[name="overlay"]');
+  overlayInputs.forEach(input => {
+    if (input.value === overlayType) {
+      const label = input.closest('label');
+      const span = label.querySelector('span');
+      if (span) {
+        // 恢復原始文字
+        switch(overlayType) {
+          case 'pm25':
+            span.textContent = 'PM₂.₅';
+            break;
+          case 'no2':
+            span.textContent = 'NO₂';
+            break;
+          case 'wbgt':
+            span.textContent = '氣溫';
+            break;
+        }
+        // 恢復正常樣式
+        span.style.color = '';
+        span.style.fontStyle = '';
+      }
+    }
+  });
+}
+
+// 顯示PM2.5顏色圖例
+function showPM25ColorLegend() {
+  const legend = document.getElementById('pm25ColorLegend');
+  if (legend) {
+    legend.style.display = 'block';
+    console.log('PM2.5 color legend shown');
+  }
+}
+
+// 隱藏PM2.5顏色圖例
+function hidePM25ColorLegend() {
+  const legend = document.getElementById('pm25ColorLegend');
+  if (legend) {
+    legend.style.display = 'none';
+    console.log('PM2.5 color legend hidden');
+  }
+}
+
+// 設置疊加圖層為"無"狀態
+function setOverlayToNone() {
+  console.log('Setting overlay to none due to error');
+  
+  // 恢復所有疊加圖層選項的正常狀態
+  restoreOverlayNormalState('pm25');
+  restoreOverlayNormalState('no2');
+  restoreOverlayNormalState('wbgt');
+  
+  // 找到所有疊加圖層輸入框
+  const overlayInputs = document.querySelectorAll('input[name="overlay"]');
+  
+  // 將"無"選項設為選中
+  overlayInputs.forEach(input => {
+    if (input.value === 'none') {
+      input.checked = true;
+    } else {
+      input.checked = false;
+    }
+  });
+  
+  // 移除現有的疊加圖層
+  if (overlayLayer) {
+    map.removeLayer(overlayLayer);
+    overlayLayer = null;
+  }
+  
+  // 更新當前疊加圖層狀態
+  currentOverlay = 'none';
 }
 
 // 從 API 載入疊加圖層
@@ -2321,12 +2422,41 @@ function loadOverlayFromAPI(overlayType) {
     .then(data => {
       console.log('Overlay data received:', data);
       // 使用 base64 圖片數據，不需要 HTTP 服務器
-      loadPngOverlayFromData(data.image_data, overlayType, data.bounds, data.opacity);
+      if (data.image_data && data.bounds) {
+        console.log('Loading overlay with geographic bounds:', data.bounds);
+        loadPngOverlayFromData(data.image_data, overlayType, data.bounds, data.opacity);
+        
+        // 疊加圖層載入成功，恢復正常狀態
+        restoreOverlayNormalState(overlayType);
+        
+        // 如果是PM2.5，顯示額外的調試信息
+        if (overlayType === 'pm25' && data.data_range) {
+          console.log('PM2.5 data range:', data.data_range);
+          console.log('PM2.5 color range:', data.color_range);
+        }
+      } else {
+        console.error('Invalid overlay data received:', data);
+        showError('疊加圖層數據格式錯誤');
+        setOverlayToNone();
+        // 載入失敗，恢復正常狀態
+        restoreOverlayNormalState(overlayType);
+      }
     })
     .catch(error => {
       console.error('Error loading overlay from API:', error);
-      // 回退到直接載入
+      // 對於PM2.5，如果API失敗，顯示錯誤訊息並切換回"無"狀態
+      if (overlayType === 'pm25') {
+        showError('無法載入PM2.5疊加圖層：API服務器未運行或TIFF文件處理失敗');
+        // 自動切換回"無"疊加圖層狀態
+        setOverlayToNone();
+        // 恢復正常狀態
+        restoreOverlayNormalState(overlayType);
+        return;
+      }
+      // 對於其他疊加圖層，回退到直接載入
       loadPngOverlayDirect(overlayType);
+      // 恢復正常狀態
+      restoreOverlayNormalState(overlayType);
     });
 }
 
@@ -2378,12 +2508,17 @@ function loadPngOverlayFromData(imageData, overlayType, bounds = null, opacity =
   overlayLayer.addTo(map);
   console.log(`Switching to PNG overlay: ${overlayType}`);
   
+  // 如果是PM2.5疊加圖層，顯示顏色圖例
+  if (overlayType === 'pm25') {
+    showPM25ColorLegend();
+  }
+  
   // 檢查圖片是否載入成功
   overlayLayer.on('load', function() {
     console.log('PNG overlay loaded successfully from base64 data');
   });
   
-  overlayLayer.on('error', function(e) {
+    overlayLayer.on('error', function(e) {
     console.error('PNG overlay failed to load from base64 data:', e);
   });
 }
@@ -2751,7 +2886,7 @@ function updateNavigationButton() {
   const navBtn = document.getElementById('navigationBtn');
   if (selectedExit !== null && selectedAttraction !== null) {
     navBtn.disabled = false;
-  } else {
+    } else {
     navBtn.disabled = true;
   }
 }
@@ -2836,7 +2971,7 @@ function showLoadingForRouteCalculation() {
   document.body.appendChild(loadingToast);
   
   // 3秒後自動移除載入提示
-  setTimeout(() => {
+      setTimeout(() => {
     const toast = document.getElementById('loading-toast');
     if (toast) {
       toast.remove();
@@ -3096,7 +3231,7 @@ function updateResultDashboard(data, shortestTime, lowestTime, improvementRate, 
       resultProgressGlow,
       improvementRate
     );
-  } else {
+    } else {
     // 傳統模式
   updateImprovementProgress(null, 'resultDashImprovementRate', improvementRate);
   }
