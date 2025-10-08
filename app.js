@@ -15,7 +15,11 @@ let currentTileLayer = null;
 const DEFAULT_CENTER = [25.0330, 121.5654];
 const DEFAULT_ZOOM = 13;
 // 自動檢測 API 基礎 URL
-const API_BASE = 'http://localhost:8000';
+const API_BASE = (window.location.protocol === 'file:' || 
+                  window.location.hostname === 'localhost' || 
+                  window.location.hostname === '127.0.0.1') 
+  ? 'http://localhost:8000' 
+  : window.location.protocol + '//' + window.location.host;
 
 // 離線模式：直接使用mock數據
 const OFFLINE_MODE = false;
