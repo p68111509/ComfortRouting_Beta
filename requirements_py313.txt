@@ -1,9 +1,0 @@
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-networkx==3.2.1
-numpy
-requests==2.31.0
-pydantic
-pyproj
-shapely
-scipy
