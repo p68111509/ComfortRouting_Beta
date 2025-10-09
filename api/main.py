@@ -430,12 +430,29 @@ app.add_middleware(
 )
 
 # 靜態檔案服務
-app.mount("/static", StaticFiles(directory="."), name="static")
+app.mount("/static", StaticFiles(directory=".."), name="static")
 
 # 健康檢查端點
 @app.get("/api/health")
 async def health_check():
     return {"status": "healthy", "message": "API is running"}
+
+# 直接提供靜態檔案端點
+@app.get("/styles.css")
+async def get_styles():
+    return FileResponse("../styles.css", media_type="text/css")
+
+@app.get("/app.js")
+async def get_app_js():
+    return FileResponse("../app.js", media_type="application/javascript")
+
+@app.get("/vendor/leaflet/leaflet.css")
+async def get_leaflet_css():
+    return FileResponse("../vendor/leaflet/leaflet.css", media_type="text/css")
+
+@app.get("/vendor/leaflet/leaflet.js")
+async def get_leaflet_js():
+    return FileResponse("../vendor/leaflet/leaflet.js", media_type="application/javascript")
 
 # 根路徑返回前端頁面
 @app.get("/")
