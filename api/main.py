@@ -57,10 +57,10 @@ DEFAULT_GRAPH = BASE_DIR / "data" / "雙北基隆路網_濃度與暴露_最大�
 
 # 在 Render 上，嘗試多個可能的路徑
 possible_graph_paths = [
+    Path("/opt/render/project/src/data/雙北基隆路網_濃度與暴露_最大連通版.pkl"),  # Render 主要路徑
     DEFAULT_GRAPH,  # 專案根/data/...
     BASE_DIR / "api" / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl",  # 專案根/api/data/...
     Path("data") / "雙北基隆路網_濃度與暴露_最大連通版.pkl",  # 相對於 api/ 目錄
-    Path("/opt/render/project/src/data/雙北基隆路網_濃度與暴露_最大連通版.pkl"),  # Render 絕對路徑
     Path("/opt/render/project/src/api/data/雙北基隆路網_濃度與暴露_最大連通版.pkl"),  # Render api/data 路徑
 ]
 

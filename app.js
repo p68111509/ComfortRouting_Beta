@@ -4194,6 +4194,9 @@ function showExitModal(stationName, stationId) {
     btn.classList.remove('selected');
   });
   
+  // 使用本地出口資料
+  generateExitButtonsFromLocal(stationId);
+  
   // 生成景點按鈕
   generateAttractionButtons(stationId);
   
@@ -4230,8 +4233,97 @@ function generateAttractionButtons(stationId) {
   });
 }
 
+// 從本地資料生成出口按鈕
+function generateExitButtonsFromLocal(stationId) {
+  console.log(`[Local] Loading exits for station ID: ${stationId}`);
+  
+  const exits = STATION_EXITS[stationId];
+  
+  if (exits && exits.length > 0) {
+    console.log(`[Local] Found ${exits.length} exits for ${stationId}`);
+    
+    // 轉換格式以符合 generateExitButtons 函數
+    const formattedExits = exits.map(exit => ({
+      exit_name: `出口${exit.exit}`,
+      exit_number: exit.exit,
+      longitude: exit.lng,
+      latitude: exit.lat,
+      accessible: exit.accessible
+    }));
+    
+    generateExitButtons(formattedExits);
+  } else {
+    console.log(`[Local] No exits found for ${stationId}, using default`);
+    // 如果沒有找到出口資料，顯示預設的出口按鈕
+    generateDefaultExitButtons();
+  }
+}
+
+// 生成出口按鈕（從 API 資料）
+function generateExitButtons(exits) {
+  const exitContainer = document.getElementById('exitButtons');
+  exitContainer.innerHTML = '';
+  
+  exits.forEach((exit, index) => {
+    const btn = document.createElement('button');
+    btn.className = 'exit-btn';
+    btn.setAttribute('data-exit', exit.exit_number);
+    btn.setAttribute('data-lat', exit.latitude);
+    btn.setAttribute('data-lng', exit.longitude);
+    
+    // 建立按鈕文字，包含無障礙資訊
+    let buttonText = `出口${exit.exit_number}`;
+    if (exit.accessible) {
+      buttonText += ' ♿';
+    }
+    
+    btn.innerHTML = buttonText;
+    btn.onclick = () => selectExit(exit.exit_number, exit.latitude, exit.longitude);
+    
+    exitContainer.appendChild(btn);
+  });
+  
+  console.log(`[UI] Generated ${exits.length} exit buttons`);
+}
+
+// 生成預設出口按鈕（當 API 失敗時）
+function generateDefaultExitButtons() {
+  const exitContainer = document.getElementById('exitButtons');
+  exitContainer.innerHTML = '';
+  
+  // 檢查是否有預設的出口資料
+  const stationId = window.currentSelectedStationId;
+  const defaultExits = STATION_EXITS[stationId];
+  
+  if (defaultExits && defaultExits.length > 0) {
+    // 使用預設資料
+    defaultExits.forEach(exit => {
+      const btn = document.createElement('button');
+      btn.className = 'exit-btn';
+      btn.setAttribute('data-exit', exit.exit);
+      btn.setAttribute('data-lat', exit.lat);
+      btn.setAttribute('data-lng', exit.lng);
+      btn.textContent = `出口${exit.exit}`;
+      btn.onclick = () => selectExit(exit.exit, exit.lat, exit.lng);
+      exitContainer.appendChild(btn);
+    });
+  } else {
+    // 顯示預設的 3 個出口
+    for (let i = 1; i <= 3; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'exit-btn';
+      btn.setAttribute('data-exit', i);
+      btn.textContent = `出口${i}`;
+      btn.onclick = () => selectExit(i);
+      exitContainer.appendChild(btn);
+    }
+  }
+  
+  console.log(`[UI] Generated default exit buttons`);
+}
+
 // 選擇出口
-function selectExit(exitNumber) {
+function selectExit(exitNumber, lat = null, lng = null) {
   // 清除之前的選擇
   document.querySelectorAll('.exit-btn.selected').forEach(btn => {
     btn.classList.remove('selected');
@@ -4242,6 +4334,20 @@ function selectExit(exitNumber) {
   if (exitBtn) {
     exitBtn.classList.add('selected');
     selectedExit = exitNumber;
+    
+    // 如果有提供座標，保存到全域變數
+    if (lat !== null && lng !== null) {
+      window.selectedExitCoords = { lat: lat, lng: lng };
+      console.log(`[Exit] Selected exit ${exitNumber} at coordinates: ${lat}, ${lng}`);
+    } else {
+      // 從按鈕的 data 屬性獲取座標
+      const btnLat = exitBtn.getAttribute('data-lat');
+      const btnLng = exitBtn.getAttribute('data-lng');
+      if (btnLat && btnLng) {
+        window.selectedExitCoords = { lat: parseFloat(btnLat), lng: parseFloat(btnLng) };
+        console.log(`[Exit] Selected exit ${exitNumber} at coordinates: ${btnLat}, ${btnLng}`);
+      }
+    }
   }
   
   updateNavigationButton();
@@ -4306,7 +4412,18 @@ async function startNavigation() {
   const exitData = STATION_EXITS[currentStationId]?.find(exit => exit.exit == selectedExit);
   const attractionData = STATION_ATTRACTIONS[currentStationId]?.[selectedAttraction];
   
-  if (!exitData || !attractionData) {
+  // 優先使用 window.selectedExitCoords，如果沒有則使用 STATION_EXITS 中的資料
+  let finalExitData = exitData;
+  if (window.selectedExitCoords) {
+    finalExitData = {
+      exit: selectedExit,
+      lat: window.selectedExitCoords.lat,
+      lng: window.selectedExitCoords.lng,
+      accessible: exitData?.accessible || false
+    };
+  }
+  
+  if (!finalExitData || !attractionData) {
     console.error('Cannot find exit or attraction data');
     return;
   }
@@ -4319,11 +4436,11 @@ async function startNavigation() {
   
   // 直接調用後端API計算路徑，如果失敗則使用模擬數據
   try {
-    await calculateRouteForModal(exitData, attractionData, stationName);
+    await calculateRouteForModal(finalExitData, attractionData, stationName);
   } catch (error) {
     console.log('[metro] Backend failed, falling back to mock data:', error.message);
-    const mockData = generateMockRouteData(exitData, attractionData);
-    showRouteResultModal(mockData, exitData, attractionData, stationName);
+    const mockData = generateMockRouteData(finalExitData, attractionData);
+    showRouteResultModal(mockData, finalExitData, attractionData, stationName);
   }
 }
 
