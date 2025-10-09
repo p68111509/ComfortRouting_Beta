@@ -60,6 +60,8 @@ possible_graph_paths = [
     DEFAULT_GRAPH,  # 專案根/data/...
     BASE_DIR / "api" / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl",  # 專案根/api/data/...
     Path("data") / "雙北基隆路網_濃度與暴露_最大連通版.pkl",  # 相對於 api/ 目錄
+    Path("/opt/render/project/src/data/雙北基隆路網_濃度與暴露_最大連通版.pkl"),  # Render 絕對路徑
+    Path("/opt/render/project/src/api/data/雙北基隆路網_濃度與暴露_最大連通版.pkl"),  # Render api/data 路徑
 ]
 
 # 允許用環境變數覆蓋；沒設就用專案根/data 的預設
