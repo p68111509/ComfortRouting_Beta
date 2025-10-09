@@ -44,31 +44,19 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from scipy.spatial import cKDTree as KDTree
 import requests
-from pathlib import Path
 
 
 # -------------------------- 設定與常數 --------------------------
 # 固定的圖檔路徑（本題指定）
+# 放在檔頭 import 後
+from pathlib import Path
 
 # 專案根：main.py 在 api/，往上一層就是專案根
 BASE_DIR = Path(__file__).resolve().parents[1]
 DEFAULT_GRAPH = BASE_DIR / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl"
 
-# 嘗試多個可能的路徑（Render 部署環境）
-possible_paths = [
-    BASE_DIR / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl",  # 專案根/data/...
-    BASE_DIR.parent / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl",  # ../data/...
-    Path(os.environ.get("GRAPH_PATH", "")).resolve() if os.environ.get("GRAPH_PATH") else None
-]
-
-GRAPH_PATH = None
-for path in possible_paths:
-    if path and path.exists():
-        GRAPH_PATH = path
-        break
-
-if not GRAPH_PATH:
-    GRAPH_PATH = DEFAULT_GRAPH  # 使用預設路徑作為後備
+# 允許用環境變數覆蓋；沒設就用專案根/data 的預設
+GRAPH_PATH = Path(os.environ.get("GRAPH_PATH", str(DEFAULT_GRAPH))).resolve()
 
 # 啟動時印出絕對路徑，幫助你確認
 print(f"[config] GRAPH_PATH = {GRAPH_PATH}")
@@ -410,87 +398,22 @@ def _get_path_distance(g: nx.Graph, path: List[Any]) -> float:
 # -------------------------- FastAPI App --------------------------
 app = FastAPI(title="Comfort Routing System Backend")
 
-# CORS：開放所有來源（包括 Render 部署）
+# CORS：開放本機前端（file:// 或 http://localhost）
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 允許所有來源
+    allow_origins=["*"],  # 開發期先全開，正式再收斂
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"],
 )
 
-# 靜態檔案服務 - 嘗試多個可能的目錄（Render 部署環境）
-possible_static_dirs = [
-    BASE_DIR,         # 專案根目錄（Render 部署時）
-    BASE_DIR.parent,  # ../ (備用)
-    Path(".")         # 當前目錄
-]
-
-static_dir = None
-for dir_path in possible_static_dirs:
-    if (dir_path / "index.html").exists() and (dir_path / "styles.css").exists():
-        static_dir = dir_path
-        break
-
-if not static_dir:
-    static_dir = BASE_DIR  # 預設使用專案根目錄
-
-print(f"[config] Static files directory: {static_dir}")
-app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
+# 靜態檔案服務
+app.mount("/static", StaticFiles(directory="."), name="static")
 
 # 根路徑返回前端頁面
 @app.get("/")
 async def read_index():
-    # 嘗試多個可能的 index.html 路徑（Render 部署環境）
-    possible_index_paths = [
-        BASE_DIR / "index.html",         # 專案根目錄（Render 部署時）
-        BASE_DIR.parent / "index.html",  # ../index.html (備用)
-        Path("index.html")               # 當前目錄
-    ]
-    
-    for index_path in possible_index_paths:
-        if index_path.exists():
-            return FileResponse(str(index_path))
-    
-    # 如果都找不到，返回錯誤
-    raise HTTPException(status_code=404, detail="index.html not found")
-
-# 健康檢查端點
-@app.get("/api/health")
-async def health_check():
-    """健康檢查端點，用於Render監控服務狀態"""
-    return {"status": "healthy", "message": "ComfortRouting API is running"}
-
-# 測試端點 - 檢查 API 連接
-@app.get("/api/test")
-async def test_api():
-    """測試端點，檢查 API 是否正常響應"""
-    return {
-        "status": "ok",
-        "message": "API is working",
-        "timestamp": "2025-01-04",
-        "graph_loaded": G is not None,
-        "graph_nodes": len(G.nodes) if G else 0
-    }
-
-# 調試端點 - 檢查靜態文件
-@app.get("/api/debug/static")
-async def debug_static():
-    """調試端點，檢查靜態文件路徑"""
-    import os
-    return {
-        "static_dir": str(static_dir),
-        "files": {
-            "index.html": (static_dir / "index.html").exists(),
-            "styles.css": (static_dir / "styles.css").exists(),
-            "app.js": (static_dir / "app.js").exists(),
-            "vendor/leaflet/leaflet.css": (static_dir / "vendor" / "leaflet" / "leaflet.css").exists(),
-            "vendor/leaflet/leaflet.js": (static_dir / "vendor" / "leaflet" / "leaflet.js").exists(),
-        },
-        "working_dir": os.getcwd(),
-        "base_dir": str(BASE_DIR)
-    }
+    return FileResponse("index.html")
 
 
 @app.on_event("startup")
@@ -676,153 +599,3 @@ def api_routes(req: RoutesReq):
     return resp
 
 
-# 啟動代碼 - 確保在 Render 環境中正確綁定端口
-@app.get("/api/overlay/{overlay_type}")
-async def get_overlay(overlay_type: str):
-    """獲取疊加圖層資訊（完全像 .pkl 檔案的處理方式）"""
-    
-    print(f"[DEBUG] Received overlay request for type: {overlay_type}")
-    print(f"[DEBUG] BASE_DIR: {BASE_DIR}")
-    print(f"[DEBUG] Current working directory: {os.getcwd()}")
-    
-    # 定義疊加圖層檔案路徑（相對路徑，後端直接讀取）
-    overlay_files = {
-        "pm25": "data/AirPollution/PM25__20241130.png",
-        "no2": "data/AirPollution/NO2_全台.png", 
-        "wbgt": "data/AirPollution/WBGT_全台.png"
-    }
-    
-    if overlay_type not in overlay_files:
-        print(f"[ERROR] Overlay type not found: {overlay_type}")
-        raise HTTPException(status_code=404, detail="Overlay type not found")
-    
-    # 檢查檔案是否存在（像 .pkl 檔案一樣）
-    file_path = BASE_DIR / overlay_files[overlay_type]
-    print(f"[DEBUG] Looking for overlay file: {file_path}")
-    print(f"[DEBUG] File exists: {file_path.exists()}")
-    print(f"[DEBUG] File path absolute: {file_path.resolve()}")
-    
-    if not file_path.exists():
-        print(f"[WARNING] Primary file path not found, trying alternatives...")
-        # 嘗試其他可能的路徑
-        alternative_paths = [
-            BASE_DIR.parent / overlay_files[overlay_type],
-            Path(overlay_files[overlay_type])
-        ]
-        
-        for alt_path in alternative_paths:
-            print(f"[DEBUG] Trying alternative path: {alt_path}")
-            print(f"[DEBUG] Alternative path exists: {alt_path.exists()}")
-            if alt_path.exists():
-                file_path = alt_path
-                print(f"[DEBUG] Using alternative path: {file_path}")
-                break
-        else:
-            print(f"[ERROR] All file paths failed:")
-            print(f"[ERROR] Primary: {BASE_DIR / overlay_files[overlay_type]}")
-            print(f"[ERROR] Alt1: {BASE_DIR.parent / overlay_files[overlay_type]}")
-            print(f"[ERROR] Alt2: {Path(overlay_files[overlay_type])}")
-            raise HTTPException(status_code=404, detail=f"Overlay file not found: {file_path}")
-    
-    # 讀取圖片檔案並轉換為 base64（像 .pkl 檔案一樣處理）
-    import base64
-    
-    try:
-        file_extension = file_path.suffix.lower()
-        
-        # 直接讀取 PNG 檔案（PM2.5 已預處理）
-        print(f"[DEBUG] Loading PNG overlay file: {file_path}")
-        
-        # 對於 PM2.5，使用預處理好的地理邊界
-        if overlay_type == 'pm25':
-            # 使用預處理好的地理邊界資訊
-            geo_bounds = [[24.673148524048187, 121.28083627348856], [25.300587805633413, 122.00969105489887]]
-            print(f"[DEBUG] Using predefined bounds for PM2.5: {geo_bounds}")
-            
-            # 讀取 PNG 檔案
-            with open(file_path, 'rb') as f:
-                image_data = f.read()
-                image_base64 = base64.b64encode(image_data).decode()
-            
-            return {
-                "image_data": f"data:image/png;base64,{image_base64}",
-                "bounds": geo_bounds,
-                "opacity": 0.5,
-                "file_exists": True,
-                "file_size": file_path.stat().st_size,
-                "debug_path": str(file_path),
-                "original_format": file_extension,
-                "preprocessed": True,
-                "coordinate_info": {
-                    "source": "preprocessed_png",
-                    "bounds": geo_bounds,
-                    "description": "Using predefined WGS84 bounds from tif2png conversion"
-                }
-            }
-        else:
-            # 對於其他格式（如 NO2, WBGT PNG），使用預設邊界
-            with open(file_path, 'rb') as f:
-                image_data = f.read()
-                image_base64 = base64.b64encode(image_data).decode()
-            
-            # 預設邊界（台灣全島）
-            default_bounds = [[21.9, 120.1], [25.3, 122.0]]
-            
-            return {
-                "image_data": f"data:image/png;base64,{image_base64}",
-                "bounds": default_bounds,
-                "opacity": 0.5,
-                "file_exists": True,
-                "file_size": file_path.stat().st_size,
-                "debug_path": str(file_path),
-                "original_format": file_extension,
-                "preprocessed": True,
-                "coordinate_info": {
-                    "source": "default_bounds",
-                    "bounds": default_bounds,
-                    "description": "Using default Taiwan bounds"
-                }
-            }
-                
-    except Exception as e:
-        print(f"[ERROR] Error reading overlay file: {e}")
-        raise HTTPException(status_code=500, detail=f"Error reading overlay file: {e}")
-
-@app.get("/api/overlay/pm25/custom")
-async def get_pm25_overlay_custom(color_min: float = 10, color_max: float = 15, opacity: float = 0.7):
-    """獲取自定義顏色範圍的PM2.5疊加圖層"""
-    
-    file_path = BASE_DIR / "data/AirPollution/PM25__20241130.png"
-    
-    if not file_path.exists():
-        raise HTTPException(status_code=404, detail="PM2.5 PNG file not found")
-    
-    try:
-        # 直接讀取預處理好的 PNG 檔案
-        with open(file_path, 'rb') as f:
-            image_data = f.read()
-            image_base64 = base64.b64encode(image_data).decode()
-        
-        # 使用預處理好的地理邊界
-        geo_bounds = [[24.673148524048187, 121.28083627348856], [25.300587805633413, 122.00969105489887]]
-        
-        return {
-            "image_data": f"data:image/png;base64,{image_base64}",
-            "bounds": geo_bounds,
-            "opacity": opacity,
-            "preprocessed": True,
-            "coordinate_info": {
-                "source": "preprocessed_png",
-                "bounds": geo_bounds,
-                "description": "Using predefined WGS84 bounds from tif2png conversion"
-            }
-        }
-            
-    except Exception as e:
-        print(f"[ERROR] Error processing custom PM2.5 overlay: {e}")
-        raise HTTPException(status_code=500, detail=f"Error processing custom PM2.5 overlay: {e}")
-
-if __name__ == "__main__":
-    import uvicorn
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)

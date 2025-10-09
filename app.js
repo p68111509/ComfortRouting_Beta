@@ -234,10 +234,752 @@ Object.values(METRO_LINES).forEach(line => {
 
 // 捷運站出口數據
 const STATION_EXITS = {
+  // 頂埔站
+  'dingpu': [
+    { exit: 1, lat: 24.95933, lng: 121.4183, accessible: true },
+    { exit: 2, lat: 24.95895, lng: 121.4184, accessible: false },
+    { exit: 3, lat: 24.9595, lng: 121.4193, accessible: true },
+    { exit: 4, lat: 24.96026, lng: 121.42, accessible: true }
+  ],
+  // 松山機場站
+  'songshan-airport': [
+    { exit: 1, lat: 25.06363, lng: 121.552, accessible: true },
+    { exit: 2, lat: 25.06354, lng: 121.551, accessible: true },
+    { exit: 3, lat: 25.06317, lng: 121.5518, accessible: true }
+  ],
+  // 中山國中站
+  'zhongshan-junior-high': [
+    { exit: 0, lat: 25.06083, lng: 121.544, accessible: true }
+  ],
+  // 忠孝復興站
+  'zhongxiao-fuxing': [
+    { exit: 1, lat: 25.0418, lng: 121.5431, accessible: false },
+    { exit: 2, lat: 25.04121, lng: 121.5435, accessible: true },
+    { exit: 3, lat: 25.04147, lng: 121.5448, accessible: false },
+    { exit: 4, lat: 25.04177, lng: 121.5451, accessible: false },
+    { exit: 5, lat: 25.04202, lng: 121.544, accessible: false }
+  ],
+  // 大安站
+  'daan': [
+    { exit: 1, lat: 25.0336, lng: 121.542, accessible: false },
+    { exit: 2, lat: 25.03365, lng: 121.5416, accessible: false },
+    { exit: 3, lat: 25.03324, lng: 121.5423, accessible: true },
+    { exit: 4, lat: 25.03312, lng: 121.544, accessible: true },
+    { exit: 5, lat: 25.03286, lng: 121.5437, accessible: false },
+    { exit: 6, lat: 25.03401, lng: 121.5437, accessible: false }
+  ],
+  // 科技大樓站
+  'technology-building': [
+    { exit: 0, lat: 25.02615, lng: 121.5436, accessible: true }
+  ],
+  // 六張犁站
+  'liu-zhang-li': [
+    { exit: 0, lat: 25.02385, lng: 121.5527, accessible: true }
+  ],
+  // 麟光站
+  'ling-guang': [
+    { exit: 0, lat: 25.01855, lng: 121.5586, accessible: true }
+  ],
+  // 辛亥站
+  'xin-hai': [
+    { exit: 0, lat: 25.00512, lng: 121.557, accessible: true }
+  ],
+  // 萬芳醫院站
+  'wanfang-hospital': [
+    { exit: 0, lat: 24.99938, lng: 121.5577, accessible: true }
+  ],
+  // 萬芳社區站
+  'wanfang-community': [
+    { exit: 0, lat: 24.99858, lng: 121.5684, accessible: true }
+  ],
+  // 木柵站
+  'mu-zha': [
+    { exit: 0, lat: 24.99817, lng: 121.5734, accessible: true }
+  ],
+  // 動物園站
+  'taipei-zoo': [
+    { exit: 1, lat: 24.9983, lng: 121.5799, accessible: true },
+    { exit: 2, lat: 24.99797, lng: 121.5793, accessible: true }
+  ],
+  // 大直站
+  'dazhi': [
+    { exit: 1, lat: 25.08036, lng: 121.5469, accessible: true },
+    { exit: 2, lat: 25.07958, lng: 121.5468, accessible: false },
+    { exit: 3, lat: 25.07944, lng: 121.547, accessible: true }
+  ],
+  // 劍南路站
+  'jian-nan-road': [
+    { exit: 1, lat: 25.08548, lng: 121.5554, accessible: true },
+    { exit: 2, lat: 25.0846, lng: 121.5552, accessible: true },
+    { exit: 3, lat: 25.08432, lng: 121.5561, accessible: false }
+  ],
+  // 西湖站
+  'xi-hu': [
+    { exit: 1, lat: 25.08234, lng: 121.5666, accessible: true },
+    { exit: 2, lat: 25.08202, lng: 121.5671, accessible: true }
+  ],
+  // 港墘站
+  'gang-qian': [
+    { exit: 1, lat: 25.08013, lng: 121.5758, accessible: true },
+    { exit: 2, lat: 25.08007, lng: 121.5747, accessible: true }
+  ],
+  // 文德站
+  'wende': [
+    { exit: 1, lat: 25.07867, lng: 121.5856, accessible: true },
+    { exit: 2, lat: 25.07835, lng: 121.5846, accessible: true }
+  ],
+  // 內湖站
+  'neihu': [
+    { exit: 1, lat: 25.08375, lng: 121.5943, accessible: true },
+    { exit: 2, lat: 25.08364, lng: 121.5946, accessible: true }
+  ],
+  // 大湖公園站
+  'da-hu-park': [
+    { exit: 1, lat: 25.08389, lng: 121.6024, accessible: true },
+    { exit: 2, lat: 25.08368, lng: 121.6022, accessible: true }
+  ],
+  // 葫洲站
+  'hu-zhou': [
+    { exit: 1, lat: 25.07251, lng: 121.6081, accessible: true },
+    { exit: 2, lat: 25.07253, lng: 121.6072, accessible: true }
+  ],
+  // 東湖站
+  'dong-hu': [
+    { exit: 1, lat: 25.06719, lng: 121.6109, accessible: true },
+    { exit: 2, lat: 25.06718, lng: 121.6113, accessible: true },
+    { exit: 3, lat: 25.06706, lng: 121.612, accessible: true }
+  ],
+  // 南港軟體園區站
+  'nangang-software-park': [
+    { exit: 1, lat: 25.06039, lng: 121.6159, accessible: true },
+    { exit: 2, lat: 25.06012, lng: 121.6163, accessible: true }
+  ],
+  // 南港展覽館站
+  'nangang-exhibition-hall': [
+    { exit: 1, lat: 25.05578, lng: 121.6171, accessible: true },
+    { exit: 2, lat: 25.05541, lng: 121.6172, accessible: true },
+    { exit: 3, lat: 25.05512, lng: 121.6182, accessible: true },
+    { exit: 4, lat: 25.05536, lng: 121.6183, accessible: true },
+    { exit: '2A', lat: 25.05534, lng: 121.6172, accessible: true },
+    { exit: 5, lat: 25.05492, lng: 121.6169, accessible: true },
+    { exit: 6, lat: 25.05476, lng: 121.6179, accessible: false },
+    { exit: 7, lat: 25.05404, lng: 121.6181, accessible: false }
+  ],
+  // 小碧潭站
+  'xiaobitan': [
+    { exit: 1, lat: 24.9718, lng: 121.5299, accessible: true },
+    { exit: 2, lat: 24.97319, lng: 121.53, accessible: true }
+  ],
+  // 新店站
+  'xindian': [
+    { exit: 0, lat: 24.95784, lng: 121.5376, accessible: true }
+  ],
+  // 新店區公所站
+  'xindian-district-office': [
+    { exit: 1, lat: 24.96739, lng: 121.5411, accessible: true },
+    { exit: 2, lat: 24.96799, lng: 121.5417, accessible: false }
+  ],
+  // 七張站
+  'qizhang': [
+    { exit: 1, lat: 24.97503, lng: 121.5431, accessible: true },
+    { exit: 2, lat: 24.97691, lng: 121.5426, accessible: false }
+  ],
+  // 大坪林站
+  'dapinglin': [
+    { exit: 1, lat: 24.98275, lng: 121.5409, accessible: false },
+    { exit: 2, lat: 24.98205, lng: 121.5416, accessible: false },
+    { exit: 3, lat: 24.98298, lng: 121.5416, accessible: true },
+    { exit: 4, lat: 24.98354, lng: 121.5414, accessible: false },
+    { exit: 5, lat: 24.98286, lng: 121.5432, accessible: true }
+  ],
+  // 景美站
+  'jingmei': [
+    { exit: 1, lat: 24.99213, lng: 121.5407, accessible: true },
+    { exit: 2, lat: 24.99307, lng: 121.5415, accessible: false },
+    { exit: 3, lat: 24.99274, lng: 121.5405, accessible: false }
+  ],
+  // 萬隆站
+  'wanlong': [
+    { exit: 1, lat: 25.00137, lng: 121.5389, accessible: false },
+    { exit: 2, lat: 25.00151, lng: 121.5396, accessible: false },
+    { exit: 3, lat: 25.00222, lng: 121.5392, accessible: false },
+    { exit: 4, lat: 25.00268, lng: 121.5386, accessible: true }
+  ],
+  // 公館站
+  'gongguan': [
+    { exit: 1, lat: 25.01451, lng: 121.5344, accessible: true },
+    { exit: 2, lat: 25.01472, lng: 121.5347, accessible: true },
+    { exit: 3, lat: 25.01542, lng: 121.534, accessible: false },
+    { exit: 4, lat: 25.01515, lng: 121.5336, accessible: false }
+  ],
+  // 台電大樓站
+  'taipower': [
+    { exit: 1, lat: 25.01962, lng: 121.5286, accessible: false },
+    { exit: 2, lat: 25.02019, lng: 121.5291, accessible: false },
+    { exit: 3, lat: 25.02118, lng: 121.5278, accessible: false },
+    { exit: 4, lat: 25.02102, lng: 121.5273, accessible: false },
+    { exit: 5, lat: 25.02076, lng: 121.5277, accessible: true }
+  ],
+  // 古亭站
+  'guting': [
+    { exit: 1, lat: 25.02598, lng: 121.523, accessible: true },
+    { exit: 2, lat: 25.0255, lng: 121.5234, accessible: false },
+    { exit: 3, lat: 25.02592, lng: 121.5235, accessible: false },
+    { exit: 4, lat: 25.02656, lng: 121.523, accessible: false },
+    { exit: 5, lat: 25.02718, lng: 121.5229, accessible: false },
+    { exit: 6, lat: 25.02754, lng: 121.5223, accessible: false },
+    { exit: 7, lat: 25.02773, lng: 121.5217, accessible: false },
+    { exit: 8, lat: 25.02706, lng: 121.5219, accessible: false },
+    { exit: 9, lat: 25.0268, lng: 121.5224, accessible: false }
+  ],
+  // 中正紀念堂站
+  'chks': [
+    { exit: 1, lat: 25.03335, lng: 121.5176, accessible: true },
+    { exit: 2, lat: 25.03241, lng: 121.5183, accessible: false },
+    { exit: 3, lat: 25.03228, lng: 121.519, accessible: false },
+    { exit: 4, lat: 25.03353, lng: 121.518, accessible: false },
+    { exit: 5, lat: 25.03522, lng: 121.5171, accessible: true },
+    { exit: 6, lat: 25.03588, lng: 121.5165, accessible: false },
+    { exit: 7, lat: 25.03457, lng: 121.516, accessible: false }
+  ],
+  // 小南門站
+  'xiaonanmen': [
+    { exit: 1, lat: 25.03643, lng: 121.5098, accessible: false },
+    { exit: 2, lat: 25.03574, lng: 121.5099, accessible: false },
+    { exit: 3, lat: 25.03531, lng: 121.511, accessible: true },
+    { exit: 4, lat: 25.03523, lng: 121.5115, accessible: false }
+  ],
+  // 頂溪站
+  'dingxi': [
+    { exit: 1, lat: 25.0129, lng: 121.5154, accessible: true },
+    { exit: 2, lat: 25.01422, lng: 121.5154, accessible: false }
+  ],
+  // 永安市場站
+  'yongan': [
+    { exit: 0, lat: 25.00238, lng: 121.511, accessible: true }
+  ],
+  // 景安站
+  'jingan': [
+    { exit: 0, lat: 24.99373, lng: 121.5046, accessible: true }
+  ],
+  // 南勢角站
+  'nanshijiao': [
+    { exit: 1, lat: 24.99053, lng: 121.5079, accessible: false },
+    { exit: 2, lat: 24.99016, lng: 121.5087, accessible: false },
+    { exit: 3, lat: 24.99006, lng: 121.5089, accessible: true },
+    { exit: 4, lat: 24.98949, lng: 121.5098, accessible: false }
+  ],
+  // 台大醫院站
+  'taida': [
+    { exit: 1, lat: 25.04091, lng: 121.5157, accessible: true },
+    { exit: 2, lat: 25.04122, lng: 121.5166, accessible: true },
+    { exit: 3, lat: 25.04281, lng: 121.5166, accessible: true },
+    { exit: 4, lat: 25.04288, lng: 121.5163, accessible: false }
+  ],
+  // 台北車站
+  'taipei-main-station': [
+    { exit: 'M5', lat: 25.04676, lng: 121.5162, accessible: false },
+    { exit: 'M6', lat: 25.04623, lng: 121.5168, accessible: false },
+    { exit: 'M7', lat: 25.04608, lng: 121.5186, accessible: false },
+    { exit: 'M8', lat: 25.04595, lng: 121.5175, accessible: false },
+    { exit: 'M1', lat: 25.04823, lng: 121.5182, accessible: false },
+    { exit: 'M2', lat: 25.04816, lng: 121.5191, accessible: true },
+    { exit: 'M3', lat: 25.04634, lng: 121.5179, accessible: false },
+    { exit: 'M4', lat: 25.04649, lng: 121.5173, accessible: true }
+  ],
+  // 雙連站
+  'shuanglian': [
+    { exit: 1, lat: 25.0575, lng: 121.5206, accessible: false },
+    { exit: 2, lat: 25.05783, lng: 121.5206, accessible: true }
+  ],
+  // 民權西路站
+  'minquan-west-road': [
+    { exit: 1, lat: 25.06264, lng: 121.5195, accessible: true },
+    { exit: 4, lat: 25.06194, lng: 121.5199, accessible: false },
+    { exit: 3, lat: 25.0617, lng: 121.5198, accessible: false },
+    { exit: 2, lat: 25.06185, lng: 121.5196, accessible: false },
+    { exit: 5, lat: 25.06324, lng: 121.5188, accessible: false },
+    { exit: 6, lat: 25.06274, lng: 121.5189, accessible: false },
+    { exit: 7, lat: 25.0627, lng: 121.5202, accessible: false },
+    { exit: 8, lat: 25.06269, lng: 121.5206, accessible: false },
+    { exit: 9, lat: 25.06295, lng: 121.5206, accessible: false },
+    { exit: 10, lat: 25.06297, lng: 121.5201, accessible: true }
+  ],
+  // 圓山站
+  'yuanshan': [
+    { exit: 1, lat: 25.07079, lng: 121.52, accessible: true },
+    { exit: 2, lat: 25.07178, lng: 121.5201, accessible: true }
+  ],
+  // 劍潭站
+  'jiantan': [
+    { exit: 1, lat: 25.08503, lng: 121.5252, accessible: true },
+    { exit: 2, lat: 25.08327, lng: 121.5248, accessible: true },
+    { exit: 3, lat: 25.08428, lng: 121.525, accessible: true }
+  ],
+  // 士林站
+  'shilin': [
+    { exit: 1, lat: 25.09411, lng: 121.526, accessible: true },
+    { exit: 2, lat: 25.09286, lng: 121.5264, accessible: true }
+  ],
+  // 芝山站
+  'zhishan': [
+    { exit: 1, lat: 25.10205, lng: 121.5226, accessible: true },
+    { exit: 2, lat: 25.10384, lng: 121.5223, accessible: true }
+  ],
+  // 明德站
+  'mingde': [
+    { exit: 1, lat: 25.1093, lng: 121.5192, accessible: true },
+    { exit: 2, lat: 25.11001, lng: 121.5187, accessible: true },
+    { exit: 3, lat: 25.10996, lng: 121.5185, accessible: true }
+  ],
+  // 石牌站
+  'shipai': [
+    { exit: 1, lat: 25.11496, lng: 121.5153, accessible: true },
+    { exit: 2, lat: 25.11352, lng: 121.5163, accessible: true }
+  ],
+  // 唭哩岸站
+  'qilian': [
+    { exit: 1, lat: 25.12071, lng: 121.5069, accessible: true },
+    { exit: 2, lat: 25.12085, lng: 121.5059, accessible: true }
+  ],
+  // 奇岩站
+  'qiyan': [
+    { exit: 1, lat: 25.12612, lng: 121.501, accessible: true },
+    { exit: 2, lat: 25.12502, lng: 121.5011, accessible: true },
+    { exit: 3, lat: 25.12514, lng: 121.5013, accessible: true }
+  ],
+  // 北投站
+  'beitou': [
+    { exit: 1, lat: 25.13233, lng: 121.4981, accessible: true },
+    { exit: 2, lat: 25.13103, lng: 121.4992, accessible: true }
+  ],
+  // 新北投站
+  'xinbeitou': [
+    { exit: 1, lat: 25.13697, lng: 121.5035, accessible: true },
+    { exit: 2, lat: 25.13683, lng: 121.5025, accessible: false }
+  ],
+  // 復興崗站
+  'fuxinggang': [
+    { exit: 1, lat: 25.13767, lng: 121.4854, accessible: true },
+    { exit: 2, lat: 25.13733, lng: 121.4851, accessible: true }
+  ],
+  // 忠義站
+  'zhongyi': [
+    { exit: 1, lat: 25.13106, lng: 121.4732, accessible: true },
+    { exit: 2, lat: 25.13099, lng: 121.4736, accessible: true }
+  ],
+  // 關渡站
+  'guandu': [
+    { exit: 1, lat: 25.12543, lng: 121.4672, accessible: true },
+    { exit: 2, lat: 25.12547, lng: 121.4669, accessible: true }
+  ],
+  // 竹圍站
+  'zhuwei': [
+    { exit: 1, lat: 25.13695, lng: 121.4597, accessible: true },
+    { exit: 2, lat: 25.13685, lng: 121.4594, accessible: true }
+  ],
+  // 紅樹林站
+  'hongshulin': [
+    { exit: 1, lat: 25.1545, lng: 121.459, accessible: true },
+    { exit: 2, lat: 25.1546, lng: 121.4587, accessible: false }
+  ],
+  // 淡水站
+  'tamsui': [
+    { exit: 1, lat: 25.16827, lng: 121.4455, accessible: true },
+    { exit: 2, lat: 25.16776, lng: 121.4458, accessible: true },
+    { exit: 3, lat: 25.1676, lng: 121.4456, accessible: false }
+  ],
+  // 象山站
   'xiangshan': [
-    { exit: 1, lat: 25.032996, lng: 121.569340 },
-    { exit: 2, lat: 25.032372, lng: 121.569866 },
-    { exit: 3, lat: 25.032966, lng: 121.570470 }
+    { exit: 1, lat: 25.03301, lng: 121.5693, accessible: true },
+    { exit: 2, lat: 25.03238, lng: 121.5699, accessible: true },
+    { exit: 3, lat: 25.03297, lng: 121.5706, accessible: false }
+  ],
+  // 台北101/世貿站
+  'taipei101': [
+    { exit: 1, lat: 25.03311, lng: 121.5617, accessible: false },
+    { exit: 2, lat: 25.03284, lng: 121.5619, accessible: false },
+    { exit: 3, lat: 25.03274, lng: 121.5636, accessible: true },
+    { exit: 4, lat: 25.03303, lng: 121.5641, accessible: true },
+    { exit: 5, lat: 25.0331, lng: 121.5633, accessible: true }
+  ],
+  // 信義安和站
+  'xinyi': [
+    { exit: 1, lat: 25.03338, lng: 121.5526, accessible: false },
+    { exit: 2, lat: 25.03303, lng: 121.5523, accessible: false },
+    { exit: '2A', lat: 25.03285, lng: 121.5526, accessible: true },
+    { exit: 3, lat: 25.03302, lng: 121.5533, accessible: false },
+    { exit: 4, lat: 25.03302, lng: 121.5534, accessible: false },
+    { exit: 5, lat: 25.03333, lng: 121.5535, accessible: true }
+  ],
+  // 大安森林公園站
+  'daan-park': [
+    { exit: 1, lat: 25.03369, lng: 121.5344, accessible: false },
+    { exit: 2, lat: 25.03339, lng: 121.5345, accessible: false },
+    { exit: 3, lat: 25.0334, lng: 121.5349, accessible: false },
+    { exit: 4, lat: 25.03339, lng: 121.5353, accessible: true },
+    { exit: 5, lat: 25.03337, lng: 121.536, accessible: true },
+    { exit: 6, lat: 25.03365, lng: 121.536, accessible: true }
+  ],
+  // 永寧站
+  'yongning': [
+    { exit: 1, lat: 24.96664, lng: 121.4356, accessible: true },
+    { exit: 2, lat: 24.96602, lng: 121.4358, accessible: true },
+    { exit: 3, lat: 24.96725, lng: 121.4371, accessible: false },
+    { exit: 4, lat: 24.96754, lng: 121.4369, accessible: false }
+  ],
+  // 土城站
+  'tucheng': [
+    { exit: 1, lat: 24.97325, lng: 121.4442, accessible: true },
+    { exit: 2, lat: 24.97266, lng: 121.4437, accessible: false },
+    { exit: 3, lat: 24.97371, lng: 121.4453, accessible: false }
+  ],
+  // 海山站
+  'haishan': [
+    { exit: 1, lat: 24.98539, lng: 121.4486, accessible: false },
+    { exit: 2, lat: 24.98533, lng: 121.4489, accessible: true },
+    { exit: 3, lat: 24.9863, lng: 121.4492, accessible: false }
+  ],
+  // 府中站
+  'fuzhong': [
+    { exit: 1, lat: 25.00849, lng: 121.4591, accessible: true },
+    { exit: 2, lat: 25.00894, lng: 121.4595, accessible: false },
+    { exit: 3, lat: 25.00916, lng: 121.459, accessible: false }
+  ],
+  // 板橋站
+  'banqiao': [
+    { exit: 1, lat: 25.01331, lng: 121.4618, accessible: false },
+    { exit: 2, lat: 25.01322, lng: 121.4626, accessible: false },
+    { exit: 3, lat: 25.01444, lng: 121.4627, accessible: true }
+  ],
+  // 江子翠站
+  'jiangzicui': [
+    { exit: 1, lat: 25.0303, lng: 121.4719, accessible: false },
+    { exit: 2, lat: 25.02978, lng: 121.4719, accessible: false },
+    { exit: 3, lat: 25.02946, lng: 121.4722, accessible: true },
+    { exit: 4, lat: 25.02976, lng: 121.4727, accessible: false },
+    { exit: 5, lat: 25.03099, lng: 121.4734, accessible: false },
+    { exit: 6, lat: 25.03121, lng: 121.4731, accessible: false }
+  ],
+  // 龍山寺站
+  'longshan-temple': [
+    { exit: 1, lat: 25.03548, lng: 121.4995, accessible: true },
+    { exit: 2, lat: 25.03511, lng: 121.4998, accessible: false },
+    { exit: 3, lat: 25.03542, lng: 121.5016, accessible: false }
+  ],
+  // 西門站
+  'ximen': [
+    { exit: 1, lat: 25.04214, lng: 121.5076, accessible: false },
+    { exit: 2, lat: 25.04155, lng: 121.5084, accessible: false },
+    { exit: 3, lat: 25.04179, lng: 121.5089, accessible: false },
+    { exit: 4, lat: 25.0422, lng: 121.509, accessible: true },
+    { exit: 5, lat: 25.04294, lng: 121.5088, accessible: false },
+    { exit: 6, lat: 25.04257, lng: 121.5076, accessible: true }
+  ],
+  // 善導寺站
+  'shanxi': [
+    { exit: 1, lat: 25.0451, lng: 121.523, accessible: false },
+    { exit: 2, lat: 25.0448, lng: 121.5231, accessible: false },
+    { exit: 3, lat: 25.04457, lng: 121.5237, accessible: true },
+    { exit: 4, lat: 25.04411, lng: 121.5242, accessible: false },
+    { exit: 5, lat: 25.04426, lng: 121.5248, accessible: false },
+    { exit: 6, lat: 25.04463, lng: 121.5249, accessible: false }
+  ],
+  // 忠孝新生站
+  'zhongxiao-xinsheng': [
+    { exit: 1, lat: 25.04278, lng: 121.5318, accessible: false },
+    { exit: 2, lat: 25.0421, lng: 121.5321, accessible: true },
+    { exit: 3, lat: 25.04178, lng: 121.5337, accessible: true },
+    { exit: 4, lat: 25.04246, lng: 121.5332, accessible: false },
+    { exit: 5, lat: 25.04104, lng: 121.5324, accessible: false },
+    { exit: 6, lat: 25.04079, lng: 121.5331, accessible: false },
+    { exit: 7, lat: 25.04173, lng: 121.5331, accessible: false }
+  ],
+  // 忠孝敦化站
+  'zhongxiao-dunhua': [
+    { exit: 1, lat: 25.04164, lng: 121.5506, accessible: false },
+    { exit: 2, lat: 25.04163, lng: 121.5517, accessible: true },
+    { exit: 3, lat: 25.04134, lng: 121.5516, accessible: false },
+    { exit: 4, lat: 25.04135, lng: 121.5506, accessible: false },
+    { exit: 5, lat: 25.04124, lng: 121.5498, accessible: false },
+    { exit: 6, lat: 25.04103, lng: 121.5492, accessible: false },
+    { exit: 7, lat: 25.04166, lng: 121.5499, accessible: false },
+    { exit: 8, lat: 25.04193, lng: 121.5492, accessible: false }
+  ],
+  // 國父紀念館站
+  'sun-yat-sen-memorial-hall': [
+    { exit: 1, lat: 25.04184, lng: 121.5567, accessible: false },
+    { exit: 2, lat: 25.04103, lng: 121.5567, accessible: false },
+    { exit: 3, lat: 25.0412, lng: 121.558, accessible: false },
+    { exit: 4, lat: 25.04117, lng: 121.5585, accessible: true },
+    { exit: 5, lat: 25.0415, lng: 121.558, accessible: true }
+  ],
+  // 永春站
+  'yongchun': [
+    { exit: 1, lat: 25.041, lng: 121.5751, accessible: false },
+    { exit: 2, lat: 25.0407, lng: 121.5754, accessible: false },
+    { exit: 3, lat: 25.0407, lng: 121.5762, accessible: false },
+    { exit: 4, lat: 25.0407, lng: 121.5766, accessible: false },
+    { exit: 5, lat: 25.04096, lng: 121.5766, accessible: true }
+  ],
+  // 後山埤站
+  'houshanpi': [
+    { exit: 1, lat: 25.04442, lng: 121.5814, accessible: false },
+    { exit: 2, lat: 25.0437, lng: 121.5819, accessible: false },
+    { exit: 3, lat: 25.04523, lng: 121.5833, accessible: true },
+    { exit: 4, lat: 25.04565, lng: 121.5824, accessible: false }
+  ],
+  // 昆陽站
+  'kunyang': [
+    { exit: 1, lat: 25.05032, lng: 121.5927, accessible: true },
+    { exit: 2, lat: 25.0504, lng: 121.5928, accessible: false },
+    { exit: 3, lat: 25.0506, lng: 121.5936, accessible: false },
+    { exit: 4, lat: 25.05057, lng: 121.5938, accessible: true }
+  ],
+  // 南港站
+  'nangang': [
+    { exit: 1, lat: 25.05191, lng: 121.6064, accessible: false },
+    { exit: 2, lat: 25.05203, lng: 121.6074, accessible: true }
+  ],
+  // 南港展覽館站
+  'nangang-exhibition': [
+    { exit: 1, lat: 25.05578, lng: 121.6171, accessible: true },
+    { exit: 2, lat: 25.05541, lng: 121.6172, accessible: true },
+    { exit: 3, lat: 25.05512, lng: 121.6182, accessible: true },
+    { exit: 4, lat: 25.05536, lng: 121.6183, accessible: true },
+    { exit: '2A', lat: 25.05534, lng: 121.6172, accessible: true },
+    { exit: 5, lat: 25.05492, lng: 121.6169, accessible: true },
+    { exit: 6, lat: 25.05476, lng: 121.6179, accessible: false },
+    { exit: 7, lat: 25.05404, lng: 121.6181, accessible: false }
+  ],
+  // 松山站
+  'songshan': [
+    { exit: 1, lat: 25.05017, lng: 121.577, accessible: false },
+    { exit: 2, lat: 25.05017, lng: 121.5762, accessible: false },
+    { exit: 3, lat: 25.04994, lng: 121.5775, accessible: true },
+    { exit: 4, lat: 25.0498, lng: 121.578, accessible: false },
+    { exit: 5, lat: 25.05056, lng: 121.5778, accessible: true }
+  ],
+  // 南京三民站
+  'nanjing-sanmin': [
+    { exit: 1, lat: 25.05163, lng: 121.5632, accessible: true },
+    { exit: 2, lat: 25.05122, lng: 121.5631, accessible: true },
+    { exit: 3, lat: 25.05133, lng: 121.5646, accessible: false },
+    { exit: 4, lat: 25.05159, lng: 121.5647, accessible: false }
+  ],
+  // 台北小巨蛋站
+  'taipei-arena': [
+    { exit: 1, lat: 25.05184, lng: 121.5515, accessible: true },
+    { exit: 2, lat: 25.05157, lng: 121.5507, accessible: true },
+    { exit: 3, lat: 25.05152, lng: 121.5525, accessible: true },
+    { exit: 4, lat: 25.05153, lng: 121.5529, accessible: false },
+    { exit: 5, lat: 25.05184, lng: 121.5521, accessible: false }
+  ],
+  // 南京復興站
+  'nanjing-fuxing': [
+    { exit: 1, lat: 25.05263, lng: 121.5421, accessible: true },
+    { exit: 2, lat: 25.05175, lng: 121.5419, accessible: true },
+    { exit: 3, lat: 25.05178, lng: 121.5431, accessible: false },
+    { exit: 4, lat: 25.05178, lng: 121.5432, accessible: false },
+    { exit: 5, lat: 25.05173, lng: 121.5443, accessible: false },
+    { exit: 6, lat: 25.05195, lng: 121.5449, accessible: false },
+    { exit: 7, lat: 25.05249, lng: 121.5446, accessible: true },
+    { exit: 8, lat: 25.05202, lng: 121.5438, accessible: false }
+  ],
+  // 松江南京站
+  'songjiang-nanjing': [
+    { exit: 1, lat: 25.05184, lng: 121.5324, accessible: true },
+    { exit: 2, lat: 25.05134, lng: 121.5329, accessible: true },
+    { exit: 3, lat: 25.05109, lng: 121.5329, accessible: false },
+    { exit: 4, lat: 25.05162, lng: 121.5332, accessible: false },
+    { exit: 5, lat: 25.05188, lng: 121.5341, accessible: false },
+    { exit: 6, lat: 25.05221, lng: 121.5338, accessible: false },
+    { exit: 7, lat: 25.05247, lng: 121.5332, accessible: false },
+    { exit: 8, lat: 25.05257, lng: 121.5328, accessible: true }
+  ],
+  // 中山站
+  'zhongshan': [
+    { exit: 1, lat: 25.05241, lng: 121.5203, accessible: false },
+    { exit: 2, lat: 25.05238, lng: 121.5211, accessible: false },
+    { exit: 3, lat: 25.05261, lng: 121.5212, accessible: false },
+    { exit: 4, lat: 25.05286, lng: 121.5203, accessible: true },
+    { exit: 5, lat: 25.05304, lng: 121.5193, accessible: true },
+    { exit: 6, lat: 25.05283, lng: 121.519, accessible: true }
+  ],
+  // 北門站
+  'beimen': [
+    { exit: 1, lat: 25.04886, lng: 121.51, accessible: false },
+    { exit: 2, lat: 25.04958, lng: 121.5105, accessible: true },
+    { exit: 3, lat: 25.04994, lng: 121.5102, accessible: true }
+  ],
+  // 東門站
+  'dongmen': [
+    { exit: 1, lat: 25.03416, lng: 121.528, accessible: false },
+    { exit: 2, lat: 25.03422, lng: 121.5276, accessible: false },
+    { exit: 3, lat: 25.03368, lng: 121.5279, accessible: false },
+    { exit: 4, lat: 25.03365, lng: 121.5289, accessible: false },
+    { exit: 5, lat: 25.03356, lng: 121.5295, accessible: false },
+    { exit: 6, lat: 25.03392, lng: 121.53, accessible: false },
+    { exit: 7, lat: 25.03396, lng: 121.5297, accessible: false },
+    { exit: 8, lat: 25.03407, lng: 121.529, accessible: true }
+  ],
+  // 行天宮站
+  'xingtian': [
+    { exit: 1, lat: 25.0581, lng: 121.533, accessible: false },
+    { exit: 2, lat: 25.05879, lng: 121.5333, accessible: true },
+    { exit: 3, lat: 25.05987, lng: 121.5334, accessible: false },
+    { exit: 4, lat: 25.06037, lng: 121.533, accessible: false }
+  ],
+  // 中山國小站
+  'zhongshan-guoxiao': [
+    { exit: 1, lat: 25.06284, lng: 121.5261, accessible: false },
+    { exit: 2, lat: 25.06246, lng: 121.5261, accessible: false },
+    { exit: 3, lat: 25.06248, lng: 121.5271, accessible: false },
+    { exit: 4, lat: 25.06284, lng: 121.5268, accessible: true }
+  ],
+  // 民權西路站
+  'minquan-w-rd': [
+    { exit: 1, lat: 25.06264, lng: 121.5195, accessible: true },
+    { exit: 2, lat: 25.06185, lng: 121.5196, accessible: false },
+    { exit: 3, lat: 25.0617, lng: 121.5198, accessible: false },
+    { exit: 4, lat: 25.06194, lng: 121.5199, accessible: false },
+    { exit: 5, lat: 25.06324, lng: 121.5188, accessible: false },
+    { exit: 6, lat: 25.06274, lng: 121.5189, accessible: false },
+    { exit: 7, lat: 25.0627, lng: 121.5202, accessible: false },
+    { exit: 8, lat: 25.06269, lng: 121.5206, accessible: false },
+    { exit: 9, lat: 25.06295, lng: 121.5206, accessible: false },
+    { exit: 10, lat: 25.06297, lng: 121.5201, accessible: true }
+  ],
+  // 大橋頭站
+  'daqiaotou': [
+    { exit: 1, lat: 25.06318, lng: 121.5123, accessible: true },
+    { exit: '1A', lat: 25.06333, lng: 121.5117, accessible: false },
+    { exit: 2, lat: 25.0632, lng: 121.5133, accessible: false },
+    { exit: 3, lat: 25.06374, lng: 121.5134, accessible: false }
+  ],
+  // 三重國小站
+  'sanchong-guoxiao': [
+    { exit: 0, lat: 25.07065, lng: 121.4967, accessible: true }
+  ],
+  // 三和國中站
+  'sanhe-junior': [
+    { exit: 1, lat: 25.07659, lng: 121.4864, accessible: true },
+    { exit: 2, lat: 25.07698, lng: 121.4865, accessible: false }
+  ],
+  // 徐匯中學站
+  'xuzhouzai': [
+    { exit: 1, lat: 25.0803, lng: 121.4799, accessible: false },
+    { exit: 2, lat: 25.08033, lng: 121.4806, accessible: true }
+  ],
+  // 三重站
+  'sanchong': [
+    { exit: 1, lat: 25.05535, lng: 121.4833, accessible: true },
+    { exit: 2, lat: 25.05562, lng: 121.4845, accessible: false },
+    { exit: 3, lat: 25.05613, lng: 121.485, accessible: false }
+  ],
+  // 菜寮站
+  'cailiao': [
+    { exit: 1, lat: 25.05971, lng: 121.4907, accessible: false },
+    { exit: 2, lat: 25.05929, lng: 121.4911, accessible: true },
+    { exit: 3, lat: 25.06056, lng: 121.4921, accessible: false }
+  ],
+  // 台北橋站
+  'taiyuan': [
+    { exit: 0, lat: 25.06297, lng: 121.5003, accessible: true }
+  ],
+  // 新莊站
+  'xinzhuang': [
+    { exit: 1, lat: 25.0363, lng: 121.4524, accessible: true },
+    { exit: 2, lat: 25.03601, lng: 121.4525, accessible: true }
+  ],
+  // 頭前庄站
+  'fuying': [
+    { exit: 1, lat: 25.03984, lng: 121.4603, accessible: true },
+    { exit: 2, lat: 25.03907, lng: 121.4609, accessible: false },
+    { exit: 3, lat: 25.03985, lng: 121.4622, accessible: false },
+    { exit: 4, lat: 25.04026, lng: 121.4623, accessible: false }
+  ],
+  // 先嗇宮站
+  'danfeng': [
+    { exit: 1, lat: 25.0465, lng: 121.4713, accessible: true },
+    { exit: 2, lat: 25.04608, lng: 121.4712, accessible: false },
+    { exit: 3, lat: 25.0463, lng: 121.4718, accessible: false }
+  ],
+  // 迴龍站
+  'huilong': [
+    { exit: 1, lat: 25.02183, lng: 121.4112, accessible: true },
+    { exit: 2, lat: 25.02118, lng: 121.4108, accessible: false },
+    { exit: 3, lat: 25.02254, lng: 121.4126, accessible: false }
+  ],
+  // 丹鳳站
+  'touqianzhuang': [
+    { exit: 1, lat: 25.02899, lng: 121.4223, accessible: false },
+    { exit: 2, lat: 25.02874, lng: 121.4226, accessible: true }
+  ],
+  // 輔大站
+  'xianshegong': [
+    { exit: 1, lat: 25.03293, lng: 121.4353, accessible: true },
+    { exit: 2, lat: 25.03232, lng: 121.4353, accessible: true },
+    { exit: 3, lat: 25.03278, lng: 121.4365, accessible: false },
+    { exit: 4, lat: 25.03302, lng: 121.4365, accessible: false }
+  ],
+  // 蘆洲站
+  'luzhou': [
+    { exit: 1, lat: 25.09133, lng: 121.4647, accessible: false },
+    { exit: 2, lat: 25.09171, lng: 121.4649, accessible: true },
+    { exit: 3, lat: 25.09187, lng: 121.4643, accessible: false }
+  ],
+  // 三民高中站
+  'sanmin-high-school': [
+    { exit: 1, lat: 25.08569, lng: 121.4727, accessible: true },
+    { exit: 2, lat: 25.08564, lng: 121.4735, accessible: false }
+  ],
+  // 幸福站
+  'xingfu': [
+    { exit: 1, lat: 25.05013, lng: 121.4601, accessible: true },
+    { exit: 2, lat: 25.04976, lng: 121.4602, accessible: false }
+  ],
+  // 新北產業園區站
+  'xinbei-industrial-park': [
+    { exit: 0, lat: 25.06156, lng: 121.4598, accessible: true }
+  ],
+  // 十四張站
+  'shisizhang': [
+    { exit: 0, lat: 24.98447, lng: 121.5277, accessible: true }
+  ],
+  // 秀朗橋站
+  'xiulang': [
+    { exit: 1, lat: 24.99053, lng: 121.5254, accessible: false },
+    { exit: 2, lat: 24.99054, lng: 121.5249, accessible: true }
+  ],
+  // 景平站
+  'jingping': [
+    { exit: 0, lat: 24.99193, lng: 121.5163, accessible: true }
+  ],
+  // 中和站
+  'zhonghe': [
+    { exit: 0, lat: 25.00221, lng: 121.4965, accessible: true }
+  ],
+  // 橋和站
+  'qiaohe': [
+    { exit: 0, lat: 25.0048, lng: 121.4903, accessible: true }
+  ],
+  // 中原站
+  'zhongyuan': [
+    { exit: 0, lat: 25.00841, lng: 121.4842, accessible: true }
+  ],
+  // 板新站
+  'banxin': [
+    { exit: 0, lat: 25.01449, lng: 121.4722, accessible: true }
+  ],
+  // 新埔民生站
+  'xinpu-minsheng': [
+    { exit: 0, lat: 25.02613, lng: 121.4668, accessible: true }
+  ],
+  // 內湖展覽館站
+  'neihu-exhibition-hall': [
+    { exit: 1, lat: 25.08389, lng: 121.6024, accessible: true },
+    { exit: 2, lat: 25.08368, lng: 121.6022, accessible: true }
   ]
 };
 
