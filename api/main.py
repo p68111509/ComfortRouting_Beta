@@ -410,6 +410,11 @@ app.add_middleware(
 # 靜態檔案服務
 app.mount("/static", StaticFiles(directory="."), name="static")
 
+# 健康檢查端點
+@app.get("/api/health")
+async def health_check():
+    return {"status": "healthy", "message": "API is running"}
+
 # 根路徑返回前端頁面
 @app.get("/")
 async def read_index():

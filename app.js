@@ -4073,8 +4073,7 @@ function showMetroModeInfo() {
     <div style="font-size: 24px; margin-bottom: 15px;">🚇</div>
     <h3 style="margin: 0 0 15px 0; color: #333; font-size: 18px;">捷運模式</h3>
     <p style="margin: 0 0 20px 0; color: #666; line-height: 1.5;">
-      目前捷運模式可使用的站點為：<br>
-      <strong style="color: #E3002C;">紅線-象山站</strong>
+      部分景點尚在更新中，敬請期待!
     </p>
     <button id="metro-info-close" style="
       background: #E3002C;
