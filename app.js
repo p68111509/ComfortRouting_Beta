@@ -67,8 +67,8 @@ document.addEventListener('DOMContentLoaded', updateHeaderHeight);
 // 速度常數 (km/h)
 const SPEED_CONSTANTS = {
   motorcycle: 45,
-  bicycle: 18,
-  walk: 5
+  bicycle: 14,
+  walk: 2.5
 };
 
 // 捷運線路和站點數據
@@ -1075,6 +1075,9 @@ function switchMode(mode) {
     }, 100);
     
     console.log('[debug] Switched to metro mode, metro panel should be visible');
+    
+    // 顯示捷運模式提示彈窗
+    showMetroModeInfo();
   }
   
   console.log('[debug] Mode switch completed');
@@ -1872,8 +1875,8 @@ function updateDashboardBar(barId, valueId, value, maxValue, unit) {
       bar.style.width = `${percentage}%`;
     }, 100);
     
-    // 更新數值（只顯示數字，不加單位）
-    valueEl.textContent = formatNumber(value, 1);
+    // 更新數值（加上單位）
+    valueEl.textContent = formatNumber(value, 1) + (unit ? ` ${unit}` : '');
   }
 }
 
@@ -3261,8 +3264,8 @@ function updateResultDashboardBar(barId, valueId, value, maxValue, unit) {
     bar.style.width = `${percentage}%`;
     }, 100);
     
-    // 更新數值（只顯示數字，不加單位）
-    valueElement.textContent = formatNumber(value, 1);
+    // 更新數值（加上單位）
+    valueElement.textContent = formatNumber(value, 1) + (unit ? ` ${unit}` : '');
   }
 }
 
@@ -3291,6 +3294,93 @@ function closeRouteResultModal() {
     window.routeResultMap.remove();
     window.routeResultMap = null;
   }
+}
+
+// 顯示捷運模式提示彈窗
+function showMetroModeInfo() {
+  // 創建彈窗元素
+  const modal = document.createElement('div');
+  modal.id = 'metro-info-modal';
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    font-family: 'Microsoft JhengHei', sans-serif;
+  `;
+  
+  const content = document.createElement('div');
+  content.style.cssText = `
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 400px;
+    margin: 20px;
+    animation: modalSlideIn 0.3s ease-out;
+  `;
+  
+  content.innerHTML = `
+    <div style="font-size: 24px; margin-bottom: 15px;">🚇</div>
+    <h3 style="margin: 0 0 15px 0; color: #333; font-size: 18px;">捷運模式</h3>
+    <p style="margin: 0 0 20px 0; color: #666; line-height: 1.5;">
+      目前捷運模式可使用的站點為：<br>
+      <strong style="color: #E3002C;">紅線-象山站</strong>
+    </p>
+    <button id="metro-info-close" style="
+      background: #E3002C;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+    ">我知道了</button>
+  `;
+  
+  modal.appendChild(content);
+  document.body.appendChild(modal);
+  
+  // 添加動畫樣式
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  // 綁定關閉事件
+  const closeBtn = document.getElementById('metro-info-close');
+  closeBtn.addEventListener('click', function() {
+    modal.style.animation = 'modalSlideIn 0.3s ease-out reverse';
+    setTimeout(() => {
+      document.body.removeChild(modal);
+      document.head.removeChild(style);
+    }, 300);
+  });
+  
+  // 點擊背景關閉
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      closeBtn.click();
+    }
+  });
 }
 
 // 錯誤關閉按鈕
