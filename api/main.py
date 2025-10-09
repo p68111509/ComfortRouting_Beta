@@ -466,12 +466,9 @@ async def read_index():
 def _on_startup():
     """啟動時載入路網與 KDTree。"""
     try:
-        # 若圖檔不存在，先提示但不中斷啟動（讓 geocode/reverse 可用）
-        if not os.path.exists(str(GRAPH_PATH)):
-            print(f"[startup] graph file not found: {GRAPH_PATH}")
-        else:
-            print(f"[startup] attempting to load graph: {GRAPH_PATH}")
-            load_graph()
+        # 嘗試載入圖檔，使用多個可能的路徑
+        print(f"[startup] attempting to load graph from multiple paths...")
+        load_graph()
     except Exception as ie:
         print(f"[startup] load_graph exception: {ie}")
         import traceback
