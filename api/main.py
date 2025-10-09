@@ -55,6 +55,13 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parents[1]
 DEFAULT_GRAPH = BASE_DIR / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl"
 
+# 在 Render 上，嘗試多個可能的路徑
+possible_graph_paths = [
+    DEFAULT_GRAPH,  # 專案根/data/...
+    BASE_DIR / "api" / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl",  # 專案根/api/data/...
+    Path("data") / "雙北基隆路網_濃度與暴露_最大連通版.pkl",  # 相對於 api/ 目錄
+]
+
 # 允許用環境變數覆蓋；沒設就用專案根/data 的預設
 GRAPH_PATH = Path(os.environ.get("GRAPH_PATH", str(DEFAULT_GRAPH))).resolve()
 
@@ -204,11 +211,26 @@ def load_graph() -> None:
     需要轉換為 WGS84 (EPSG:4326) 格式。
     """
     global G, _kdtree, _node_xy, _node_ids
-    try:
-        with open(GRAPH_PATH, "rb") as f:
-            G = pickle.load(f)
-    except Exception as e:
-        raise RuntimeError(f"Failed to load graph pickle: {GRAPH_PATH} - {e}")
+    
+    # 嘗試多個可能的路徑
+    graph_loaded = False
+    for graph_path in possible_graph_paths:
+        try:
+            print(f"[startup] trying to load graph from: {graph_path}")
+            if graph_path.exists():
+                with open(graph_path, "rb") as f:
+                    G = pickle.load(f)
+                print(f"[startup] successfully loaded graph from: {graph_path}")
+                graph_loaded = True
+                break
+            else:
+                print(f"[startup] graph file not found: {graph_path}")
+        except Exception as e:
+            print(f"[startup] failed to load graph from {graph_path}: {e}")
+            continue
+    
+    if not graph_loaded:
+        raise RuntimeError(f"Failed to load graph pickle from any of the attempted paths: {possible_graph_paths}")
 
     # 建立座標轉換器：從 EPSG:3826 (TWD97) 轉換到 EPSG:4326 (WGS84)
     transformer = Transformer.from_crs("epsg:3826", "epsg:4326", always_xy=True)
@@ -418,7 +440,7 @@ async def health_check():
 # 根路徑返回前端頁面
 @app.get("/")
 async def read_index():
-    return FileResponse("index.html")
+    return FileResponse("../index.html")
 
 
 @app.on_event("startup")
