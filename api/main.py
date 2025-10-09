@@ -457,6 +457,104 @@ async def get_leaflet_js():
     return FileResponse("../vendor/leaflet/leaflet.js", media_type="application/javascript")
 
 # 根路徑返回前端頁面
+@app.get("/api/overlay/{overlay_type}")
+async def get_overlay(overlay_type: str):
+    """獲取疊加圖層資訊（完全像 .pkl 檔案的處理方式）"""
+    
+    # 定義疊加圖層檔案路徑（相對路徑，後端直接讀取）
+    overlay_files = {
+        "pm25": "data/AirPollution/PM25__20241130.png",
+        "no2": "data/AirPollution/NO2_全台.png", 
+        "wbgt": "data/AirPollution/WBGT_全台.png"
+    }
+    
+    if overlay_type not in overlay_files:
+        raise HTTPException(status_code=404, detail="Overlay type not found")
+    
+    # 檢查檔案是否存在（像 .pkl 檔案一樣）
+    file_path = BASE_DIR / overlay_files[overlay_type]
+    print(f"[DEBUG] Looking for overlay file: {file_path}")
+    print(f"[DEBUG] File exists: {file_path.exists()}")
+    
+    if not file_path.exists():
+        # 嘗試其他可能的路徑
+        alternative_paths = [
+            BASE_DIR.parent / overlay_files[overlay_type],
+            Path(overlay_files[overlay_type])
+        ]
+        
+        for alt_path in alternative_paths:
+            print(f"[DEBUG] Trying alternative path: {alt_path}")
+            if alt_path.exists():
+                file_path = alt_path
+                break
+        else:
+            raise HTTPException(status_code=404, detail=f"Overlay file not found: {file_path}")
+    
+    # 讀取圖片檔案並轉換為 base64（像 .pkl 檔案一樣處理）
+    import base64
+    
+    try:
+        file_extension = file_path.suffix.lower()
+        
+        # 直接讀取 PNG 檔案（PM2.5 已預處理）
+        print(f"[DEBUG] Loading PNG overlay file: {file_path}")
+        
+        # 對於 PM2.5，使用預處理好的地理邊界
+        if overlay_type == 'pm25':
+            # 使用預處理好的地理邊界資訊
+            geo_bounds = [[24.673148524048187, 121.28083627348856], [25.300587805633413, 122.00969105489887]]
+            print(f"[DEBUG] Using predefined bounds for PM2.5: {geo_bounds}")
+            
+            # 讀取 PNG 檔案
+            with open(file_path, 'rb') as f:
+                image_data = f.read()
+                image_base64 = base64.b64encode(image_data).decode('utf-8')
+            
+            return {
+                "image_data": f"data:image/png;base64,{image_base64}",
+                "bounds": geo_bounds,
+                "opacity": 0.5,
+                "file_exists": True,
+                "file_size": file_path.stat().st_size,
+                "debug_path": str(file_path),
+                "original_format": file_extension,
+                "preprocessed": True,
+                "coordinate_info": {
+                    "source": "preprocessed_png",
+                    "bounds": geo_bounds,
+                    "description": "Using predefined WGS84 bounds from tif2png conversion"
+                }
+            }
+        else:
+            # 對於其他格式（如 NO2, WBGT PNG），使用預設邊界
+            with open(file_path, 'rb') as f:
+                image_data = f.read()
+                image_base64 = base64.b64encode(image_data).decode('utf-8')
+            
+            # 預設邊界（台灣全島）
+            default_bounds = [[21.9, 120.1], [25.3, 122.0]]
+            
+            return {
+                "image_data": f"data:image/png;base64,{image_base64}",
+                "bounds": default_bounds,
+                "opacity": 0.5,
+                "file_exists": True,
+                "file_size": file_path.stat().st_size,
+                "debug_path": str(file_path),
+                "original_format": file_extension,
+                "preprocessed": True,
+                "coordinate_info": {
+                    "source": "preprocessed_png",
+                    "bounds": default_bounds,
+                    "description": "Using default Taiwan bounds for other overlays"
+                }
+            }
+            
+    except Exception as e:
+        print(f"[ERROR] Failed to process overlay file {file_path}: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to process overlay file: {str(e)}")
+
 @app.get("/")
 async def read_index():
     return FileResponse("../index.html")
