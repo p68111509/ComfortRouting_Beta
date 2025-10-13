@@ -3507,11 +3507,11 @@ p, span, div, button, input, select, textarea,
   .route-result-modal .result-dashboard-card {
     min-height: auto !important;
     height: auto !important;
-    width: calc(100% - 20px) !important;
-    max-width: calc(100% - 20px) !important;
+    width: auto !important;
+    max-width: none !important;
     padding: 12px !important;
     margin: 0 10px !important;
-    align-self: center !important;
+    align-self: stretch !important;
   }
   
   /* 改善效益卡片：垂直佈局 */
