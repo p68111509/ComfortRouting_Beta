@@ -3264,22 +3264,22 @@ p, span, div, button, input, select, textarea,
     gap: 12px;
   }
   
-  /* 捷運模式解算成果彈窗中的通勤模式選擇器 - 在地圖上方 */
+  /* 捷運模式解算成果彈窗中的通勤模式選擇器 - 在標題下方 */
   .route-result-modal .transport-mode-selector {
     display: flex !important;
     flex-direction: row !important;
     justify-content: space-between !important;
     align-items: center !important;
-    padding: 12px 16px !important;
-    margin-bottom: 16px !important;
+    padding: 8px 12px !important;
+    margin: 0 0 12px 0 !important;
     background: var(--card-bg) !important;
-    border: 2px solid var(--border) !important;
-    border-radius: 8px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 6px !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1) !important;
   }
   
   .route-result-modal .transport-mode-title {
-    font-size: 14px !important;
+    font-size: 12px !important;
     text-align: left !important;
     margin: 0 !important;
     font-weight: 600 !important;
@@ -3289,12 +3289,12 @@ p, span, div, button, input, select, textarea,
   .route-result-modal .radio-group {
     display: flex !important;
     flex-direction: row !important;
-    gap: 16px !important;
+    gap: 12px !important;
     align-items: center !important;
   }
   
   .route-result-modal .radio-label {
-    font-size: 14px !important;
+    font-size: 12px !important;
     margin: 0 !important;
   }
 }
@@ -3507,8 +3507,8 @@ p, span, div, button, input, select, textarea,
   .route-result-modal .result-dashboard-card {
     min-height: auto !important;
     height: auto !important;
-    width: 95% !important;
-    max-width: 95% !important;
+    width: 98% !important;
+    max-width: 98% !important;
     padding: 12px !important;
     margin: 0 !important;
     align-self: center !important;
