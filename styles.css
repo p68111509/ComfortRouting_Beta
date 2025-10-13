@@ -3247,6 +3247,24 @@ p, span, div, button, input, select, textarea,
   align-items: center;
 }
 
+/* 手機模式通勤方式選擇器樣式 */
+@media (max-width: 768px) {
+  .transport-mode-selector {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  
+  .transport-mode-title {
+    font-size: 14px;
+    text-align: center;
+  }
+  
+  .radio-group {
+    gap: 12px;
+  }
+}
+
 .radio-label {
   display: flex;
   align-items: center;
@@ -3454,10 +3472,10 @@ p, span, div, button, input, select, textarea,
     min-height: auto !important;
     height: auto !important;
     width: 100% !important;
-    max-width: 90% !important;
+    max-width: none !important;
     padding: 12px !important;
-    margin: 0 auto !important;
-    align-self: center !important;
+    margin: 0 !important;
+    align-self: stretch !important;
   }
   
   /* 改善效益卡片：垂直佈局 */
