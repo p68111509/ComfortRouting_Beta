@@ -3265,6 +3265,10 @@ p, span, div, button, input, select, textarea,
   }
   
   /* 捷運模式解算成果彈窗中的通勤模式選擇器 - 疊在小地圖右下方 */
+  .route-result-modal .route-map-container {
+    position: relative !important;
+  }
+  
   .route-result-modal .transport-mode-selector {
     position: absolute !important;
     bottom: 10px !important;
@@ -3505,8 +3509,8 @@ p, span, div, button, input, select, textarea,
   .route-result-modal .result-dashboard-card {
     min-height: auto !important;
     height: auto !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    width: 80% !important;
+    max-width: 80% !important;
     padding: 12px !important;
     margin: 0 !important;
     align-self: center !important;
