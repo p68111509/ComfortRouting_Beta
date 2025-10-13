@@ -3757,6 +3757,12 @@ p, span, div, button, input, select, textarea,
     height: auto !important;
     width: auto !important;
   }
+  
+  /* 電腦版捷運模式解算成果彈窗中的通勤模式選擇器間隔 */
+  .route-result-modal .transport-mode-selector {
+    margin: 12px 16px 16px 16px !important; /* 上 右 下 左 */
+    padding: 12px 16px !important;
+  }
 }
 
 .result-dashboard-card:hover {
