@@ -3509,8 +3509,8 @@ p, span, div, button, input, select, textarea,
     height: auto !important;
     width: auto !important;
     max-width: none !important;
-    padding: 12px !important;
-    margin: 0 10px !important;
+    padding: 8px 10px !important;
+    margin: 8px 10px 12px 10px !important;
     align-self: center !important;
   }
   
