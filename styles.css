@@ -3270,8 +3270,8 @@ p, span, div, button, input, select, textarea,
     flex-direction: row !important;
     justify-content: space-between !important;
     align-items: center !important;
-    padding: 8px 12px !important;
-    margin: 0 0 12px 0 !important;
+    padding: 8px 10px !important;
+    margin: 8px 10px 12px 10px !important;
     background: var(--card-bg) !important;
     border: 1px solid var(--border) !important;
     border-radius: 6px !important;
@@ -3507,10 +3507,10 @@ p, span, div, button, input, select, textarea,
   .route-result-modal .result-dashboard-card {
     min-height: auto !important;
     height: auto !important;
-    width: 98% !important;
-    max-width: 98% !important;
+    width: calc(100% - 20px) !important;
+    max-width: calc(100% - 20px) !important;
     padding: 12px !important;
-    margin: 0 !important;
+    margin: 0 10px !important;
     align-self: center !important;
   }
   
