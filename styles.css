@@ -754,6 +754,22 @@ body {
   transform: scale(1.05);
 }
 
+/* Logo 超連結樣式 */
+.logo-container a {
+  display: inline-block;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.logo-container a:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+.logo-container a:focus {
+  outline: none;
+}
+
 /* 使用說明按鈕區域 */
 .button-section {
   text-align: center;
@@ -3428,7 +3444,8 @@ p, span, div, button, input, select, textarea,
   .route-result-modal .result-dashboard-card:first-child {
     display: flex;
     flex-direction: column;
-    padding: 16px;
+    padding: 12px;
+    min-height: 90px !important; /* Added !important to override global rule */
     background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 100%);
     border: 2px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 8px 32px rgba(135, 206, 235, 0.4);
@@ -3520,6 +3537,7 @@ p, span, div, button, input, select, textarea,
     display: flex !important;
     flex-direction: column !important;
     padding: 16px !important;
+    min-height: 90px !important; /* Added min-height with !important to override global rule */
     background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 100%) !important;
     border: 2px solid rgba(255, 255, 255, 0.3) !important;
     box-shadow: 0 8px 32px rgba(135, 206, 235, 0.4) !important;
@@ -3744,6 +3762,18 @@ p, span, div, button, input, select, textarea,
 .result-dashboard-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* 關閉路徑比較彈窗中資訊卡的 hover 動畫 */
+.route-comparison-modal .result-dashboard-card:hover {
+  transform: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* 關閉路徑比較彈窗中 dashboard-card 的 hover 動畫 */
+.route-comparison-modal .dashboard-card:hover {
+  transform: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
 }
 
 .result-card-title {
