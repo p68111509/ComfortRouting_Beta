@@ -3511,7 +3511,7 @@ p, span, div, button, input, select, textarea,
     max-width: none !important;
     padding: 12px !important;
     margin: 0 10px !important;
-    align-self: stretch !important;
+    align-self: center !important;
   }
   
   /* 改善效益卡片：垂直佈局 */
