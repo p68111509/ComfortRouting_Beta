@@ -357,7 +357,7 @@
             <!-- 左側：出口選擇 -->
             <div class="exit-section">
               <h5 data-i18n="selectExit">選擇出口</h5>
-              <div class="exit-buttons" id="exitButtons">
+              <div class="exit-buttons scrollable" id="exitButtons">
                 <button class="exit-btn" data-exit="1" onclick="selectExit(1)">出口1</button>
                 <button class="exit-btn" data-exit="2" onclick="selectExit(2)">出口2</button>
                 <button class="exit-btn" data-exit="3" onclick="selectExit(3)">出口3</button>
@@ -367,7 +367,7 @@
             <!-- 右側：景點選擇 -->
             <div class="attraction-section">
               <h5 data-i18n="nearbyAttractions">附近景點</h5>
-              <div class="attraction-buttons" id="attractionButtons">
+              <div class="attraction-buttons scrollable" id="attractionButtons">
                 <!-- 景點按鈕會動態生成 -->
               </div>
             </div>
@@ -387,6 +387,19 @@
     <div class="route-result-content">
       <div class="route-result-header">
         <h3 id="routeResultTitle">路徑解算結果</h3>
+        <div class="transport-mode-selector">
+          <h4 class="transport-mode-title">通勤模式</h4>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" name="resultTransportMode" value="walk" checked>
+              <span data-i18n="modeWalk">步行</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="resultTransportMode" value="bicycle">
+              <span data-i18n="modeBicycle">腳踏車</span>
+            </label>
+          </div>
+        </div>
         <button class="close-route-result" onclick="closeRouteResultModal()">✕</button>
       </div>
       <div class="route-result-body">

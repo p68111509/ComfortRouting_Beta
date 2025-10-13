@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', updateHeaderHeight);
 // 速度常數 (km/h)
 const SPEED_CONSTANTS = {
   motorcycle: 45,
-  bicycle: 14,
+  bicycle: 7,  // 減半：14 -> 7
   walk: 2.5
 };
 
@@ -4577,6 +4577,9 @@ function showRouteResultModal(routeData, exitData, attractionData, stationName) 
   modal.style.display = 'flex';
   disableHeaderButtons();
   
+  // 綁定通勤方式切換事件
+  bindTransportModeChangeEvents(routeData, exitData, attractionData);
+  
   setTimeout(() => {
     // 初始化結果地圖
     initRouteResultMap(routeData, exitData, attractionData);
@@ -4587,6 +4590,38 @@ function showRouteResultModal(routeData, exitData, attractionData, stationName) 
     // 重新綁定改善率Help按鈕事件（因為彈窗內容是動態生成的）
     bindImprovementHelpEvents();
   }, 100);
+}
+
+// 綁定通勤方式切換事件
+function bindTransportModeChangeEvents(routeData, exitData, attractionData) {
+  const radioButtons = document.querySelectorAll('input[name="resultTransportMode"]');
+  
+  radioButtons.forEach(radio => {
+    radio.addEventListener('change', function() {
+      if (this.checked) {
+        const selectedMode = this.value;
+        console.log('[metro] Transport mode changed to:', selectedMode);
+        
+        // 重新計算時間並更新顯示
+        updateRouteResultWithNewMode(routeData, selectedMode);
+      }
+    });
+  });
+}
+
+// 根據新的通勤方式更新結果
+function updateRouteResultWithNewMode(routeData, transportMode) {
+  const speed = SPEED_CONSTANTS[transportMode];
+  
+  // 重新計算時間
+  const shortestTime = Math.round((routeData.shortest.distance_km / speed) * 60);
+  const lowestTime = Math.round((routeData.lowest.distance_km / speed) * 60);
+  
+  // 更新時間顯示
+  updateResultDashboardBar('resultDashTimeBarShortest', 'resultDashTimeShortest', shortestTime, Math.max(shortestTime, lowestTime), 'min');
+  updateResultDashboardBar('resultDashTimeBarLowest', 'resultDashTimeLowest', lowestTime, Math.max(shortestTime, lowestTime), 'min');
+  
+  console.log(`[metro] Updated times for ${transportMode}: shortest=${shortestTime}min, lowest=${lowestTime}min`);
 }
 
 // 初始化結果地圖
