@@ -1900,6 +1900,13 @@ document.addEventListener('DOMContentLoaded', function() {
   // 確保錯誤提示框初始隱藏
   hideError();
   
+  // 嘗試根據 URL 參數自動啟動捷運模式並解算
+  try {
+    handleDeepLinkNavigation();
+  } catch (e) {
+    console.warn('[deeplink] failed to handle deep link:', e);
+  }
+  
 });
 
 // 初始化地圖
@@ -4580,6 +4587,13 @@ function showRouteResultModal(routeData, exitData, attractionData, stationName) 
   // 綁定通勤方式切換事件
   bindTransportModeChangeEvents(routeData, exitData, attractionData);
   
+  // 產生可回放的深連結 URL（不刷新頁面）
+  try {
+    pushMetroDeepLinkURL(stationName, exitData, attractionData);
+  } catch (e) {
+    console.warn('[deeplink] failed to push URL:', e);
+  }
+  
   setTimeout(() => {
     // 初始化結果地圖
     initRouteResultMap(routeData, exitData, attractionData);
@@ -4622,6 +4636,72 @@ function updateRouteResultWithNewMode(routeData, transportMode) {
   updateResultDashboardBar('resultDashTimeBarLowest', 'resultDashTimeLowest', lowestTime, Math.max(shortestTime, lowestTime), 'min');
   
   console.log(`[metro] Updated times for ${transportMode}: shortest=${shortestTime}min, lowest=${lowestTime}min`);
+}
+
+// 依站名取得站點ID（METRO_STATIONS: id -> name）
+function getStationIdByName(stationName) {
+  try {
+    for (const [sid, name] of Object.entries(METRO_STATIONS)) {
+      if (name === stationName) return sid;
+    }
+  } catch (_) {}
+  return null;
+}
+
+// 依據站名/出口/景點推入可回放URL
+function pushMetroDeepLinkURL(stationName, exitData, attractionData) {
+  const sid = getStationIdByName(stationName);
+  if (!sid || !exitData || !attractionData) return;
+  const base = window.location.origin + window.location.pathname;
+  const ex = encodeURIComponent(String(exitData.exit));
+  // 找出景點索引（以名稱與座標比對，確保正確）
+  let aid = null;
+  const list = (STATION_ATTRACTIONS && STATION_ATTRACTIONS[sid]) || [];
+  for (let i = 0; i < list.length; i++) {
+    const a = list[i];
+    if (a && a.name === attractionData.name && Math.abs(a.lat - attractionData.lat) < 1e-6 && Math.abs(a.lng - attractionData.lng) < 1e-6) {
+      aid = i;
+      break;
+    }
+  }
+  if (aid === null) aid = 0; // 後備
+  const params = new URLSearchParams();
+  params.set('m', 'metro');
+  params.set('sid', sid);
+  params.set('ex', String(ex));
+  params.set('aid', String(aid));
+  // 保留目前語言
+  if (typeof currentLang === 'string') params.set('lang', currentLang);
+  const newUrl = `${base}?${params.toString()}`;
+  window.history.pushState({}, '', newUrl);
+}
+
+// 載入時處理深連結
+function handleDeepLinkNavigation() {
+  const qs = new URLSearchParams(window.location.search);
+  const mode = qs.get('m');
+  if (mode !== 'metro') return;
+  const sid = qs.get('sid');
+  const exParam = qs.get('ex');
+  const aidParam = qs.get('aid');
+  if (!sid || exParam === null || aidParam === null) return;
+  const stationName = (METRO_STATIONS && METRO_STATIONS[sid]) || '';
+  const exits = (STATION_EXITS && STATION_EXITS[sid]) || [];
+  const exitData = exits.find(e => String(e && e.exit) === String(exParam));
+  const attractions = (STATION_ATTRACTIONS && STATION_ATTRACTIONS[sid]) || [];
+  const aid = Math.max(0, Math.min(attractions.length - 1, parseInt(aidParam, 10)));
+  const attractionData = attractions[aid];
+  if (!stationName || !exitData || !attractionData) {
+    console.warn('[deeplink] invalid parameters:', { sid, exParam, aidParam });
+    return;
+  }
+  // 切換模式為捷運
+  if (typeof switchMode === 'function') {
+    switchMode('metro');
+  }
+  // 直接呼叫既有API解算
+  calculateRouteForModal(exitData, attractionData, stationName)
+    .catch(err => console.warn('[deeplink] calculateRouteForModal failed:', err));
 }
 
 // 初始化結果地圖
