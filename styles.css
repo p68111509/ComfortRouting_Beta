@@ -72,6 +72,8 @@ body {
   flex: 1;
   display: flex;
   justify-content: center;
+  position: relative;
+  z-index: 2001; /* 確保模式切換器區域在正確的層級 */
 }
 
 /* 模式切換器 */
@@ -83,6 +85,7 @@ body {
   padding: 6px;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 2001; /* 確保模式切換器在正確的層級 */
 }
 
 .mode-btn {
@@ -97,7 +100,7 @@ body {
   border-radius: 24px;
   cursor: pointer;
   transition: all 0.3s ease;
-  z-index: 2;
+  z-index: 2002; /* 確保按鈕在 header 上方，且高於 mode-indicator */
 }
 
 .mode-btn:hover {
@@ -127,6 +130,8 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  position: relative;
+  z-index: 2001; /* 確保右側按鈕區域在正確的層級 */
 }
 
 
