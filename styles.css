@@ -1453,16 +1453,21 @@ body {
 
 .dashboard-card {
   background: white;
-  border-radius: 8px;
+  border-radius: 18px; /* 更圓角 */
   padding: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e9ecef;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
   overflow: hidden;
   min-height: 80px;
+}
+
+/* 除了暴露改善以外其他卡片加灰邊框 */
+.dashboard-card:not(.combined-improvement-card) {
+  border: 1px solid rgba(0, 0, 0, 0.2); /* 邊框加深 */
 }
 
 .dashboard-card:hover {
@@ -3607,12 +3612,17 @@ p, span, div, button, input, select, textarea,
 
 .result-dashboard-card {
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-  border-radius: 10px;
+  border-radius: 18px; /* 更圓角 */
   padding: 14px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   min-height: 120px;
+}
+
+/* 除了暴露改善以外其他結果卡片加灰邊框 */
+.result-dashboard-card:not(.result-combined-improvement-card) {
+  border: 1px solid rgba(0, 0, 0, 0.2); /* 邊框加深 */
 }
 
 /* 水平進度條樣式 */
@@ -3964,9 +3974,9 @@ p, span, div, button, input, select, textarea,
   background: var(--card-bg);
   backdrop-filter: saturate(200%) blur(18px);
   border-radius: var(--border-radius);
-  width: 90%;
-  max-width: 1000px;
-  max-height: 90vh;
+  width: 98vw; /* 更接近滿版 */
+  max-width: 98vw;
+  max-height: 96vh;
   box-shadow: var(--shadow-strong);
   animation: slideIn 0.3s ease-out;
 }
@@ -4014,10 +4024,67 @@ p, span, div, button, input, select, textarea,
 
 .route-result-map {
   width: 100%;
-  height: 300px;
+  height: 60vh; /* 以視窗高度為基準放大 */
   border-radius: var(--border-radius);
   background: #f8f9fa;
   border: 2px solid var(--border);
+}
+
+/* 桌機版再放大（≥1200px） */
+@media (min-width: 1200px) {
+  .route-result-content {
+    width: 98.5vw;
+    max-width: 98.5vw;
+    max-height: 97vh;
+  }
+  /* 桌機版左右分欄：左地圖、右資訊卡 */
+  .route-result-body {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 16px !important;
+    align-items: stretch !important;
+    height: calc(97vh - 140px) !important; /* 扣除標題與邊距 */
+  }
+  .route-map-container {
+    flex: 2 1 0;
+    min-width: 0;
+  }
+  .route-result-map {
+    height: 100% !important;
+  }
+  .result-dashboard-container {
+    flex: 1 1 0;
+    min-width: 320px;
+    max-width: 580px;
+    overflow-y: auto;
+    padding-right: 6px;
+  }
+  /* 右側資訊卡改為與導航模式一致：單欄縱向排列 */
+  .route-result-modal .result-dashboard-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  .route-result-modal .result-dashboard-card {
+    aspect-ratio: auto !important; /* 取消 3:2 比例 */
+    height: auto !important;
+    min-height: 120px !important;
+    width: 100% !important;
+  }
+}
+
+/* 覆寫較寬範圍桌機（≥1024px），避免 3 欄規則影響 */
+@media (min-width: 1024px) {
+  .route-result-modal .result-dashboard-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  .route-result-modal .result-dashboard-card {
+    aspect-ratio: auto !important;
+    height: auto !important;
+    min-height: 120px !important;
+  }
 }
 
 /* 滾動條美化 */

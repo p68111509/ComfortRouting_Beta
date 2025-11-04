@@ -2239,6 +2239,7 @@ function bindUI() {
   
   // 幫助按鈕
   bindHelpEvents();
+  bindCarbonStepsHelpEvents();
   
   // 改善率說明按鈕
   bindImprovementHelpEvents();
@@ -2667,6 +2668,42 @@ function bindHelpEvents() {
       }
     });
   }
+}
+
+// 綁定負碳存摺與步數說明彈窗
+function bindCarbonStepsHelpEvents() {
+  const carbonBtn = document.getElementById('carbonHelpBtn');
+  const resultCarbonBtn = document.getElementById('resultCarbonHelpBtn');
+  const stepsBtn = document.getElementById('stepsHelpBtn');
+  const resultStepsBtn = document.getElementById('resultStepsHelpBtn');
+
+  const carbonModal = document.getElementById('carbon-help-modal');
+  const stepsModal = document.getElementById('steps-help-modal');
+  const closeCarbon = document.getElementById('closeCarbonHelp');
+  const closeSteps = document.getElementById('closeStepsHelp');
+
+  function openModal(modal) {
+    if (!modal) return;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    disableHeaderButtons();
+    disableModeSwitching();
+  }
+  function closeModal(modal) {
+    if (!modal) return;
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    enableHeaderButtons();
+    enableModeSwitching();
+  }
+
+  if (carbonBtn) carbonBtn.addEventListener('click', () => openModal(carbonModal));
+  if (resultCarbonBtn) resultCarbonBtn.addEventListener('click', () => openModal(carbonModal));
+  if (stepsBtn) stepsBtn.addEventListener('click', () => openModal(stepsModal));
+  if (resultStepsBtn) resultStepsBtn.addEventListener('click', () => openModal(stepsModal));
+
+  if (closeCarbon) closeCarbon.addEventListener('click', () => closeModal(carbonModal));
+  if (closeSteps) closeSteps.addEventListener('click', () => closeModal(stepsModal));
 }
 
 // 綁定改善率說明事件
