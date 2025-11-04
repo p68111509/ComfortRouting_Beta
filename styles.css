@@ -4073,6 +4073,39 @@ p, span, div, button, input, select, textarea,
   }
 }
 
+/* 手機版（≤768px）：捷運模式解算彈窗縮小、地圖在上資訊卡在下 */
+@media (max-width: 768px) {
+  .route-result-content {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    max-height: 88vh !important; /* 避免超出螢幕 */
+  }
+  .route-result-body {
+    display: flex !important;
+    flex-direction: column !important; /* 上下排列 */
+    gap: 10px !important;
+    height: auto !important;
+  }
+  .route-map-container { width: 100% !important; }
+  .route-result-map {
+    height: 35vh !important; /* 手機地圖較小 */
+  }
+  .result-dashboard-container {
+    width: 100% !important;
+    max-height: calc(88vh - 38vh) !important; /* 估略避免溢出 */
+    overflow-y: auto !important;
+    padding-right: 2px !important;
+  }
+  .route-result-modal .result-dashboard-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .route-result-modal .result-dashboard-card {
+    min-height: 110px !important;
+  }
+}
+
 /* 覆寫較寬範圍桌機（≥1024px），避免 3 欄規則影響 */
 @media (min-width: 1024px) {
   .route-result-modal .result-dashboard-grid {
