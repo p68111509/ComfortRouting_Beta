@@ -119,6 +119,8 @@ body {
   border-radius: 18px;
   transition: transform 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  pointer-events: none; /* 不攔截點擊事件，讓按鈕可以正常點擊 */
 }
 
 .header-right {
