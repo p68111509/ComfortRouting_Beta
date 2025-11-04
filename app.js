@@ -30,7 +30,7 @@ console.log('Current protocol:', window.location.protocol);
 console.log('Current hostname:', window.location.hostname);
 
 // 全域變數
-let currentMode = 'commute'; // 預設為通勤模式
+let currentMode = 'navigation'; // 預設為導航模式
 
 // 手機版 Header 高度自適應
 function updateHeaderHeight() {
@@ -1672,7 +1672,7 @@ const i18nDict = {
     overlayPM25: "PM₂.₅",
     overlayNO2: "NO₂",
     overlayWBGT: "氣溫",
-    modeCommute: "通勤模式",
+    modeNavigation: "導航模式",
     modeMetro: "捷運模式",
     helpBtn: "關於我們 | 說明",
     langEN: "EN",
@@ -1706,26 +1706,26 @@ const i18nDict = {
         distanceIncrease: "距離增加",
     // 使用說明翻譯
     helpTitle: "關於我們 | 使用說明",
-    commuteFunctionOverview: "🎯 功能概述",
-    commuteFunctionDesc: "通勤模式可以為您規劃兩條路徑：最短路徑和低暴露路徑，幫助您在時間和健康之間做出最佳選擇。",
-    commuteSetPoints: "📍 設定起終點",
-    commuteMethod1: "方法一：",
-    commuteMethod1Desc: "在地圖上點擊設定起點和終點",
-    commuteMethod2: "方法二：",
-    commuteMethod2Desc: "在輸入框中輸入地址，系統會自動定位",
-    commuteTransportMode: "🚗 選擇交通方式",
-    commuteTransportDesc: "支援機車、腳踏車、步行三種交通方式，系統會根據不同方式計算相應的通行時間。",
-    commuteDistanceLimit: "📏 距離限制功能",
-    commuteDistanceLimitDesc: "開啟後可設定低暴露路徑的最大額外距離，避免繞路過遠。",
-    commuteResultInterpretation: "📊 結果解讀",
-    commuteShortestPath: "最短路徑：",
-    commuteShortestPathDesc: "距離最短的路線（藍色實線）",
-    commuteLowExposurePath: "低暴露路徑：",
-    commuteLowExposurePathDesc: "空氣污染暴露最低的路線（綠色虛線）",
-    commuteExposureReduction: "暴露減少：",
-    commuteExposureReductionDesc: "相比最短路徑減少的污染暴露量",
-    commuteImprovementRate: "改善率：",
-    commuteImprovementRateDesc: "空氣品質改善的百分比",
+    navigationFunctionOverview: "🎯 功能概述",
+    navigationFunctionDesc: "導航模式可以為您規劃兩條路徑：最短路徑和低暴露路徑，幫助您在時間和健康之間做出最佳選擇。",
+    navigationSetPoints: "📍 設定起終點",
+    navigationMethod1: "方法一：",
+    navigationMethod1Desc: "在地圖上點擊設定起點和終點",
+    navigationMethod2: "方法二：",
+    navigationMethod2Desc: "在輸入框中輸入地址，系統會自動定位",
+    navigationTransportMode: "🚗 選擇交通方式",
+    navigationTransportDesc: "支援機車、腳踏車、步行三種交通方式，系統會根據不同方式計算相應的通行時間。",
+    navigationDistanceLimit: "📏 距離限制功能",
+    navigationDistanceLimitDesc: "開啟後可設定低暴露路徑的最大額外距離，避免繞路過遠。",
+    navigationResultInterpretation: "📊 結果解讀",
+    navigationShortestPath: "最短路徑：",
+    navigationShortestPathDesc: "距離最短的路線（藍色實線）",
+    navigationLowExposurePath: "低暴露路徑：",
+    navigationLowExposurePathDesc: "空氣污染暴露最低的路線（綠色虛線）",
+    navigationExposureReduction: "暴露減少：",
+    navigationExposureReductionDesc: "相比最短路徑減少的污染暴露量",
+    navigationImprovementRate: "改善率：",
+    navigationImprovementRateDesc: "空氣品質改善的百分比",
     metroFunctionOverview: "🚇 功能概述",
     metroFunctionDesc: "捷運模式提供台北捷運路線圖，可查看各站出口資訊並規劃到附近景點的最佳路徑。",
     metroUsageSteps: "🎯 使用步驟",
@@ -1780,7 +1780,7 @@ const i18nDict = {
     overlayPM25: "PM₂.₅",
     overlayNO2: "NO₂",
     overlayWBGT: "Temperature",
-    modeCommute: "Commute Mode",
+    modeNavigation: "Navigation Mode",
     modeMetro: "Metro Mode",
     helpBtn: "About Us | Help",
     langEN: "EN",
@@ -1814,26 +1814,26 @@ const i18nDict = {
         distanceIncrease: "Distance Increase",
     // Help content translations
     helpTitle: "About Us | Usage Instructions",
-    commuteFunctionOverview: "🎯 Function Overview",
-    commuteFunctionDesc: "Commute mode plans two routes for you: shortest path and low exposure path, helping you make the best choice between time and health.",
-    commuteSetPoints: "📍 Set Start/End Points",
-    commuteMethod1: "Method 1:",
-    commuteMethod1Desc: "Click on the map to set start and end points",
-    commuteMethod2: "Method 2:",
-    commuteMethod2Desc: "Enter addresses in input boxes, the system will automatically locate them",
-    commuteTransportMode: "🚗 Select Transport Mode",
-    commuteTransportDesc: "Supports motorcycle, bicycle, and walking modes. The system calculates corresponding travel time based on the selected mode.",
-    commuteDistanceLimit: "📏 Distance Limit Feature",
-    commuteDistanceLimitDesc: "When enabled, you can set the maximum additional distance for the low exposure path to avoid excessive detours.",
-    commuteResultInterpretation: "📊 Result Interpretation",
-    commuteShortestPath: "Shortest Path:",
-    commuteShortestPathDesc: "The shortest distance route (blue solid line)",
-    commuteLowExposurePath: "Low Exposure Path:",
-    commuteLowExposurePathDesc: "The route with lowest air pollution exposure (green dashed line)",
-    commuteExposureReduction: "Exposure Reduction:",
-    commuteExposureReductionDesc: "Reduced pollution exposure compared to the shortest path",
-    commuteImprovementRate: "Improvement Rate:",
-    commuteImprovementRateDesc: "Percentage of air quality improvement",
+    navigationFunctionOverview: "🎯 Function Overview",
+    navigationFunctionDesc: "Navigation mode plans two routes for you: shortest path and low exposure path, helping you make the best choice between time and health.",
+    navigationSetPoints: "📍 Set Start/End Points",
+    navigationMethod1: "Method 1:",
+    navigationMethod1Desc: "Click on the map to set start and end points",
+    navigationMethod2: "Method 2:",
+    navigationMethod2Desc: "Enter addresses in input boxes, the system will automatically locate them",
+    navigationTransportMode: "🚗 Select Transport Mode",
+    navigationTransportDesc: "Supports motorcycle, bicycle, and walking modes. The system calculates corresponding travel time based on the selected mode.",
+    navigationDistanceLimit: "📏 Distance Limit Feature",
+    navigationDistanceLimitDesc: "When enabled, you can set the maximum additional distance for the low exposure path to avoid excessive detours.",
+    navigationResultInterpretation: "📊 Result Interpretation",
+    navigationShortestPath: "Shortest Path:",
+    navigationShortestPathDesc: "The shortest distance route (blue solid line)",
+    navigationLowExposurePath: "Low Exposure Path:",
+    navigationLowExposurePathDesc: "The route with lowest air pollution exposure (green dashed line)",
+    navigationExposureReduction: "Exposure Reduction:",
+    navigationExposureReductionDesc: "Reduced pollution exposure compared to the shortest path",
+    navigationImprovementRate: "Improvement Rate:",
+    navigationImprovementRateDesc: "Percentage of air quality improvement",
     metroFunctionOverview: "🚇 Function Overview",
     metroFunctionDesc: "Metro mode provides Taipei Metro route map, allowing you to view station exit information and plan optimal routes to nearby attractions.",
     metroUsageSteps: "🎯 Usage Steps",
@@ -1850,7 +1850,7 @@ const i18nDict = {
     metroRoutePlanning: "🗺️ Route Planning",
     metroRoutePlanningDesc: "The system calculates shortest path and low exposure path from the selected exit to attractions, providing detailed distance, time, and air quality analysis.",
     // About Us modal content
-    commuteHelpBtn: "Commute Mode Instructions",
+    navigationHelpBtn: "Navigation Mode Instructions",
     metroHelpBtn: "Metro Mode Instructions",
     developmentTeam: "Development Team",
     developmentTeamDesc: "© 2025 Hsu Chia-Wei, Lin Yu-Ju | National Cheng Kung University, Department of Geomatics | Advisor: Professor Wu Chih-Ta",
@@ -2355,9 +2355,9 @@ function bindLanguageEvents() {
 
 // 綁定模式切換事件
 function bindModeEvents() {
-  document.getElementById('mode-commute').addEventListener('click', () => {
-    console.log('[debug] Commute mode button clicked');
-    switchMode('commute');
+  document.getElementById('mode-navigation').addEventListener('click', () => {
+    console.log('[debug] Navigation mode button clicked');
+    switchMode('navigation');
   });
   document.getElementById('mode-metro').addEventListener('click', () => {
     console.log('[debug] Metro mode button clicked');
@@ -2369,7 +2369,7 @@ function bindModeEvents() {
 function switchMode(mode) {
   console.log(`[debug] switchMode called with mode: ${mode}`);
   
-  const commuteBtn = document.getElementById('mode-commute');
+  const navigationBtn = document.getElementById('mode-navigation');
   const metroBtn = document.getElementById('mode-metro');
   const indicator = document.querySelector('.mode-indicator');
   const metroPanel = document.getElementById('metro-panel');
@@ -2377,7 +2377,7 @@ function switchMode(mode) {
   const fullscreenMap = document.getElementById('map');
   
   console.log('[debug] Elements found:', {
-    commuteBtn: !!commuteBtn,
+    navigationBtn: !!navigationBtn,
     metroBtn: !!metroBtn,
     indicator: !!indicator,
     metroPanel: !!metroPanel,
@@ -2385,13 +2385,13 @@ function switchMode(mode) {
     fullscreenMap: !!fullscreenMap
   });
   
-  if (mode === 'commute') {
-    // 切換到通勤模式
-    commuteBtn.classList.add('active');
+  if (mode === 'navigation') {
+    // 切換到導航模式
+    navigationBtn.classList.add('active');
     metroBtn.classList.remove('active');
     indicator.style.transform = 'translateX(0)';
     
-    // 顯示通勤模式界面
+    // 顯示導航模式界面
     if (fullscreenMap) fullscreenMap.style.display = 'block';
     if (leftPanel) leftPanel.style.display = 'block';
     if (metroPanel) {
@@ -2399,7 +2399,7 @@ function switchMode(mode) {
       metroPanel.classList.remove('active');
     }
     
-    // 顯示通勤模式的浮動按鈕
+    // 顯示導航模式的浮動按鈕
     const navButtonsGroup = document.querySelector('.nav-buttons-group');
     const routeComparisonBtn = document.getElementById('routeComparisonBtn');
     if (navButtonsGroup) navButtonsGroup.style.display = 'flex';
@@ -2414,15 +2414,15 @@ function switchMode(mode) {
       }, 300);
     }
     
-    console.log('[debug] Commute mode activated');
+    console.log('[debug] Navigation mode activated');
     
   } else if (mode === 'metro') {
     // 切換到捷運模式
     metroBtn.classList.add('active');
-    commuteBtn.classList.remove('active');
+    navigationBtn.classList.remove('active');
     indicator.style.transform = 'translateX(100%)';
     
-    // 隱藏通勤模式界面，顯示捷運模式
+    // 隱藏導航模式界面，顯示捷運模式
     if (fullscreenMap) fullscreenMap.style.display = 'none';
     if (leftPanel) leftPanel.style.display = 'none';
     if (metroPanel) {
@@ -2433,7 +2433,7 @@ function switchMode(mode) {
       console.log('[debug] Metro panel computed style:', window.getComputedStyle(metroPanel).display);
     }
     
-    // 隱藏通勤模式的浮動按鈕
+    // 隱藏導航模式的浮動按鈕
     const navButtonsGroup = document.querySelector('.nav-buttons-group');
     const routeComparisonBtn = document.getElementById('routeComparisonBtn');
     if (navButtonsGroup) navButtonsGroup.style.display = 'none';
@@ -2442,7 +2442,7 @@ function switchMode(mode) {
     // 關閉路徑比較彈窗
     closeRouteComparisonModal();
     
-    // 清除通勤模式的數據（但不影響捷運模式）
+    // 清除導航模式的數據（但不影響捷運模式）
     // resetAll();
     
     // 重新初始化捷運卡片（因為可能在面板隱藏時沒有綁定成功）
@@ -2560,12 +2560,12 @@ function bindHelpEvents() {
     });
   }
   
-  // 通勤模式使用說明按鈕
-  const commuteHelpBtn = document.getElementById('commute-help-btn');
-  if (commuteHelpBtn) {
-    commuteHelpBtn.addEventListener('click', () => {
-      console.log('[debug] Commute help button clicked');
-      showCommuteHelp();
+  // 導航模式使用說明按鈕
+  const navigationHelpBtn = document.getElementById('navigation-help-btn');
+  if (navigationHelpBtn) {
+    navigationHelpBtn.addEventListener('click', () => {
+      console.log('[debug] Navigation help button clicked');
+      showNavigationHelp();
     });
   }
   
@@ -2578,19 +2578,19 @@ function bindHelpEvents() {
     });
   }
   
-  // 通勤模式使用說明彈窗關閉按鈕
-  const closeCommuteHelpBtn = document.getElementById('close-commute-help');
-  const commuteHelpModal = document.getElementById('commute-help-modal');
-  if (closeCommuteHelpBtn && commuteHelpModal) {
-    closeCommuteHelpBtn.addEventListener('click', () => {
-      commuteHelpModal.style.display = 'none';
+  // 導航模式使用說明彈窗關閉按鈕
+  const closeNavigationHelpBtn = document.getElementById('close-navigation-help');
+  const navigationHelpModal = document.getElementById('navigation-help-modal');
+  if (closeNavigationHelpBtn && navigationHelpModal) {
+    closeNavigationHelpBtn.addEventListener('click', () => {
+      navigationHelpModal.style.display = 'none';
       document.body.style.overflow = 'auto';
       enableHeaderButtons();
     });
     
-    commuteHelpModal.addEventListener('click', (e) => {
-      if (e.target === commuteHelpModal) {
-        commuteHelpModal.style.display = 'none';
+    navigationHelpModal.addEventListener('click', (e) => {
+      if (e.target === navigationHelpModal) {
+        navigationHelpModal.style.display = 'none';
         document.body.style.overflow = 'auto';
         enableHeaderButtons();
       }
@@ -2616,12 +2616,12 @@ function bindHelpEvents() {
     });
   }
   
-  // 捷運模式中的通勤模式使用說明按鈕
-  const commuteHelpBtnMetro = document.getElementById('commute-help-btn-metro');
-  if (commuteHelpBtnMetro) {
-    commuteHelpBtnMetro.addEventListener('click', () => {
-      console.log('[debug] Commute help button clicked from metro mode');
-      showCommuteHelp();
+  // 捷運模式中的導航模式使用說明按鈕
+  const navigationHelpBtnMetro = document.getElementById('navigation-help-btn-metro');
+  if (navigationHelpBtnMetro) {
+    navigationHelpBtnMetro.addEventListener('click', () => {
+      console.log('[debug] Navigation help button clicked from metro mode');
+      showNavigationHelp();
     });
   }
   
@@ -2656,7 +2656,7 @@ function bindImprovementHelpEvents() {
   const improvementHelpModal = document.getElementById('improvement-help-modal');
   const closeImprovementHelpBtn = document.getElementById('closeImprovementHelp');
   
-  // 通勤模式改善率Help按鈕
+  // 導航模式改善率Help按鈕
   if (improvementHelpBtn) {
     improvementHelpBtn.addEventListener('click', function(e) {
       e.preventDefault();
@@ -2721,7 +2721,7 @@ function closeImprovementHelpModal() {
 
 // 更新幫助內容
 function updateHelpContent() {
-  const commuteContent = document.getElementById('help-content-commute');
+  const navigationContent = document.getElementById('help-content-navigation');
   const metroContent = document.getElementById('help-content-metro');
   const metroPanel = document.getElementById('metro-panel');
   const helpModalTitle = document.getElementById('help-modal-title');
@@ -2731,14 +2731,14 @@ function updateHelpContent() {
   
   if (isMetroMode) {
     // 顯示捷運模式說明
-    commuteContent.style.display = 'none';
+    navigationContent.style.display = 'none';
     metroContent.style.display = 'block';
     if (helpModalTitle) {
       helpModalTitle.textContent = i18nDict[currentLang].helpTitle;
     }
   } else {
-    // 顯示通勤模式說明
-    commuteContent.style.display = 'block';
+    // 顯示導航模式說明
+    navigationContent.style.display = 'block';
     metroContent.style.display = 'none';
     if (helpModalTitle) {
       helpModalTitle.textContent = i18nDict[currentLang].helpTitle;
@@ -2746,11 +2746,11 @@ function updateHelpContent() {
   }
 }
 
-// 顯示通勤模式使用說明
-function showCommuteHelp() {
-  const commuteHelpModal = document.getElementById('commute-help-modal');
-  if (commuteHelpModal) {
-    commuteHelpModal.style.display = 'flex';
+// 顯示導航模式使用說明
+function showNavigationHelp() {
+  const navigationHelpModal = document.getElementById('navigation-help-modal');
+  if (navigationHelpModal) {
+    navigationHelpModal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
     disableHeaderButtons();
   }
@@ -2768,13 +2768,13 @@ function showMetroHelp() {
 
 // 禁用模式切換
 function disableModeSwitching() {
-  const commuteBtn = document.getElementById('mode-commute');
+  const navigationBtn = document.getElementById('mode-navigation');
   const metroBtn = document.getElementById('mode-metro');
   
-  if (commuteBtn) {
-    commuteBtn.style.pointerEvents = 'none';
-    commuteBtn.style.opacity = '0.5';
-    commuteBtn.disabled = true;
+  if (navigationBtn) {
+    navigationBtn.style.pointerEvents = 'none';
+    navigationBtn.style.opacity = '0.5';
+    navigationBtn.disabled = true;
   }
   
   if (metroBtn) {
@@ -2786,13 +2786,13 @@ function disableModeSwitching() {
 
 // 啟用模式切換
 function enableModeSwitching() {
-  const commuteBtn = document.getElementById('mode-commute');
+  const navigationBtn = document.getElementById('mode-navigation');
   const metroBtn = document.getElementById('mode-metro');
   
-  if (commuteBtn) {
-    commuteBtn.style.pointerEvents = 'auto';
-    commuteBtn.style.opacity = '1';
-    commuteBtn.disabled = false;
+  if (navigationBtn) {
+    navigationBtn.style.pointerEvents = 'auto';
+    navigationBtn.style.opacity = '1';
+    navigationBtn.disabled = false;
   }
   
   if (metroBtn) {
@@ -2807,11 +2807,11 @@ function disableHeaderButtons() {
   const helpBtn = document.getElementById('help-btn');
   const langZhBtn = document.getElementById('btn-lang-zh');
   const langEnBtn = document.getElementById('btn-lang-en');
-  const commuteBtn = document.getElementById('mode-commute');
+  const navigationBtn = document.getElementById('mode-navigation');
   const metroBtn = document.getElementById('mode-metro');
   
   // 禁用所有Header按鈕
-  [helpBtn, langZhBtn, langEnBtn, commuteBtn, metroBtn].forEach(btn => {
+  [helpBtn, langZhBtn, langEnBtn, navigationBtn, metroBtn].forEach(btn => {
     if (btn) {
       btn.style.pointerEvents = 'none';
       btn.style.opacity = '0.5';
@@ -2827,11 +2827,11 @@ function enableHeaderButtons() {
   const helpBtn = document.getElementById('help-btn');
   const langZhBtn = document.getElementById('btn-lang-zh');
   const langEnBtn = document.getElementById('btn-lang-en');
-  const commuteBtn = document.getElementById('mode-commute');
+  const navigationBtn = document.getElementById('mode-navigation');
   const metroBtn = document.getElementById('mode-metro');
   
   // 啟用所有Header按鈕
-  [helpBtn, langZhBtn, langEnBtn, commuteBtn, metroBtn].forEach(btn => {
+  [helpBtn, langZhBtn, langEnBtn, navigationBtn, metroBtn].forEach(btn => {
     if (btn) {
       btn.style.pointerEvents = 'auto';
       btn.style.opacity = '1';
@@ -3182,7 +3182,7 @@ function renderTable(data) {
   const selectedTransport = document.querySelector('input[name="transport-mode"]:checked');
   const transportMode = selectedTransport ? selectedTransport.value : 'bicycle';
   
-  // 計算通勤時間
+  // 計算導航時間
   const shortestTime = computeTravelTime(data.shortest?.distance_km || 0, transportMode);
   const lowestTime = computeTravelTime(data.lowest?.distance_km || 0, transportMode);
   
@@ -3265,7 +3265,7 @@ function updateImprovementProgress(progressId, textId, percentage) {
   if (textEl) {
     const validPercentage = Math.max(0, Math.min(100, percentage || 0));
     
-    // 檢查是否為水平進度條模式（通勤模式）
+    // 檢查是否為水平進度條模式（導航模式）
     if (progressBar && progressGlow) {
       // 水平進度條模式
       updateHorizontalProgressDisplay(textEl, progressBar, progressGlow, validPercentage);
@@ -3658,7 +3658,7 @@ function updateDashboardFromLastData() {
   const newShortestTime = computeTravelTime(data.shortest?.distance_km || 0, transportMode);
   const newLowestTime = computeTravelTime(data.lowest?.distance_km || 0, transportMode);
   
-  // 更新通勤模式Dashboard
+  // 更新導航模式Dashboard
   updateDashboard(data, newShortestTime, newLowestTime, improvementRate, extraDistance);
   
   // 更新捷運模式結果Dashboard（如果存在）
@@ -4584,7 +4584,7 @@ function showRouteResultModal(routeData, exitData, attractionData, stationName) 
   modal.style.display = 'flex';
   disableHeaderButtons();
   
-  // 綁定通勤方式切換事件
+  // 綁定導航方式切換事件
   bindTransportModeChangeEvents(routeData, exitData, attractionData);
   
   // 產生可回放的深連結 URL（不刷新頁面）
@@ -4623,7 +4623,7 @@ function bindTransportModeChangeEvents(routeData, exitData, attractionData) {
   });
 }
 
-// 根據新的通勤方式更新結果
+// 根據新的導航方式更新結果
 function updateRouteResultWithNewMode(routeData, transportMode) {
   const speed = SPEED_CONSTANTS[transportMode];
   

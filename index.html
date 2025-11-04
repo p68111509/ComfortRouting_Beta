@@ -33,7 +33,7 @@
       </div>
       <div class="header-center">
         <div class="mode-switch">
-          <button id="mode-commute" class="mode-btn active" data-i18n="modeCommute">通勤模式</button>
+          <button id="mode-navigation" class="mode-btn active" data-i18n="modeNavigation">導航模式</button>
           <button id="mode-metro" class="mode-btn" data-i18n="modeMetro">捷運模式</button>
           <div class="mode-indicator"></div>
         </div>
@@ -390,7 +390,7 @@
         <button class="close-route-result" onclick="closeRouteResultModal()">✕</button>
       </div>
       <div class="transport-mode-selector">
-        <h4 class="transport-mode-title">通勤模式</h4>
+        <h4 class="transport-mode-title">導航模式</h4>
         <div class="radio-group">
           <label class="radio-label">
             <input type="radio" name="resultTransportMode" value="walk" checked>
@@ -511,7 +511,7 @@
         <button id="close-help" class="close-btn">✕</button>
       </div>
       <div class="modal-body">
-        <div id="help-content-commute">
+        <div id="help-content-navigation">
           <!-- Logo 區域 -->
           <div class="help-section logo-section">
             <div class="logo-container">
@@ -532,7 +532,7 @@
           
           <!-- 使用說明按鈕區域 -->
           <div class="help-section button-section">
-            <button id="commute-help-btn" class="help-mode-btn">通勤模式使用說明</button>
+            <button id="navigation-help-btn" class="help-mode-btn">導航模式使用說明</button>
             <button id="metro-help-btn" class="help-mode-btn">捷運模式使用說明</button>
           </div>
           
@@ -576,7 +576,7 @@
           
           <!-- 使用說明按鈕區域 -->
           <div class="help-section button-section">
-            <button id="commute-help-btn-metro" class="help-mode-btn">通勤模式使用說明</button>
+            <button id="navigation-help-btn-metro" class="help-mode-btn">導航模式使用說明</button>
             <button id="metro-help-btn-metro" class="help-mode-btn">捷運模式使用說明</button>
           </div>
           
@@ -602,17 +602,17 @@
     </div>
   </div>
 
-  <!-- 通勤模式使用說明彈窗 -->
-  <div id="commute-help-modal" class="modal-overlay" style="display: none;">
+  <!-- 導航模式使用說明彈窗 -->
+  <div id="navigation-help-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>通勤模式使用說明</h3>
-        <button id="close-commute-help" class="close-btn">✕</button>
+        <h3>導航模式使用說明</h3>
+        <button id="close-navigation-help" class="close-btn">✕</button>
       </div>
       <div class="modal-body">
         <div class="help-section">
           <h5>🚗 功能概述</h5>
-          <p>通勤模式提供智能路徑規劃功能，幫助您找到最舒適、最健康的出行路線，避開高污染區域。</p>
+          <p>導航模式提供智能路徑規劃功能，幫助您找到最舒適、最健康的出行路線，避開高污染區域。</p>
         </div>
         
         <div class="help-section">
