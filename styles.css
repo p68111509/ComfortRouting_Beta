@@ -4139,6 +4139,12 @@ p, span, div, button, input, select, textarea,
   z-index: 2500 !important;
 }
 
+/* 讓捷運模式資訊卡的說明彈窗蓋在解算成果彈窗之上 */
+#carbon-help-modal,
+#steps-help-modal {
+  z-index: 3000 !important; /* route-result-modal 是 2000 */
+}
+
 .improvement-help-content {
   max-width: 600px;
   max-height: 80vh;

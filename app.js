@@ -2262,7 +2262,9 @@ function bindUI() {
   if (resultHeightSlider) {
     resultHeightSlider.addEventListener('input', () => {
       if (window.lastRouteData) {
-        const baseDistanceKm = (window.lastRouteData.data.lowest?.distance_km || window.lastRouteData.data.shortest?.distance_km || 0);
+        const lr = window.lastRouteData;
+        const d = lr?.data || lr; // 兼容兩種結構：{data,...} 或直接 data
+        const baseDistanceKm = (d?.lowest?.distance_km || d?.shortest?.distance_km || 0);
         updateStepsCard('resultDash', baseDistanceKm, getSliderValue('resultHeightSlider', 170));
       }
     });
@@ -4644,7 +4646,12 @@ function showRouteResultModal(routeData, exitData, attractionData, stationName) 
   const modal = document.getElementById('route-result-modal');
   const title = document.getElementById('routeResultTitle');
   
-  title.textContent = `${stationName}站 → ${attractionData.name}`;
+  try {
+    const exitLabel = (exitData && (exitData.exit !== undefined && exitData.exit !== null)) ? ` (出口${exitData.exit})` : '';
+    title.textContent = `${stationName}站${exitLabel} → ${attractionData.name}`;
+  } catch (_) {
+    title.textContent = `${stationName}站 → ${attractionData.name}`;
+  }
   
   modal.style.display = 'flex';
   disableHeaderButtons();
@@ -4864,6 +4871,8 @@ function updateRouteResultCharts(data) {
   const improvementRate = computeImprovementRate(data.shortest, data.lowest);
   // 暴露減少已移除
   const extraDistance = computeExtraDistance(data.shortest, data.lowest);
+  // 保存到全域，供拉桿即時更新使用（相容 deeplink 進入）
+  window.lastRouteData = { data, shortestTime, lowestTime, improvementRate, extraDistance };
   
   // 更新結果儀表板
   updateResultDashboard(data, shortestTime, lowestTime, improvementRate, extraDistance);
