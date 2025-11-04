@@ -257,6 +257,43 @@
               </div>
             </div>
 
+            <!-- 負碳存摺卡片 -->
+            <div class="dashboard-card carbon-card">
+              <h4 class="card-title">🌳 負碳存摺</h4>
+              <div class="carbon-content">
+                <div class="carbon-main">
+                  <div class="carbon-value" id="dashCarbonKg">-</div>
+                  <div class="carbon-mode">基準交通：<span id="dashCarbonMode">-</span></div>
+                </div>
+                <div class="carbon-visual">
+                  <div class="carbon-trees" id="dashCarbonTreesVisual"></div>
+                  <div class="carbon-caption">相當於種植 <span id="dashCarbonTrees">-</span> 顆樹/年</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 步數與健康卡片 -->
+            <div class="dashboard-card steps-card">
+              <h4 class="card-title">👣 步數與健康</h4>
+              <div class="steps-content">
+                <div class="steps-row">
+                  <div class="steps-main">
+                    <div class="steps-value" id="dashSteps">-</div>
+                    <div class="steps-sub">約步數（依身高）</div>
+                  </div>
+                  <div class="height-control">
+                    <label for="dashHeightSlider">身高：<span id="dashHeightValue">170</span> (cm)</label>
+                    <input type="range" id="dashHeightSlider" min="150" max="190" step="1" value="170">
+                  </div>
+                </div>
+                <div class="health-stats">
+                  <div class="health-item">🔥 卡路里：約 <span id="dashKcal">-</span> kcal</div>
+                  <div class="health-item">⏳ 壽命延長：約 <span id="dashLife">-</span> 分鐘</div>
+                </div>
+                <div class="steps-visual" id="dashStepsVisual"></div>
+              </div>
+            </div>
+
             <!-- 距離比較卡片 -->
             <div class="dashboard-card">
               <h4 class="card-title" data-i18n="distanceComparison">📏 距離比較</h4>
@@ -436,56 +473,96 @@
               </div>
             </div>
 
-            <!-- 距離比較卡片 -->
-            <div class="result-dashboard-card">
-              <h4 class="card-title" data-i18n="distanceComparison">📏 距離比較</h4>
-              <div class="comparison-bars">
-                <div class="bar-item">
-                  <div class="bar-header">
-                    <span class="route-type shortest" data-i18n="shortest">最短路徑</span>
-                    <span class="route-value" id="resultDashDistanceShortest">-</span>
-                  </div>
-                  <div class="progress-bar">
-                    <div class="progress-fill shortest" id="resultDashDistanceBarShortest"></div>
-                  </div>
+            <!-- 負碳存摺卡片 -->
+            <div class="result-dashboard-card carbon-card">
+              <h4 class="card-title">🌳 負碳存摺</h4>
+              <div class="carbon-content">
+                <div class="carbon-main">
+                  <div class="carbon-value" id="resultDashCarbonKg">-</div>
+                  <div class="carbon-mode">基準交通：<span id="resultDashCarbonMode">-</span></div>
                 </div>
-                <div class="bar-item">
-                  <div class="bar-header">
-                    <span class="route-type lowest" data-i18n="lowest">低暴露路徑</span>
-                    <span class="route-value" id="resultDashDistanceLowest">-</span>
-                  </div>
-                  <div class="progress-bar">
-                    <div class="progress-fill lowest" id="resultDashDistanceBarLowest"></div>
-                  </div>
+                <div class="carbon-visual">
+                  <div class="carbon-trees" id="resultDashCarbonTreesVisual"></div>
+                  <div class="carbon-caption">相當於種植 <span id="resultDashCarbonTrees">-</span> 顆樹/年</div>
                 </div>
-              </div>
-              <div class="distance-increase-info">
-                <span class="increase-label" data-i18n="distanceIncrease">距離增加</span>
-                <span class="increase-value" id="resultDashDistanceIncrease">-</span>
-                <span class="increase-unit" id="resultDashDistanceUnit">公尺</span>
               </div>
             </div>
 
-            <!-- 時間比較卡片 -->
-            <div class="result-dashboard-card">
-              <h4 class="card-title" data-i18n="timeComparison">⏱️ 時間比較</h4>
-              <div class="comparison-bars">
-                <div class="bar-item">
-                  <div class="bar-header">
-                    <span class="route-type shortest" data-i18n="shortest">最短路徑</span>
-                    <span class="route-value" id="resultDashTimeShortest">-</span>
+            <!-- 步數與健康卡片 -->
+            <div class="result-dashboard-card steps-card">
+              <h4 class="card-title">👣 步數與健康</h4>
+              <div class="steps-content">
+                <div class="steps-row">
+                  <div class="steps-main">
+                    <div class="steps-value" id="resultDashSteps">-</div>
+                    <div class="steps-sub">約步數（依身高）</div>
                   </div>
-                  <div class="progress-bar">
-                    <div class="progress-fill shortest" id="resultDashTimeBarShortest"></div>
+                  <div class="height-control">
+                    <label for="resultHeightSlider">身高：<span id="resultHeightValue">170</span> (cm)</label>
+                    <input type="range" id="resultHeightSlider" min="150" max="190" step="1" value="170">
                   </div>
                 </div>
-                <div class="bar-item">
-                  <div class="bar-header">
-                    <span class="route-type lowest" data-i18n="lowest">低暴露路徑</span>
-                    <span class="route-value" id="resultDashTimeLowest">-</span>
+                <div class="health-stats">
+                  <div class="health-item">🔥 卡路里：約 <span id="resultDashKcal">-</span> kcal</div>
+                  <div class="health-item">⏳ 壽命延長：約 <span id="resultDashLife">-</span> 分鐘</div>
+                </div>
+                <div class="steps-visual" id="resultDashStepsVisual"></div>
+              </div>
+            </div>
+
+            <!-- 距離/時間比較合併卡片 -->
+            <div class="result-dashboard-card combined-rt-card">
+              <h4 class="card-title">📏 距離與 ⏱️ 時間</h4>
+              <div class="comparison-combined">
+                <div class="section">
+                  <div class="section-title">距離比較</div>
+                  <div class="comparison-bars">
+                    <div class="bar-item">
+                      <div class="bar-header">
+                        <span class="route-type shortest" data-i18n="shortest">最短路徑</span>
+                        <span class="route-value" id="resultDashDistanceShortest">-</span>
+                      </div>
+                      <div class="progress-bar">
+                        <div class="progress-fill shortest" id="resultDashDistanceBarShortest"></div>
+                      </div>
+                    </div>
+                    <div class="bar-item">
+                      <div class="bar-header">
+                        <span class="route-type lowest" data-i18n="lowest">低暴露路徑</span>
+                        <span class="route-value" id="resultDashDistanceLowest">-</span>
+                      </div>
+                      <div class="progress-bar">
+                        <div class="progress-fill lowest" id="resultDashDistanceBarLowest"></div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="progress-bar">
-                    <div class="progress-fill lowest" id="resultDashTimeBarLowest"></div>
+                  <div class="distance-increase-info">
+                    <span class="increase-label" data-i18n="distanceIncrease">距離增加</span>
+                    <span class="increase-value" id="resultDashDistanceIncrease">-</span>
+                    <span class="increase-unit" id="resultDashDistanceUnit">公尺</span>
+                  </div>
+                </div>
+                <div class="section">
+                  <div class="section-title">時間比較</div>
+                  <div class="comparison-bars">
+                    <div class="bar-item">
+                      <div class="bar-header">
+                        <span class="route-type shortest" data-i18n="shortest">最短路徑</span>
+                        <span class="route-value" id="resultDashTimeShortest">-</span>
+                      </div>
+                      <div class="progress-bar">
+                        <div class="progress-fill shortest" id="resultDashTimeBarShortest"></div>
+                      </div>
+                    </div>
+                    <div class="bar-item">
+                      <div class="bar-header">
+                        <span class="route-type lowest" data-i18n="lowest">低暴露路徑</span>
+                        <span class="route-value" id="resultDashTimeLowest">-</span>
+                      </div>
+                      <div class="progress-bar">
+                        <div class="progress-fill lowest" id="resultDashTimeBarLowest"></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

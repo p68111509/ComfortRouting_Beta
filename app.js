@@ -2247,6 +2247,26 @@ function bindUI() {
   // 捷運站事件
   bindMetroStationEvents();
   
+  // 綁定身高滑桿即時更新
+  const dashHeightSlider = document.getElementById('dashHeightSlider');
+  if (dashHeightSlider) {
+    dashHeightSlider.addEventListener('input', () => {
+      if (window.lastRouteData) {
+        const baseDistanceKm = (window.lastRouteData.data.lowest?.distance_km || window.lastRouteData.data.shortest?.distance_km || 0);
+        updateStepsCard('dash', baseDistanceKm, getSliderValue('dashHeightSlider', 170));
+      }
+    });
+  }
+  const resultHeightSlider = document.getElementById('resultHeightSlider');
+  if (resultHeightSlider) {
+    resultHeightSlider.addEventListener('input', () => {
+      if (window.lastRouteData) {
+        const baseDistanceKm = (window.lastRouteData.data.lowest?.distance_km || window.lastRouteData.data.shortest?.distance_km || 0);
+        updateStepsCard('resultDash', baseDistanceKm, getSliderValue('resultHeightSlider', 170));
+      }
+    });
+  }
+  
   // 阻止地圖元件點擊事件傳播到地圖
   preventMapElementClickPropagation();
 }
@@ -3218,6 +3238,8 @@ function updateDashboard(data, shortestTime, lowestTime, improvementRate, extraD
   updateDashboardBar('dashTimeBarLowest', 'dashTimeLowest', 
     lowestTime, maxTime, 'min');
 
+  // 保持距離與時間各自卡片顯示（不在距離後加時間）
+
   // 暴露減少已移除
 
   // 更新距離增加
@@ -3236,6 +3258,12 @@ function updateDashboard(data, shortestTime, lowestTime, improvementRate, extraD
 
   // 更新改善率大數字動畫
   updateImprovementProgress(null, 'dashImprovementRate', improvementRate);
+
+  // 新增：負碳存摺與步數（以低暴露距離為主）
+  const baseDistanceKm = (data.lowest?.distance_km || data.shortest?.distance_km || 0);
+  updateCarbonCard('dash', baseDistanceKm);
+  const dashHeight = getSliderValue('dashHeightSlider', 170);
+  updateStepsCard('dash', baseDistanceKm, dashHeight);
 }
 
 // 更新儀表板進度條
@@ -4820,6 +4848,8 @@ function updateResultDashboard(data, shortestTime, lowestTime, improvementRate, 
   const maxTime = Math.max(shortestTime, lowestTime);
   updateResultDashboardBar('resultDashTimeBarShortest', 'resultDashTimeShortest', shortestTime, maxTime, 'min');
   updateResultDashboardBar('resultDashTimeBarLowest', 'resultDashTimeLowest', lowestTime, maxTime, 'min');
+
+  // 保持距離與時間各自卡片顯示（不在距離後加時間）
   
   // 更新距離增加
   const distanceIncreaseEl = document.getElementById('resultDashDistanceIncrease');
@@ -4850,6 +4880,12 @@ function updateResultDashboard(data, shortestTime, lowestTime, improvementRate, 
     // 傳統模式
   updateImprovementProgress(null, 'resultDashImprovementRate', improvementRate);
   }
+
+  // 新增：負碳存摺與步數（以低暴露距離為主）
+  const baseDistanceKm = (data.lowest?.distance_km || data.shortest?.distance_km || 0);
+  updateCarbonCard('resultDash', baseDistanceKm);
+  const resultHeight = getSliderValue('resultHeightSlider', 170);
+  updateStepsCard('resultDash', baseDistanceKm, resultHeight);
 }
 
 // 更新結果儀表板進度條
@@ -4868,6 +4904,95 @@ function updateResultDashboardBar(barId, valueId, value, maxValue, unit) {
     // 更新數值（加上單位）
     valueElement.textContent = formatNumber(value, 1) + (unit ? ` ${unit}` : '');
   }
+}
+
+// ===== 新增：減碳與步數工具函數 =====
+function getSliderValue(id, fallback) {
+  const el = document.getElementById(id);
+  if (!el) return fallback;
+  const v = parseInt(el.value, 10);
+  return Number.isFinite(v) ? v : fallback;
+}
+
+function estimateBaselineMode(distanceKm) {
+  if (distanceKm > 5) return 'car';
+  if (distanceKm < 2) return 'motorcycle';
+  return 'motorcycle';
+}
+
+function emissionFactor(mode) {
+  if (mode === 'car') return 0.21;
+  if (mode === 'bus') return 0.08;
+  return 0.11; // motorcycle default
+}
+
+function formatKg(value) {
+  if (!Number.isFinite(value)) return '-';
+  if (value >= 1) return `${value.toFixed(1)} kg CO₂`;
+  return `${(value * 1000).toFixed(0)} g CO₂`;
+}
+
+function renderTreesIcons(containerId, treesFloat) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+  const active = Math.max(0, Math.min(6, Math.round(Math.min(treesFloat, 6))));
+  const total = 6;
+  for (let i = 0; i < total; i++) {
+    const span = document.createElement('span');
+    span.className = 'tree-icon' + (i < active ? '' : ' inactive');
+    span.textContent = '🌲';
+    container.appendChild(span);
+  }
+}
+
+function renderFootprints(containerId, steps) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+  const icons = Math.max(0, Math.min(20, Math.round(Math.min(steps / 1000, 20))));
+  for (let i = 0; i < icons; i++) {
+    const span = document.createElement('span');
+    span.className = 'footprint-icon';
+    span.textContent = '👣';
+    container.appendChild(span);
+  }
+}
+
+function updateCarbonCard(prefix, distanceKm) {
+  const mode = estimateBaselineMode(distanceKm);
+  const factor = emissionFactor(mode);
+  const savedKg = distanceKm * factor;
+  const trees = savedKg * 0.5;
+
+  const valueEl = document.getElementById(`${prefix}CarbonKg`);
+  const treesEl = document.getElementById(`${prefix}CarbonTrees`);
+  const modeEl = document.getElementById(`${prefix}CarbonMode`);
+  if (valueEl) valueEl.textContent = formatKg(savedKg);
+  if (treesEl) treesEl.textContent = trees.toFixed(1);
+  if (modeEl) modeEl.textContent = (mode === 'car' ? '汽車' : '機車');
+
+  renderTreesIcons(`${prefix}CarbonTreesVisual`, trees);
+}
+
+function updateStepsCard(prefix, distanceKm, heightCm) {
+  const heightM = heightCm / 100;
+  const stepLen = heightM * 0.43;
+  const steps = stepLen > 0 ? Math.round((distanceKm * 1000) / stepLen) : 0;
+  const kcal = Math.round((steps / 1000) * 40);
+  const life = Math.round(steps * 0.004);
+
+  const stepsEl = document.getElementById(`${prefix}Steps`);
+  const kcalEl = document.getElementById(`${prefix}Kcal`);
+  const lifeEl = document.getElementById(`${prefix}Life`);
+  const heightValEl = document.getElementById(`${prefix === 'dash' ? 'dashHeightValue' : 'resultHeightValue'}`);
+
+  if (stepsEl) stepsEl.textContent = steps.toLocaleString();
+  if (kcalEl) kcalEl.textContent = kcal.toLocaleString();
+  if (lifeEl) lifeEl.textContent = life.toLocaleString();
+  if (heightValEl) heightValEl.textContent = heightCm.toString();
+
+  renderFootprints(`${prefix}StepsVisual`, steps);
 }
 
 // 更新結果圓形進度條

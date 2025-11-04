@@ -2832,6 +2832,23 @@ body {
   display: block !important;
 }
 
+/* 桌機版整頁縮放 75%（Chrome/Edge） */
+@media (min-width: 1024px) {
+  html { zoom: 0.8; }
+}
+
+/* Firefox fallback：當不支援 zoom 時，用 transform 縮放 */
+@supports not (zoom: 1) {
+  @media (min-width: 1024px) {
+    body {
+      transform: scale(0.8);
+      transform-origin: 0 0;
+      width: calc(100% / 0.8);
+      height: calc(100% / 0.8);
+    }
+  }
+}
+
 #metro-panel {
   background: var(--background);
   width: 100%;
@@ -3882,6 +3899,43 @@ p, span, div, button, input, select, textarea,
   color: rgba(0, 0, 0, 0.6);
   font-weight: 500;
 }
+
+.carbon-card .carbon-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.carbon-card .carbon-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--primary);
+}
+.carbon-card .carbon-sub,
+.carbon-card .carbon-mode {
+  font-size: 12px;
+  color: rgba(0,0,0,0.65);
+}
+.carbon-card .carbon-visual { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.carbon-card .carbon-trees { display: flex; gap: 6px; }
+.carbon-card .carbon-caption { font-size: 12px; color: rgba(0,0,0,0.65); }
+.tree-icon { width: 24px; height: 24px; }
+.tree-icon.inactive { opacity: 0.25; }
+
+.steps-card .steps-content { display: flex; flex-direction: column; gap: 10px; }
+.steps-card .steps-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.steps-card .steps-value { font-size: 22px; font-weight: 800; color: var(--primary); }
+.steps-card .steps-sub { font-size: 12px; color: rgba(0,0,0,0.65); }
+.steps-card .height-control { display: flex; flex-direction: column; gap: 4px; min-width: 180px; }
+.steps-card .height-control input[type="range"] { width: 180px; }
+.steps-card .height-control label,
+.steps-card .height-control .height-value { color: #000; font-weight: 600; }
+.steps-card .health-stats { display: flex; gap: 16px; font-size: 12px; color: rgba(0,0,0,0.75); }
+.steps-card .steps-visual { display: flex; flex-wrap: wrap; gap: 3px; max-width: 200px; }
+.footprint-icon { width: 16px; height: 16px; }
+
+.combined-rt-card .section { margin-top: 4px; }
+.combined-rt-card .section-title { font-size: 12px; color: rgba(0,0,0,0.65); margin-bottom: 6px; }
+.comparison-combined { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
 
 .result-improvement-card {
