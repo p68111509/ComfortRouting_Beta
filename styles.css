@@ -4141,27 +4141,23 @@ p, span, div, button, input, select, textarea,
 
 /* Help圖示按鈕樣式 */
 .help-icon-btn {
-  background: none;
-  border: none;
-  font-size: 14px;
-  color: #666;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.2);
+  font-size: 11px;
+  color: #333;
   cursor: pointer;
   margin-left: 8px;
-  padding: 2px 6px;
-  border-radius: 50%;
+  padding: 2px 8px;
+  border-radius: 999px; /* 膠囊形狀 */
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  height: 22px;
+  line-height: 1;
 }
 
-.help-icon-btn:hover {
-  background-color: #f0f0f0;
-  color: #333;
-  transform: scale(1.1);
-}
+.help-icon-btn:hover { background-color: #f5f5f5; }
 
 .help-icon-btn:active {
   transform: scale(0.95);
