@@ -2405,6 +2405,16 @@ body {
   .route-result-modal .comparison-bars .route-value { font-size: 12px !important; }
   .route-result-modal .radio-label { font-size: 12px !important; }
 
+  /* 手機版：選出口和景點彈窗比例縮小 */
+  .exit-modal-content { width: 92vw !important; padding: 8px !important; }
+  .exit-modal-header { padding: 12px 14px !important; }
+  .exit-modal-header h3 { font-size: 16px !important; }
+  .close-exit-modal { font-size: 16px !important; }
+  .exit-modal-body { padding: 14px !important; }
+  .exit-section h5, .attraction-section h5 { font-size: 14px !important; }
+  .exit-btn, .attraction-btn { padding: 10px 12px !important; font-size: 13px !important; }
+  .attraction-icon { font-size: 14px !important; }
+
   /* 手機版捷運模式：改善效益資訊卡樣式與電腦版一致 */
   .route-result-modal .result-dashboard-card.result-combined-improvement-card {
     background: #ffffff !important;
