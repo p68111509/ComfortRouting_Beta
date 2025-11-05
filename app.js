@@ -4512,9 +4512,15 @@ async function startNavigation() {
   try {
     await calculateRouteForModal(finalExitData, attractionData, stationName);
   } catch (error) {
-    console.log('[metro] Backend failed, falling back to mock data:', error.message);
-    const mockData = generateMockRouteData(finalExitData, attractionData);
-    showRouteResultModal(mockData, finalExitData, attractionData, stationName);
+    console.log('[metro] route calculation failed:', error.message);
+    const hasCoords = Number.isFinite(attractionData.lat) && Number.isFinite(attractionData.lng);
+    if (hasCoords) {
+      const mockData = generateMockRouteData(finalExitData, attractionData);
+      showRouteResultModal(mockData, finalExitData, attractionData, stationName);
+    } else {
+      hideLoadingForRouteCalculation();
+      showError('無法取得景點座標，請檢查景點名稱或地址。');
+    }
   }
 }
 
@@ -4613,33 +4619,44 @@ function calculateDistance(lat1, lng1, lat2, lng2) {
   return R * c;
 }
 
-// 景點缺座標時，先以 address（無則以 name）Geocoding 補座標
+// 景點缺座標時，先以 address（無則以 name）Geocoding 補座標（含多次嘗試）
 async function resolveAttractionCoords(attractionData) {
   if (attractionData && typeof attractionData.lat === 'number' && typeof attractionData.lng === 'number') {
     return { lat: attractionData.lat, lng: attractionData.lng };
   }
   if (!attractionData) throw new Error('Invalid attraction');
-  const query = (attractionData.address && String(attractionData.address).trim()) ? String(attractionData.address).trim() : String(attractionData.name || '').trim();
-  if (!query) throw new Error('Attraction has neither address nor name');
-  try {
-    const resp = await fetch(`${API_BASE}/api/geocode`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ address: query, language: 'zh-TW' })
-    });
-    if (!resp.ok) throw new Error(`geocode failed: ${resp.status}`);
-    const data = await resp.json();
-    const lat = Number(data.lat);
-    const lng = Number(data.lng);
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) throw new Error('geocode no coords');
-    // 回寫以便後續使用（當作快取）
-    attractionData.lat = lat;
-    attractionData.lng = lng;
-    return { lat, lng };
-  } catch (e) {
-    console.error('[geocode] resolveAttractionCoords error:', e);
-    throw e;
+  const rawAddress = (attractionData.address != null) ? String(attractionData.address) : '';
+  const cleanedAddress = rawAddress.replace(/\u3000/g, ' ').trim();
+  const name = String(attractionData.name || '').trim();
+  const queries = [];
+  if (cleanedAddress) queries.push(cleanedAddress);
+  if (name) queries.push(name);
+  if (name) queries.push(`台北市 ${name}`);
+  if (name) queries.push(`新北市 ${name}`);
+  if (queries.length === 0) throw new Error('Attraction has neither address nor name');
+  let lastError = null;
+  for (const q of queries) {
+    try {
+      const resp = await fetch(`${API_BASE}/api/geocode`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address: q, language: 'zh-TW' })
+      });
+      if (!resp.ok) throw new Error(`geocode failed: ${resp.status}`);
+      const data = await resp.json();
+      const lat = Number(data.lat);
+      const lng = Number(data.lng);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) throw new Error('geocode no coords');
+      attractionData.lat = lat;
+      attractionData.lng = lng;
+      return { lat, lng };
+    } catch (e) {
+      lastError = e;
+      console.warn(`[geocode] try failed for "${q}":`, e);
+    }
   }
+  console.error('[geocode] all attempts failed for attraction:', attractionData);
+  throw (lastError || new Error('geocode failed'));
 }
 
 // 為彈窗調用路徑計算API
