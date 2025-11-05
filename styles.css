@@ -1,3 +1,4 @@
+/* (移除) 捷運模式標題下方小膠囊提示 */
 /* Base layout */
 :root {
   --panel-width: 380px;
@@ -2376,6 +2377,37 @@ body {
   
   .route-modal-header h3 {
     font-size: 16px !important;
+  }
+
+  /* 手機版捷運模式：改善效益資訊卡樣式與電腦版一致 */
+  .route-result-modal .result-dashboard-card.result-combined-improvement-card {
+    background: #ffffff !important;
+    border: 6px solid #4CAF50 !important;
+    border-radius: 18px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important;
+    padding: 12px 16px !important;
+  }
+  .route-result-modal .result-combined-improvement-card .card-title {
+    color: #000 !important;
+    font-weight: 700 !important;
+  }
+  .route-result-modal .result-combined-improvement-card .help-icon-btn {
+    background: rgba(0,0,0,0.1) !important;
+    color: #333 !important;
+    border: 1px solid rgba(0,0,0,0.15) !important;
+  }
+  .route-result-modal .combined-improvement-display,
+  .route-result-modal .improvement-display-simple {
+    padding: 12px 0 !important;
+    min-height: 80px !important;
+  }
+  .route-result-modal .improvement-circle {
+    width: 60px !important;
+    height: 60px !important;
+  }
+  .route-result-modal .improvement-percentage {
+    font-size: 18px !important;
+    font-weight: 800 !important;
   }
   
   .route-modal-body {

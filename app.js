@@ -5588,6 +5588,11 @@ function closeRouteResultModal() {
   const modal = document.getElementById('route-result-modal');
   modal.style.display = 'none';
   enableHeaderButtons();
+  // 關閉當下即重置網址為首頁
+  try {
+    const base = window.location.origin + window.location.pathname;
+    window.history.pushState({}, '', base);
+  } catch (_) {}
   
   // 清理地圖實例
   if (window.routeResultMap) {
@@ -5596,7 +5601,7 @@ function closeRouteResultModal() {
   }
 }
 
-// 顯示捷運模式提示彈窗
+// 顯示捷運模式提示彈窗（恢復）
 function showMetroModeInfo() {
   // 創建彈窗元素
   const modal = document.createElement('div');
