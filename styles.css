@@ -2379,6 +2379,32 @@ body {
     font-size: 16px !important;
   }
 
+  /* 手機版：捷運線卡片比例縮小 */
+  .metro-lines-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+    gap: 8px !important;
+  }
+  .line-card-content { padding: 14px !important; }
+  .line-card-name { font-size: 16px !important; }
+  .line-card-stations { font-size: 11px !important; }
+  .line-card-code { font-size: 12px !important; padding: 4px 10px !important; }
+  .line-card-arrow { font-size: 14px !important; }
+
+  /* 手機版：站點清單彈窗比例縮小 */
+  .stations-modal { width: 92vw !important; padding: 8px !important; }
+  .stations-header { padding: 12px 14px !important; }
+  .stations-header h3 { font-size: 16px !important; }
+  .close-stations-btn { font-size: 16px !important; }
+  .station-card { padding: 10px 12px !important; }
+  .station-card-name { font-size: 12px !important; }
+  .station-card-code { font-size: 12px !important; }
+
+  /* 手機版：解算成果彈窗元素比例縮小 */
+  .route-result-modal .modal-content { padding: 10px !important; }
+  .route-result-modal .card-title { font-size: 14px !important; }
+  .route-result-modal .comparison-bars .route-value { font-size: 12px !important; }
+  .route-result-modal .radio-label { font-size: 12px !important; }
+
   /* 手機版捷運模式：改善效益資訊卡樣式與電腦版一致 */
   .route-result-modal .result-dashboard-card.result-combined-improvement-card {
     background: #ffffff !important;
