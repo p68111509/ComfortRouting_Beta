@@ -2413,6 +2413,11 @@ function switchMode(mode) {
     navigationBtn.classList.add('active');
     metroBtn.classList.remove('active');
     indicator.style.transform = 'translateX(0)';
+    // 重置網址為首頁（移除捷運深連結參數）
+    try {
+      const base = window.location.origin + window.location.pathname;
+      window.history.pushState({}, '', base);
+    } catch (_) {}
     
     // 顯示導航模式界面
     if (fullscreenMap) fullscreenMap.style.display = 'block';
