@@ -3209,6 +3209,7 @@ function renderRoutes(data) {
       color: '#2BB1AA',
       weight: 8,
       opacity: 0.8,
+      dashArray: '2, 2', // 很密的虛線
     }).addTo(map);
   }
   
@@ -5374,6 +5375,7 @@ function initRouteResultMap(routeData, exitData, attractionData) {
         color: '#2BB1AA',
         weight: 8,
         opacity: 0.8,
+        dashArray: '2, 2', // 很密的虛線
       }).addTo(resultMap);
     }
     
