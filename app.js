@@ -5539,7 +5539,7 @@ function updateCarbonCard(prefix, distanceKm) {
   const mode = estimateBaselineMode(distanceKm);
   const factor = emissionFactor(mode);
   const savedKg = distanceKm * factor;
-  const trees = savedKg * 0.5;
+  const trees = savedKg / 21.555; // 等效樹木數（棵／年）= Saved CO₂ (kg) / 21.555
 
   const valueEl = document.getElementById(`${prefix}CarbonKg`);
   const treesEl = document.getElementById(`${prefix}CarbonTrees`);
