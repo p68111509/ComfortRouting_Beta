@@ -8,6 +8,6 @@ services:
       - key: RENDER
         value: "true"
       - key: GRAPH_PATH
-        value: /opt/render/project/src/data/OSM_腳踏車路徑_台北_withpm25_最大連通版.pkl
+        value: /opt/render/project/src/data/OSM_腳踏車路徑_台北_withpm25_最大連通版_DiGraph_260108.pkl
       - key: GOOGLE_API_KEY
         value: AIzaSyDnbTu8PgUkue5A9uO5aJa3lHZuNUwj6z0

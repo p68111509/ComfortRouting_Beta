@@ -9,7 +9,7 @@ ComfortRouting_Beta/
 │   ├── main.py              # FastAPI 後端服務
 │   └── requirements.txt     # Python 依賴
 ├── data/
-│   └── OSM_腳踏車路徑_台北_withpm25_最大連通版.pkl  # 路網數據
+│   └── OSM_腳踏車路徑_台北_withpm25_最大連通版_DiGraph_260108.pkl  # 路網數據
 ├── vendor/
 │   └── leaflet/            # Leaflet 地圖庫
 ├── logo/                   # 系統 Logo
@@ -32,7 +32,7 @@ ComfortRouting_Beta/
    - 使用 `render.yaml` 配置自動部署
    - 設置環境變量：
      - `RENDER=true`
-     - `GRAPH_PATH=data/OSM_腳踏車路徑_台北_withpm25_最大連通版.pkl`
+     - `GRAPH_PATH=data/OSM_腳踏車路徑_台北_withpm25_最大連通版_DiGraph_260108.pkl`
      - `GOOGLE_API_KEY=你的Google API密鑰`
 
 3. **靜態文件服務**
@@ -59,7 +59,7 @@ ComfortRouting_Beta/
 | 變量名 | 描述 | 默認值 |
 |--------|------|--------|
 | `RENDER` | 部署環境標識 | `true` |
-| `GRAPH_PATH` | 路網數據文件路徑 | `data/OSM_腳踏車路徑_台北_withpm25_最大連通版.pkl` |
+| `GRAPH_PATH` | 路網數據文件路徑 | `data/OSM_腳踏車路徑_台北_withpm25_最大連通版_DiGraph_260108.pkl` |
 | `GOOGLE_API_KEY` | Google Geocoding API 密鑰 | 需要設置 |
 
 ### 故障排除
