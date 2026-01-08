@@ -10,7 +10,7 @@ FastAPI 後端入口
   回傳前端 Leaflet 友善格式，能直接給現有 renderRoutes() 繪圖。
 
 啟動方式（本機開發）：
-1) 將路網檔放在 data\雙北基隆路網_濃度與暴露_最大連通版.pkl
+1) 將路網檔放在 data\OSM_腳踏車路徑_台北_withpm25_最大連通版.pkl
 2) 安裝依賴：pip install -r api/requirements.txt
 3) 啟動：uvicorn api.main:app --reload --port 8000
 
@@ -53,15 +53,15 @@ from pathlib import Path
 
 # 專案根：main.py 在 api/，往上一層就是專案根
 BASE_DIR = Path(__file__).resolve().parents[1]
-DEFAULT_GRAPH = BASE_DIR / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl"
+DEFAULT_GRAPH = BASE_DIR / "data" / "OSM_腳踏車路徑_台北_withpm25_最大連通版.pkl"
 
 # 在 Render 上，嘗試多個可能的路徑
 possible_graph_paths = [
-    Path("/opt/render/project/src/data/雙北基隆路網_濃度與暴露_最大連通版.pkl"),  # Render 主要路徑
+    Path("/opt/render/project/src/data/OSM_腳踏車路徑_台北_withpm25_最大連通版.pkl"),  # Render 主要路徑
     DEFAULT_GRAPH,  # 專案根/data/...
-    BASE_DIR / "api" / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl",  # 專案根/api/data/...
-    Path("data") / "雙北基隆路網_濃度與暴露_最大連通版.pkl",  # 相對於 api/ 目錄
-    Path("/opt/render/project/src/api/data/雙北基隆路網_濃度與暴露_最大連通版.pkl"),  # Render api/data 路徑
+    BASE_DIR / "api" / "data" / "OSM_腳踏車路徑_台北_withpm25_最大連通版.pkl",  # 專案根/api/data/...
+    Path("data") / "OSM_腳踏車路徑_台北_withpm25_最大連通版.pkl",  # 相對於 api/ 目錄
+    Path("/opt/render/project/src/api/data/OSM_腳踏車路徑_台北_withpm25_最大連通版.pkl"),  # Render api/data 路徑
 ]
 
 # 允許用環境變數覆蓋；沒設就用專案根/data 的預設

@@ -9,7 +9,7 @@ from pathlib import Path
 # 專案根目錄
 BASE_DIR = Path(__file__).resolve().parent
 # 使用實際存在的檔案
-GRAPH_PATH = BASE_DIR / "data" / "雙北基隆路網_濃度與暴露_最大連通版.pkl"
+GRAPH_PATH = BASE_DIR / "data" / "OSM_腳踏車路徑_台北_withpm25_最大連通版.pkl"
 
 print(f"Loading: {GRAPH_PATH}")
 print(f"File exists: {GRAPH_PATH.exists()}")

@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # 設定環境變數
-ENV GRAPH_PATH=data/雙北基隆路網_濃度與暴露_最大連通版.pkl
+ENV GRAPH_PATH=data/OSM_腳踏車路徑_台北_withpm25_最大連通版.pkl
 ENV GOOGLE_API_KEY=AIzaSyDnbTu8PgUkue5A9uO5aJa3lHZuNUwj6z0
 
 # 暴露端口
