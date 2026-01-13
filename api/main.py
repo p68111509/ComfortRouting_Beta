@@ -334,6 +334,16 @@ def load_graph(mode: str = "bicycle") -> None:
     kdtree = KDTree(node_xy)
     print(f"[load_graph] built KDTree for {mode} graph with {len(node_ids)} nodes (filtered {bad_cnt} invalid nodes)")
     
+    # 檢查圖的連通性（僅在載入時檢查一次，用於調試）
+    if isinstance(graph_to_load, nx.DiGraph):
+        is_connected = nx.is_weakly_connected(graph_to_load)
+        num_components = nx.number_weakly_connected_components(graph_to_load)
+        print(f"[load_graph] {mode} graph connectivity: {'connected' if is_connected else f'not connected ({num_components} weakly connected components)'}")
+    else:
+        is_connected = nx.is_connected(graph_to_load)
+        num_components = nx.number_connected_components(graph_to_load)
+        print(f"[load_graph] {mode} graph connectivity: {'connected' if is_connected else f'not connected ({num_components} connected components)'}")
+    
     # 根據 mode 儲存到對應的全域變數
     if mode == "bicycle":
         G_bicycle = graph_to_load
@@ -766,8 +776,62 @@ def api_routes(req: RoutesReq):
     try:
         s_node = nearest_node(s_lat, s_lng)
         e_node = nearest_node(e_lat, e_lng)
+        print(f"[debug] Found nearest nodes: start={s_node}, end={e_node}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"KDTree/nearest error: {e}")
+
+    # 檢查節點是否在圖中
+    if s_node not in G:
+        raise HTTPException(status_code=500, detail=f"Start node {s_node} not found in {mode} graph")
+    if e_node not in G:
+        raise HTTPException(status_code=500, detail=f"End node {e_node} not found in {mode} graph")
+    
+    # 檢查是否有路徑（在計算前先檢查，提供更清楚的錯誤訊息）
+    has_path = False
+    if isinstance(G, nx.DiGraph):
+        has_path = nx.has_path(G, s_node, e_node)
+    else:
+        has_path = nx.has_path(G, s_node, e_node)
+    
+    if not has_path:
+        # 檢查連通性（提供更詳細的錯誤訊息）
+        if isinstance(G, nx.DiGraph):
+            # 有向圖：檢查弱連通
+            components = list(nx.weakly_connected_components(G))
+            s_component = None
+            e_component = None
+            for i, comp in enumerate(components):
+                if s_node in comp:
+                    s_component = i
+                if e_node in comp:
+                    e_component = i
+            
+            if s_component is not None and e_component is not None and s_component != e_component:
+                raise HTTPException(
+                    status_code=404, 
+                    detail=f"起點和終點不在同一個連通分量中（行人路徑圖不連通）。起點在第 {s_component+1} 個連通分量，終點在第 {e_component+1} 個連通分量。請選擇其他起點或終點。"
+                )
+        else:
+            # 無向圖：檢查連通分量
+            components = list(nx.connected_components(G))
+            s_component = None
+            e_component = None
+            for i, comp in enumerate(components):
+                if s_node in comp:
+                    s_component = i
+                if e_node in comp:
+                    e_component = i
+            
+            if s_component is not None and e_component is not None and s_component != e_component:
+                raise HTTPException(
+                    status_code=404, 
+                    detail=f"起點和終點不在同一個連通分量中（行人路徑圖不連通）。起點在第 {s_component+1} 個連通分量，終點在第 {e_component+1} 個連通分量。請選擇其他起點或終點。"
+                )
+        
+        raise HTTPException(
+            status_code=404,
+            detail=f"無法找到從起點到終點的路徑。這可能是因為行人路徑圖不連通，或起終點距離太遠。請嘗試選擇其他起點或終點。"
+        )
 
     # 計算兩種路徑
     def _weight_length(u, v, ed):
@@ -794,8 +858,13 @@ def api_routes(req: RoutesReq):
             # 有距離限制，使用受限算法
             path_lowest = _find_limited_exposure_path(G, s_node, e_node, path_shortest, req.max_distance_increase)
             
+    except nx.NetworkXNoPath:
+        raise HTTPException(
+            status_code=404,
+            detail="無法找到路徑。起點和終點之間沒有連通的路徑。請嘗試選擇其他起點或終點。"
+        )
     except Exception as e:
-        # 將原始錯誤訊息直接回傳，利於前端顯示與定位（例如 NetworkXNoPath 或 KeyError）
+        # 將原始錯誤訊息直接回傳，利於前端顯示與定位（例如 KeyError）
         raise HTTPException(status_code=502, detail=f"routing failed: {type(e).__name__}: {e}")
 
     # 幾何與指標
