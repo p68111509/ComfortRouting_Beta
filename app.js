@@ -2231,21 +2231,29 @@ function bindUI() {
     radio.addEventListener('change', async () => {
       console.log('[transport] Mode changed to:', radio.value);
       
-      // 檢查是否有起點和終點
-      const startInput = document.getElementById('input-start') || document.getElementById('input-start-desktop');
-      const endInput = document.getElementById('input-end') || document.getElementById('input-end-desktop');
-      const hasStart = !!startMarker || (startInput && startInput.value.trim());
-      const hasEnd = !!endMarker || (endInput && endInput.value.trim());
-      
-      // 如果已經解算過路徑且有起點和終點，需要重新解算（因為不同 mode 使用不同的路網）
-      if (window.lastRouteData && hasStart && hasEnd) {
+      // 如果已經解算過路徑，需要重新解算（因為不同 mode 使用不同的路網）
+      if (window.lastRouteData && isPlanningMode) {
         console.log('[transport] Re-planning routes with new mode:', radio.value);
-        // 重新規劃路徑（會使用新的 mode）
-        try {
-          await planRoutes();
-        } catch (error) {
-          console.error('[transport] Failed to re-plan routes:', error);
-          showError(`重新解算路徑失敗：${error.message}`);
+        console.log('[transport] Last route data exists, startMarker:', !!startMarker, 'endMarker:', !!endMarker);
+        
+        // 檢查是否有起點和終點（優先使用標記，如果沒有標記則使用輸入框）
+        const startInput = document.getElementById('input-start') || document.getElementById('input-start-desktop');
+        const endInput = document.getElementById('input-end') || document.getElementById('input-end-desktop');
+        const hasStart = !!startMarker || (startInput && startInput.value && startInput.value.trim());
+        const hasEnd = !!endMarker || (endInput && endInput.value && endInput.value.trim());
+        
+        console.log('[transport] hasStart:', hasStart, 'hasEnd:', hasEnd);
+        
+        if (hasStart && hasEnd) {
+          // 重新規劃路徑（會使用新的 mode）
+          try {
+            await planRoutes();
+          } catch (error) {
+            console.error('[transport] Failed to re-plan routes:', error);
+            showError(`重新解算路徑失敗：${error.message}`);
+          }
+        } else {
+          console.warn('[transport] Cannot re-plan: missing start or end point');
         }
       } else if (window.lastRouteData) {
         // 如果只是更新顯示（尚未解算或沒有起終點），只更新表格和時間計算
@@ -2265,6 +2273,8 @@ function bindUI() {
         
         // 更新儀表板
         updateDashboard(data, shortestTime, lowestTime, improvementRate, extraDistance);
+      } else {
+        console.log('[transport] No route data available, skipping');
       }
     });
   });
