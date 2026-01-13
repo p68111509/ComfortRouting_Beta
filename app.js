@@ -4819,8 +4819,10 @@ function bindTransportModeChangeEvents(routeData, exitData, attractionData, stat
   // 保存資料以便重新解算
   window.lastMetroRouteData = { exitData, attractionData, stationName };
   
+  // 先移除舊的事件監聽器（如果有的話）
   radioButtons.forEach(radio => {
-    radio.addEventListener('change', async function() {
+    // 創建新的事件處理函數
+    const newHandler = async function() {
       if (this.checked) {
         const selectedMode = this.value;
         console.log('[metro] Transport mode changed to:', selectedMode);
@@ -4846,7 +4848,14 @@ function bindTransportModeChangeEvents(routeData, exitData, attractionData, stat
           updateRouteResultWithNewMode(routeData, selectedMode);
         }
       }
-    });
+    };
+    
+    // 移除舊的監聽器（通過克隆節點來移除所有監聽器）
+    const newRadio = radio.cloneNode(true);
+    radio.parentNode.replaceChild(newRadio, radio);
+    
+    // 添加新的事件監聽器
+    newRadio.addEventListener('change', newHandler);
   });
 }
 
@@ -5410,6 +5419,18 @@ function handleDeepLinkNavigation() {
 // 初始化結果地圖
 function initRouteResultMap(routeData, exitData, attractionData) {
   const mapContainer = document.getElementById('route-result-map');
+  
+  // 如果已經有地圖實例，先移除它
+  if (window.routeResultMap) {
+    try {
+      window.routeResultMap.remove();
+    } catch (e) {
+      console.warn('[metro] Error removing old map:', e);
+    }
+    window.routeResultMap = null;
+  }
+  
+  // 清空容器
   mapContainer.innerHTML = '';
   
   // 等待容器完全顯示後再初始化地圖
