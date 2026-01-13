@@ -1991,6 +1991,21 @@ function toggleRouteComparisonModal() {
   if (!isShowing) {
     disableNavigationSettings();
     disableHeaderButtons();
+    
+    // 當彈窗打開時，更新儀表板數據
+    if (window.lastRouteData) {
+      const { data, shortestTime, lowestTime, improvementRate, extraDistance } = window.lastRouteData;
+      // 重新計算時間（因為交通方式可能改變）
+      const selectedTransport = document.querySelector('input[name="transport-mode"]:checked') || 
+                               document.querySelector('input[name="transport-mode-desktop"]:checked');
+      const transportMode = selectedTransport ? selectedTransport.value : 'bicycle';
+      
+      const newShortestTime = computeTravelTime(data.shortest?.distance_km || 0, transportMode);
+      const newLowestTime = computeTravelTime(data.lowest?.distance_km || 0, transportMode);
+      
+      // 更新儀表板
+      updateDashboard(data, newShortestTime, newLowestTime, improvementRate, extraDistance);
+    }
   } else {
     enableNavigationSettings();
     enableHeaderButtons();
@@ -2214,14 +2229,42 @@ function bindUI() {
   
   [...transportRadios, ...transportRadiosDesktop].forEach(radio => {
     radio.addEventListener('change', async () => {
-      // 如果已經解算過路徑，需要重新解算（因為不同 mode 使用不同的路網）
-      if (window.lastRouteData && isPlanningMode) {
-        console.log('[transport] Mode changed, re-planning routes with new mode...');
+      console.log('[transport] Mode changed to:', radio.value);
+      
+      // 檢查是否有起點和終點
+      const startInput = document.getElementById('input-start') || document.getElementById('input-start-desktop');
+      const endInput = document.getElementById('input-end') || document.getElementById('input-end-desktop');
+      const hasStart = !!startMarker || (startInput && startInput.value.trim());
+      const hasEnd = !!endMarker || (endInput && endInput.value.trim());
+      
+      // 如果已經解算過路徑且有起點和終點，需要重新解算（因為不同 mode 使用不同的路網）
+      if (window.lastRouteData && hasStart && hasEnd) {
+        console.log('[transport] Re-planning routes with new mode:', radio.value);
         // 重新規劃路徑（會使用新的 mode）
-        await planRoutes();
+        try {
+          await planRoutes();
+        } catch (error) {
+          console.error('[transport] Failed to re-plan routes:', error);
+          showError(`重新解算路徑失敗：${error.message}`);
+        }
       } else if (window.lastRouteData) {
-        // 如果只是更新顯示（尚未解算），只更新表格
-        renderTable(window.lastRouteData);
+        // 如果只是更新顯示（尚未解算或沒有起終點），只更新表格和時間計算
+        console.log('[transport] Updating display only (no re-calculation)');
+        const { data, improvementRate, extraDistance } = window.lastRouteData;
+        const selectedTransport = document.querySelector('input[name="transport-mode"]:checked') || 
+                                 document.querySelector('input[name="transport-mode-desktop"]:checked');
+        const transportMode = selectedTransport ? selectedTransport.value : 'bicycle';
+        
+        const shortestTime = computeTravelTime(data.shortest?.distance_km || 0, transportMode);
+        const lowestTime = computeTravelTime(data.lowest?.distance_km || 0, transportMode);
+        
+        // 更新保存的數據
+        window.lastRouteData.shortestTime = shortestTime;
+        window.lastRouteData.lowestTime = lowestTime;
+        window.lastRouteData.transportMode = transportMode;
+        
+        // 更新儀表板
+        updateDashboard(data, shortestTime, lowestTime, improvementRate, extraDistance);
       }
     });
   });
@@ -3273,9 +3316,13 @@ function renderTable(data) {
 
 // 更新儀表板
 function updateDashboard(data, shortestTime, lowestTime, improvementRate, extraDistance) {
+  console.log('[updateDashboard] Called with:', { data, shortestTime, lowestTime, improvementRate, extraDistance });
+  
   // 計算最大值用於進度條
   const maxDistance = Math.max(data.shortest?.distance_km || 0, data.lowest?.distance_km || 0);
   const maxTime = Math.max(shortestTime, lowestTime);
+
+  console.log('[updateDashboard] Max values:', { maxDistance, maxTime });
 
   // 更新距離比較
   updateDashboardBar('dashDistanceBarShortest', 'dashDistanceShortest', 
@@ -3322,6 +3369,8 @@ function updateDashboardBar(barId, valueId, value, maxValue, unit) {
   const bar = document.getElementById(barId);
   const valueEl = document.getElementById(valueId);
   
+  console.log(`[updateDashboardBar] ${barId}/${valueId}: value=${value}, maxValue=${maxValue}, unit=${unit}, bar=${!!bar}, valueEl=${!!valueEl}`);
+  
   if (bar && valueEl) {
     const percentage = maxValue > 0 ? Math.max(5, (value / maxValue) * 100) : 0;
     
@@ -3331,7 +3380,11 @@ function updateDashboardBar(barId, valueId, value, maxValue, unit) {
     }, 100);
     
     // 更新數值（加上單位）
-    valueEl.textContent = formatNumber(value, 1) + (unit ? ` ${unit}` : '');
+    const formattedValue = formatNumber(value, 1) + (unit ? ` ${unit}` : '');
+    valueEl.textContent = formattedValue;
+    console.log(`[updateDashboardBar] Updated ${valueId} to: ${formattedValue}`);
+  } else {
+    console.warn(`[updateDashboardBar] Elements not found: bar=${!!bar}, valueEl=${!!valueEl}`);
   }
 }
 
