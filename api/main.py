@@ -53,22 +53,35 @@ from pathlib import Path
 
 # 專案根：main.py 在 api/，往上一層就是專案根
 BASE_DIR = Path(__file__).resolve().parents[1]
-DEFAULT_GRAPH = BASE_DIR / "data" / "OSM_腳踏車路徑_台北_withpm25_最大連通版_DiGraph_260108.pkl"
 
-# 在 Render 上，嘗試多個可能的路徑
-possible_graph_paths = [
-    Path("/opt/render/project/src/data/OSM_腳踏車路徑_台北_withpm25_最大連通版_DiGraph_260108.pkl"),  # Render 主要路徑
-    DEFAULT_GRAPH,  # 專案根/data/...
-    BASE_DIR / "api" / "data" / "OSM_腳踏車路徑_台北_withpm25_最大連通版_DiGraph_260108.pkl",  # 專案根/api/data/...
-    Path("data") / "OSM_腳踏車路徑_台北_withpm25_最大連通版_DiGraph_260108.pkl",  # 相對於 api/ 目錄
-    Path("/opt/render/project/src/api/data/OSM_腳踏車路徑_台北_withpm25_最大連通版_DiGraph_260108.pkl"),  # Render api/data 路徑
-]
+# 定義兩個路網檔案路徑
+BICYCLE_GRAPH_NAME = "OSM_腳踏車路徑_台北_withpm25_最大連通版_DiGraph_260108.pkl"
+WALK_GRAPH_NAME = "OSM_行人路徑_台北_withpm25_最大連通版_260108.pkl"
 
-# 允許用環境變數覆蓋；沒設就用專案根/data 的預設
-GRAPH_PATH = Path(os.environ.get("GRAPH_PATH", str(DEFAULT_GRAPH))).resolve()
+DEFAULT_BICYCLE_GRAPH = BASE_DIR / "data" / BICYCLE_GRAPH_NAME
+DEFAULT_WALK_GRAPH = BASE_DIR / "data" / WALK_GRAPH_NAME
+
+# 根據 mode 取得對應的路網檔案路徑（嘗試多個可能的路徑）
+def get_graph_paths_for_mode(mode: str) -> List[Path]:
+    """根據 mode 返回可能的路網檔案路徑列表"""
+    graph_name = BICYCLE_GRAPH_NAME if mode == "bicycle" else WALK_GRAPH_NAME
+    default_path = DEFAULT_BICYCLE_GRAPH if mode == "bicycle" else DEFAULT_WALK_GRAPH
+    
+    return [
+        Path("/opt/render/project/src/data") / graph_name,  # Render 主要路徑
+        default_path,  # 專案根/data/...
+        BASE_DIR / "api" / "data" / graph_name,  # 專案根/api/data/...
+        Path("data") / graph_name,  # 相對於 api/ 目錄
+        Path("/opt/render/project/src/api/data") / graph_name,  # Render api/data 路徑
+    ]
+
+# 允許用環境變數覆蓋（向後相容）
+GRAPH_PATH = Path(os.environ.get("GRAPH_PATH", str(DEFAULT_BICYCLE_GRAPH))).resolve()
 
 # 啟動時印出絕對路徑，幫助你確認
-print(f"[config] GRAPH_PATH = {GRAPH_PATH}")
+print(f"[config] Default GRAPH_PATH = {GRAPH_PATH}")
+print(f"[config] Bicycle graph: {DEFAULT_BICYCLE_GRAPH}")
+print(f"[config] Walk graph: {DEFAULT_WALK_GRAPH}")
 
 
 # 欄位鍵名（可透過環境變數改名，預設照題意）
@@ -93,7 +106,7 @@ class ReverseReq(BaseModel):
 class RoutesReq(BaseModel):
     start: Optional[Any] = Field(None, description="可以是字串地址或 {lat,lng}")
     end: Optional[Any] = Field(None, description="可以是字串地址或 {lat,lng}")
-    mode: Optional[str] = Field("bicycle", description="walk/bicycle/motorcycle，先不影響權重")
+    mode: Optional[str] = Field("bicycle", description="bicycle: 使用腳踏車路徑（有向圖，考慮方向）; walk: 使用行人路徑（無向圖，不考慮方向）")
     max_distance_increase: Optional[int] = Field(None, description="最高增加距離限制（公尺），None 表示無限制")
 
 
@@ -133,10 +146,22 @@ def google_reverse(lat: float, lng: float, language: str = "zh-TW") -> str:
 
 
 # -------------------------- 路網載入與 KDTree --------------------------
+# 維護兩個路網的狀態（腳踏車和行人）
+G_bicycle: Optional[nx.Graph] = None
+G_walk: Optional[nx.Graph] = None
+_kdtree_bicycle: Optional[KDTree] = None
+_kdtree_walk: Optional[KDTree] = None
+_node_xy_bicycle: Optional[np.ndarray] = None
+_node_xy_walk: Optional[np.ndarray] = None
+_node_ids_bicycle: Optional[List[Any]] = None
+_node_ids_walk: Optional[List[Any]] = None
+_current_mode: Optional[str] = None  # 當前載入的 mode
+
+# 向後相容的變數（指向當前使用的圖）
 G: Optional[nx.Graph] = None
 _kdtree: Optional[KDTree] = None
 _node_xy: Optional[np.ndarray] = None
-_node_ids: Optional[List[Any]] = None  # KDTree 索引 -> 圖上 node id 的映射（修正索引錯位）
+_node_ids: Optional[List[Any]] = None
 
 
 def _node_attrs(g: nx.Graph, nid: Any) -> Dict[str, Any]:
@@ -206,34 +231,66 @@ def _detect_node_xy_fields(g: nx.Graph) -> Tuple[str, str]:
     )
 
 
-def load_graph() -> None:
+def load_graph(mode: str = "bicycle") -> None:
     """
-    載入 pickle 路網並建立 KDTree。伺服器啟動時執行一次。
+    載入 pickle 路網並建立 KDTree。根據 mode 載入對應的路網。
     根據 Streamlit 程式碼，節點本身就是 (x, y) 座標，使用 EPSG:3826 投影座標系，
     需要轉換為 WGS84 (EPSG:4326) 格式。
+    
+    參數：
+    -----
+    mode : str
+        "bicycle" 或 "walk"，決定載入哪個路網
     """
-    global G, _kdtree, _node_xy, _node_ids
+    global G_bicycle, G_walk, _kdtree_bicycle, _kdtree_walk
+    global _node_xy_bicycle, _node_xy_walk, _node_ids_bicycle, _node_ids_walk
+    global G, _kdtree, _node_xy, _node_ids, _current_mode
+    
+    # 檢查是否已經載入過
+    if mode == "bicycle" and G_bicycle is not None:
+        print(f"[load_graph] Bicycle graph already loaded, using cached version")
+        G = G_bicycle
+        _kdtree = _kdtree_bicycle
+        _node_xy = _node_xy_bicycle
+        _node_ids = _node_ids_bicycle
+        _current_mode = mode
+        return
+    
+    if mode == "walk" and G_walk is not None:
+        print(f"[load_graph] Walk graph already loaded, using cached version")
+        G = G_walk
+        _kdtree = _kdtree_walk
+        _node_xy = _node_xy_walk
+        _node_ids = _node_ids_walk
+        _current_mode = mode
+        return
+    
+    # 取得對應的路網路徑
+    possible_graph_paths = get_graph_paths_for_mode(mode)
+    graph_name = BICYCLE_GRAPH_NAME if mode == "bicycle" else WALK_GRAPH_NAME
     
     # 嘗試多個可能的路徑
     graph_loaded = False
+    graph_to_load = None
+    
     for graph_path in possible_graph_paths:
         try:
-            print(f"[startup] trying to load graph from: {graph_path}")
+            print(f"[load_graph] trying to load {mode} graph from: {graph_path}")
             if graph_path.exists():
                 with open(graph_path, "rb") as f:
-                    G = pickle.load(f)
-                print(f"[startup] successfully loaded graph from: {graph_path}")
+                    graph_to_load = pickle.load(f)
+                print(f"[load_graph] successfully loaded {mode} graph from: {graph_path}")
                 graph_loaded = True
                 break
             else:
-                print(f"[startup] graph file not found: {graph_path}")
+                print(f"[load_graph] {mode} graph file not found: {graph_path}")
         except Exception as e:
-            print(f"[startup] failed to load graph from {graph_path}: {e}")
+            print(f"[load_graph] failed to load {mode} graph from {graph_path}: {e}")
             continue
     
     if not graph_loaded:
-        raise RuntimeError(f"Failed to load graph pickle from any of the attempted paths: {possible_graph_paths}")
-
+        raise RuntimeError(f"Failed to load {mode} graph pickle from any of the attempted paths: {possible_graph_paths}")
+    
     # 建立座標轉換器：從 EPSG:3826 (TWD97) 轉換到 EPSG:4326 (WGS84)
     transformer = Transformer.from_crs("epsg:3826", "epsg:4326", always_xy=True)
     
@@ -243,9 +300,9 @@ def load_graph() -> None:
     node_ids: List[Any] = []
     bad_cnt = 0
     
-    print(f"[startup] processing {len(G.nodes)} nodes...")
+    print(f"[load_graph] processing {len(graph_to_load.nodes)} nodes for {mode} graph...")
     
-    for nid in G.nodes:
+    for nid in graph_to_load.nodes:
         # 節點本身就是座標 (x, y)
         if isinstance(nid, (tuple, list)) and len(nid) == 2:
             x, y = nid
@@ -257,7 +314,7 @@ def load_graph() -> None:
                     node_ids.append(nid)
                     mapping[(lat, lon)] = nid
                     # 將轉換後的座標存回節點屬性
-                    G.nodes[nid]["latlon"] = (lat, lon)
+                    graph_to_load.nodes[nid]["latlon"] = (lat, lon)
                 else:
                     bad_cnt += 1
             except Exception as e:
@@ -267,16 +324,37 @@ def load_graph() -> None:
             bad_cnt += 1
     
     if not coords:
-        raise RuntimeError("No valid node coordinates for KDTree")
+        raise RuntimeError(f"No valid node coordinates for KDTree in {mode} graph")
     
     # 儲存映射到圖的全局屬性
-    G.graph['latlon_nodes'] = list(mapping.keys())
-    G.graph['node_lookup'] = mapping
+    graph_to_load.graph['latlon_nodes'] = list(mapping.keys())
+    graph_to_load.graph['node_lookup'] = mapping
     
-    _node_xy = np.array(coords, dtype=float)
-    _node_ids = node_ids
-    _kdtree = KDTree(_node_xy)
-    print(f"[kdtree] built with {len(_node_ids)} nodes having coordinates (filtered {bad_cnt} invalid nodes)")
+    node_xy = np.array(coords, dtype=float)
+    kdtree = KDTree(node_xy)
+    print(f"[load_graph] built KDTree for {mode} graph with {len(node_ids)} nodes (filtered {bad_cnt} invalid nodes)")
+    
+    # 根據 mode 儲存到對應的全域變數
+    if mode == "bicycle":
+        G_bicycle = graph_to_load
+        _kdtree_bicycle = kdtree
+        _node_xy_bicycle = node_xy
+        _node_ids_bicycle = node_ids
+        G = G_bicycle
+        _kdtree = _kdtree_bicycle
+        _node_xy = _node_xy_bicycle
+        _node_ids = _node_ids_bicycle
+    else:  # walk
+        G_walk = graph_to_load
+        _kdtree_walk = kdtree
+        _node_xy_walk = node_xy
+        _node_ids_walk = node_ids
+        G = G_walk
+        _kdtree = _kdtree_walk
+        _node_xy = _node_xy_walk
+        _node_ids = _node_ids_walk
+    
+    _current_mode = mode
 
 
 def nearest_node(lat: float, lng: float) -> Any:
@@ -562,26 +640,34 @@ async def read_index():
 
 @app.on_event("startup")
 def _on_startup():
-    """啟動時載入路網與 KDTree。"""
+    """啟動時預載入腳踏車路網（預設模式）。"""
     try:
-        # 嘗試載入圖檔，使用多個可能的路徑
-        print(f"[startup] attempting to load graph from multiple paths...")
-        load_graph()
+        # 預載入腳踏車路網（預設模式）
+        print(f"[startup] attempting to preload bicycle graph (default mode)...")
+        load_graph("bicycle")
+        print(f"[startup] Bicycle graph preloaded: nodes={len(G.nodes) if G else 0}, edges={len(G.edges) if G else 0}")
     except Exception as ie:
-        print(f"[startup] load_graph exception: {ie}")
+        print(f"[startup] Failed to preload bicycle graph: {ie}")
+        print(f"[startup] Graph will be loaded on-demand when first route request arrives")
         import traceback
         traceback.print_exc()
     
     # 啟動時輸出圖資訊與除錯樣本，方便檢查欄位命名
     if G is not None:
-        print(f"Graph loaded: {GRAPH_PATH}, nodes={len(G.nodes)} edges={len(G.edges)}")
+        graph_type = "DiGraph" if isinstance(G, nx.DiGraph) else "Graph"
+        print(f"[startup] Graph loaded: type={graph_type}, nodes={len(G.nodes)} edges={len(G.edges)}")
         try:
             # 連通分量資訊（若為無向圖適用；有向圖可改強制無向視圖）
-            if isinstance(G, nx.Graph):
-                comps = list(nx.connected_components(G)) if not G.is_directed() else []
+            if isinstance(G, nx.Graph) and not G.is_directed():
+                comps = list(nx.connected_components(G))
                 if comps:
                     sizes = sorted([len(c) for c in comps], reverse=True)
-                    print(f"Connected components: {len(comps)}, largest={sizes[0]}")
+                    print(f"[startup] Connected components: {len(comps)}, largest={sizes[0]}")
+            elif isinstance(G, nx.DiGraph):
+                weak_comps = list(nx.weakly_connected_components(G))
+                if weak_comps:
+                    sizes = sorted([len(c) for c in weak_comps], reverse=True)
+                    print(f"[startup] Weakly connected components: {len(weak_comps)}, largest={sizes[0]}")
         except Exception as ce:
             print(f"[startup] component info error: {ce}")
 
@@ -602,25 +688,22 @@ def _on_startup():
         except Exception as se:
             print(f"[startup] edge sample error: {se}")
     else:
-        print("[startup] Graph is None - geocode/reverse will work, but routes will fail")
+        print("[startup] Graph is None - geocode/reverse will work, but routes will fail until graph is loaded")
 
 
-def _ensure_graph_loaded_or_raise():
-    """在 /api/routes 執行前確保 KDTree 已建立；若尚未建立，嘗試載入一次並回報清楚錯誤。"""
-    global G, _kdtree
-    if _kdtree is not None and G is not None:
-        return
-    # 嘗試即時載入一次
-    try:
-        if not os.path.exists(str(GRAPH_PATH)):
-            raise HTTPException(status_code=500, detail=f"Graph file not found: {GRAPH_PATH}")
-        load_graph()
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to build KDTree/graph: {e}")
+def _ensure_graph_loaded_or_raise(mode: str = "bicycle"):
+    """在 /api/routes 執行前確保對應 mode 的 KDTree 已建立；若尚未建立，嘗試載入一次並回報清楚錯誤。"""
+    global G, _kdtree, _current_mode
+    
+    # 檢查是否需要切換圖
+    if _current_mode != mode or _kdtree is None or G is None:
+        try:
+            load_graph(mode)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to load {mode} graph: {e}")
+    
     if _kdtree is None or G is None:
-        raise HTTPException(status_code=500, detail="KDTree not built (graph may be empty or coordinates invalid)")
+        raise HTTPException(status_code=500, detail=f"KDTree not built for {mode} mode (graph may be empty or coordinates invalid)")
 
 
 @app.post("/api/geocode")
@@ -646,13 +729,21 @@ def api_routes(req: RoutesReq):
     計算最短與最低暴露路徑：
     - 輸入可為：
         {start:{lat,lng}, end:{lat,lng}} 或 {start:"地址", end:"地址"}
-    - mode 目前不影響權重（保留擴充點）。
+    - mode 決定使用哪個路網：
+        - "bicycle": 使用腳踏車路徑（有向圖，考慮方向）
+        - "walk": 使用行人路徑（無向圖，不考慮方向）
     - 回傳格式符合前端 renderRoutes() 需求。
     """
-    print(f"[debug] received request: max_distance_increase={req.max_distance_increase}")
+    # 取得 mode，預設為 bicycle
+    mode = req.mode if req.mode else "bicycle"
+    # 標準化 mode（只接受 bicycle 或 walk）
+    if mode not in ["bicycle", "walk"]:
+        mode = "bicycle"  # 預設為 bicycle
     
-    # 確保 KDTree 已建立；否則嘗試載入並拋出具體訊息
-    _ensure_graph_loaded_or_raise()
+    print(f"[debug] received request: mode={mode}, max_distance_increase={req.max_distance_increase}")
+    
+    # 根據 mode 載入對應的路網並確保 KDTree 已建立
+    _ensure_graph_loaded_or_raise(mode)
 
     # 解析/地理編碼 start/end
     def _resolve_point(p: Any) -> Tuple[float, float, str]:

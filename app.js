@@ -2213,8 +2213,14 @@ function bindUI() {
   const transportRadiosDesktop = document.querySelectorAll('input[name="transport-mode-desktop"]');
   
   [...transportRadios, ...transportRadiosDesktop].forEach(radio => {
-    radio.addEventListener('change', () => {
-      if (window.lastRouteData) {
+    radio.addEventListener('change', async () => {
+      // 如果已經解算過路徑，需要重新解算（因為不同 mode 使用不同的路網）
+      if (window.lastRouteData && isPlanningMode) {
+        console.log('[transport] Mode changed, re-planning routes with new mode...');
+        // 重新規劃路徑（會使用新的 mode）
+        await planRoutes();
+      } else if (window.lastRouteData) {
+        // 如果只是更新顯示（尚未解算），只更新表格
         renderTable(window.lastRouteData);
       }
     });
@@ -4515,8 +4521,12 @@ async function startNavigation() {
   showLoadingForRouteCalculation();
   
   // 直接調用後端API計算路徑，如果失敗則使用模擬數據
+  // 取得選中的交通方式（預設為 walk）
+  const selectedTransport = document.querySelector('input[name="resultTransportMode"]:checked');
+  const initialMode = selectedTransport ? selectedTransport.value : 'walk';
+  
   try {
-    await calculateRouteForModal(finalExitData, attractionData, stationName);
+    await calculateRouteForModal(finalExitData, attractionData, stationName, initialMode);
   } catch (error) {
     console.log('[metro] route calculation failed:', error.message);
     const hasCoords = Number.isFinite(attractionData.lat) && Number.isFinite(attractionData.lng);
@@ -4666,17 +4676,24 @@ async function resolveAttractionCoords(attractionData) {
 }
 
 // 為彈窗調用路徑計算API
-async function calculateRouteForModal(exitData, attractionData, stationName) {
+async function calculateRouteForModal(exitData, attractionData, stationName, mode = 'walk') {
   try {
     // 確保景點有座標
     await resolveAttractionCoords(attractionData);
+    
+    // 取得選中的交通方式（如果沒有提供 mode 參數）
+    if (!mode) {
+      const selectedTransport = document.querySelector('input[name="resultTransportMode"]:checked');
+      mode = selectedTransport ? selectedTransport.value : 'walk';
+    }
+    
     const response = await fetch(`${API_BASE}/api/routes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         start: { lat: exitData.lat, lng: exitData.lng },
         end: { lat: attractionData.lat, lng: attractionData.lng },
-        mode: 'walk'
+        mode: mode
       })
     });
     
@@ -4710,8 +4727,8 @@ function showRouteResultModal(routeData, exitData, attractionData, stationName) 
   modal.style.display = 'flex';
   disableHeaderButtons();
   
-  // 綁定導航方式切換事件
-  bindTransportModeChangeEvents(routeData, exitData, attractionData);
+  // 綁定導航方式切換事件（傳入 stationName 以便重新解算）
+  bindTransportModeChangeEvents(routeData, exitData, attractionData, stationName);
   
   // 產生可回放的深連結 URL（不刷新頁面）
   try {
@@ -4733,17 +4750,38 @@ function showRouteResultModal(routeData, exitData, attractionData, stationName) 
 }
 
 // 綁定通勤方式切換事件
-function bindTransportModeChangeEvents(routeData, exitData, attractionData) {
+function bindTransportModeChangeEvents(routeData, exitData, attractionData, stationName) {
   const radioButtons = document.querySelectorAll('input[name="resultTransportMode"]');
   
+  // 保存資料以便重新解算
+  window.lastMetroRouteData = { exitData, attractionData, stationName };
+  
   radioButtons.forEach(radio => {
-    radio.addEventListener('change', function() {
+    radio.addEventListener('change', async function() {
       if (this.checked) {
         const selectedMode = this.value;
         console.log('[metro] Transport mode changed to:', selectedMode);
         
-        // 重新計算時間並更新顯示
-        updateRouteResultWithNewMode(routeData, selectedMode);
+        // 如果已經解算過，需要重新解算（因為不同 mode 使用不同的路網）
+        if (window.lastMetroRouteData) {
+          console.log('[metro] Re-calculating routes with new mode:', selectedMode);
+          showLoadingForRouteCalculation();
+          try {
+            await calculateRouteForModal(
+              window.lastMetroRouteData.exitData, 
+              window.lastMetroRouteData.attractionData, 
+              window.lastMetroRouteData.stationName,
+              selectedMode
+            );
+          } catch (error) {
+            console.error('[metro] Re-calculation failed:', error);
+            hideLoadingForRouteCalculation();
+            showError('重新計算路徑失敗，請稍後再試');
+          }
+        } else {
+          // 如果沒有保存的資料，只更新時間顯示
+          updateRouteResultWithNewMode(routeData, selectedMode);
+        }
       }
     });
   });
@@ -5301,7 +5339,8 @@ function handleDeepLinkNavigation() {
     switchMode('metro');
   }
   // 直接呼叫既有API解算
-  calculateRouteForModal(exitData, attractionData, stationName)
+  // 深連結時使用預設的 walk mode
+  calculateRouteForModal(exitData, attractionData, stationName, 'walk')
     .catch(err => console.warn('[deeplink] calculateRouteForModal failed:', err));
 }
 
