@@ -54,9 +54,9 @@ from pathlib import Path
 # 專案根：main.py 在 api/，往上一層就是專案根
 BASE_DIR = Path(__file__).resolve().parents[1]
 
-# 定義兩個路網檔案路徑
-BICYCLE_GRAPH_NAME = "OSM_腳踏車路徑_台北_withpm25_最大連通版_DiGraph_260108.pkl"
-WALK_GRAPH_NAME = "OSM_行人路徑_台北_withpm25_最大連通版_260108.pkl"
+# 定義兩個路網檔案路徑（行人和腳踏車使用同一個路網）
+BICYCLE_GRAPH_NAME = "OSM_taipei_DiGraph_TWD97_withpm25_realtime.pkl"
+WALK_GRAPH_NAME = "OSM_taipei_DiGraph_TWD97_withpm25_realtime.pkl"
 
 DEFAULT_BICYCLE_GRAPH = BASE_DIR / "data" / BICYCLE_GRAPH_NAME
 DEFAULT_WALK_GRAPH = BASE_DIR / "data" / WALK_GRAPH_NAME
