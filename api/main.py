@@ -957,10 +957,11 @@ def api_routes(req: RoutesReq):
         return float(attrs.get("length_m", attrs.get("length", 1.0)))
 
     def _weight_exposure(u, v, ed):
-        """最低暴露路徑權重：以邊的 PM25_expo 為權重。"""
+        """最低暴露路徑權重：PM25_expo × length_m（若無則退回 length）。"""
         attrs = _edge_attrs(ed)
         expo = float(attrs.get("PM25_expo", 0.0))
-        return expo
+        length = float(attrs.get("length_m", attrs.get("length", 1.0)))
+        return expo * length
 
     try:
         # 計算最短路徑
