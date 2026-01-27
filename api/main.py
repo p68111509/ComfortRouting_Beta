@@ -559,8 +559,8 @@ def path_cost_and_length(g: nx.Graph, path: List[Any]) -> Tuple[float, float]:
             # 優先使用自動化流程寫入的 length_m（公尺），若不存在再退回舊的 length
             length = float(attrs.get("length_m", attrs.get("length", 0.0)))
             expo = float(attrs.get("PM25_expo", 0.0))
-            # 與舊版 offline 演算法一致：邊成本 = PM25_expo * length
-            exp_sum += expo * length
+            # 邊層級已定義 PM25_expo = PM25 * length_m，這裡總暴露量直接累加 PM25_expo
+            exp_sum += expo
             len_m_sum += length
     return exp_sum, len_m_sum / 1000.0
 
@@ -622,8 +622,8 @@ def _get_path_exposure(g: nx.Graph, path: List[Any]) -> float:
         for attrs in _iter_edge_attrs(g, u, v):
             length = float(attrs.get("length_m", attrs.get("length", 0.0)))
             expo = float(attrs.get("PM25_expo", 0.0))
-            # 與 path_cost_and_length 保持一致：PM25_expo * length
-            total_exposure += expo * length
+            # 與 path_cost_and_length 保持一致：直接累加 PM25_expo（已為 PM25 * length_m）
+            total_exposure += expo
     return total_exposure
 
 
