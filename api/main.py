@@ -522,6 +522,31 @@ def path_geometry(g: nx.Graph, path: List[Any]) -> List[List[float]]:
     return geom
 
 
+def _iter_edge_attrs(g: nx.Graph, u: Any, v: Any) -> List[Dict[str, Any]]:
+    """
+    統一處理 DiGraph / MultiGraph / MultiDiGraph 的邊屬性取得方式。
+    - 對 DiGraph：get_edge_data(u, v) 直接是一個 dict（單一邊）
+    - 對 MultiGraph：get_edge_data(u, v) 回傳 { key: { ... }, key2: { ... }, ... }
+    這裡會攤平成一串 attrs dict，交給 _edge_attrs 做最後處理。
+    """
+    edge_data = g.get_edge_data(u, v)
+    if not edge_data:
+        return []
+
+    # MultiGraph / MultiDiGraph：edge_data 是 { key: { ... } }
+    # 判斷方式：裡面只要有任何 value 是 dict，就當成多條邊
+    if any(isinstance(val, dict) for val in edge_data.values()):
+        dicts = edge_data.values()
+    else:
+        # DiGraph：edge_data 自己就是單一邊的 attrs dict
+        dicts = [edge_data]
+
+    attrs_list: List[Dict[str, Any]] = []
+    for d in dicts:
+        attrs_list.append(_edge_attrs(d))
+    return attrs_list
+
+
 def path_cost_and_length(g: nx.Graph, path: List[Any]) -> Tuple[float, float]:
     """
     回傳 (累計暴露, 累計距離km)。
@@ -530,17 +555,13 @@ def path_cost_and_length(g: nx.Graph, path: List[Any]) -> Tuple[float, float]:
     exp_sum = 0.0
     len_m_sum = 0.0
     for u, v in zip(path[:-1], path[1:]):
-        edge_data = g.get_edge_data(u, v)
-        if edge_data:
-            # 處理 MultiGraph 的情況
-            for d in edge_data.values():
-                attrs = _edge_attrs(d)
-                # 優先使用自動化流程寫入的 length_m（公尺），若不存在再退回舊的 length
-                length = float(attrs.get("length_m", attrs.get("length", 0.0)))
-                expo = float(attrs.get("PM25_expo", 0.0))
-                # 暴露量：直接加總每條邊的 PM25_expo
-                exp_sum += expo
-                len_m_sum += length
+        for attrs in _iter_edge_attrs(g, u, v):
+            # 優先使用自動化流程寫入的 length_m（公尺），若不存在再退回舊的 length
+            length = float(attrs.get("length_m", attrs.get("length", 0.0)))
+            expo = float(attrs.get("PM25_expo", 0.0))
+            # 暴露量：直接加總每條邊的 PM25_expo
+            exp_sum += expo
+            len_m_sum += length
     return exp_sum, len_m_sum / 1000.0
 
 
@@ -552,11 +573,8 @@ def _find_limited_exposure_path(g: nx.Graph, start: Any, end: Any, shortest_path
     # 計算最短路徑的總距離
     shortest_distance = 0.0
     for u, v in zip(shortest_path[:-1], shortest_path[1:]):
-        edge_data = g.get_edge_data(u, v)
-        if edge_data:
-            for d in edge_data.values():
-                attrs = _edge_attrs(d)
-                shortest_distance += float(attrs.get("length_m", attrs.get("length", 0.0)))
+        for attrs in _iter_edge_attrs(g, u, v):
+            shortest_distance += float(attrs.get("length_m", attrs.get("length", 0.0)))
     
     max_allowed_distance = shortest_distance + max_increase_m
     print(f"[debug] shortest_distance: {shortest_distance:.2f}m, max_allowed: {max_allowed_distance:.2f}m")
@@ -577,11 +595,8 @@ def _find_limited_exposure_path(g: nx.Graph, start: Any, end: Any, shortest_path
         # 計算最低暴露路徑的距離
         exposure_distance = 0.0
         for u, v in zip(exposure_path[:-1], exposure_path[1:]):
-            edge_data = g.get_edge_data(u, v)
-            if edge_data:
-                for d in edge_data.values():
-                    attrs = _edge_attrs(d)
-                    exposure_distance += float(attrs.get("length_m", attrs.get("length", 0.0)))
+            for attrs in _iter_edge_attrs(g, u, v):
+                exposure_distance += float(attrs.get("length_m", attrs.get("length", 0.0)))
         
         print(f"[debug] exposure_path distance: {exposure_distance:.2f}m")
         
@@ -602,13 +617,10 @@ def _get_path_exposure(g: nx.Graph, path: List[Any]) -> float:
     """計算路徑的總暴露量"""
     total_exposure = 0.0
     for u, v in zip(path[:-1], path[1:]):
-        edge_data = g.get_edge_data(u, v)
-        if edge_data:
-            for d in edge_data.values():
-                attrs = _edge_attrs(d)
-                expo = float(attrs.get("PM25_expo", 0.0))
-                # 路徑總暴露量：加總每條邊的 PM25_expo
-                total_exposure += expo
+        for attrs in _iter_edge_attrs(g, u, v):
+            expo = float(attrs.get("PM25_expo", 0.0))
+            # 路徑總暴露量：加總每條邊的 PM25_expo
+            total_exposure += expo
     return total_exposure
 
 
@@ -616,11 +628,8 @@ def _get_path_distance(g: nx.Graph, path: List[Any]) -> float:
     """計算路徑的總距離"""
     total_distance = 0.0
     for u, v in zip(path[:-1], path[1:]):
-        edge_data = g.get_edge_data(u, v)
-        if edge_data:
-            for d in edge_data.values():
-                attrs = _edge_attrs(d)
-                total_distance += float(attrs.get("length_m", attrs.get("length", 0.0)))
+        for attrs in _iter_edge_attrs(g, u, v):
+            total_distance += float(attrs.get("length_m", attrs.get("length", 0.0)))
     return total_distance
 
 
