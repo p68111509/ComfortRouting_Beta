@@ -587,10 +587,9 @@ def _find_limited_exposure_path(g: nx.Graph, start: Any, end: Any, shortest_path
         # 先計算無限制的最低暴露路徑
         def _weight_exposure(u, v, ed):
             attrs = _edge_attrs(ed)
-            # 使用與 summary 一致的成本：PM25_expo * length
-            length = float(attrs.get("length_m", attrs.get("length", 1.0)))
             expo = float(attrs.get("PM25_expo", 0.0))
-            return expo * length
+            # 低暴露路徑權重：直接使用邊層級 PM25_expo（已為 PM25 * length_m）
+            return expo
         
         exposure_path = nx.shortest_path(g, start, end, weight=_weight_exposure)
         
@@ -624,6 +623,21 @@ def _get_path_exposure(g: nx.Graph, path: List[Any]) -> float:
             expo = float(attrs.get("PM25_expo", 0.0))
             # 與 path_cost_and_length 保持一致：直接累加 PM25_expo（已為 PM25 * length_m）
             total_exposure += expo
+    return total_exposure
+
+
+def _get_path_exposure_weighted_by_length(g: nx.Graph, path: List[Any]) -> float:
+    """
+    計算「PM25_expo * length」版的總暴露，用於改善率計算：
+    - 邊層級已有 PM25_expo = PM25 * length_m
+    - 這裡再乘一次 length（length_m），保留與舊版改善率邏輯一致
+    """
+    total_exposure = 0.0
+    for u, v in zip(path[:-1], path[1:]):
+        for attrs in _iter_edge_attrs(g, u, v):
+            length = float(attrs.get("length_m", attrs.get("length", 0.0)))
+            expo = float(attrs.get("PM25_expo", 0.0))
+            total_exposure += expo * length
     return total_exposure
 
 
@@ -1004,9 +1018,17 @@ def api_routes(req: RoutesReq):
     exp_l, dist_l_km = path_cost_and_length(G, path_lowest)
 
     extra_m = max(0.0, (dist_l_km - dist_s_km) * 1000.0)
-    improvement = ((exp_s - exp_l) / exp_s * 100.0) if exp_s > 0 else 0.0
+
+    # 改善率仍沿用「PM25_expo * length」版，與舊版邏輯相容
+    exp_s_len = _get_path_exposure_weighted_by_length(G, path_shortest)
+    exp_l_len = _get_path_exposure_weighted_by_length(G, path_lowest)
+    improvement = (
+        ((exp_s_len - exp_l_len) / exp_s_len * 100.0)
+        if exp_s_len > 0
+        else 0.0
+    )
     
-    # 計算暴露量減少值（μg·m⁻³·min）
+    # 計算暴露量減少值（使用 Σ PM25_expo）
     exposure_reduction = max(0.0, exp_s - exp_l)
 
     resp = {
