@@ -587,9 +587,10 @@ def _find_limited_exposure_path(g: nx.Graph, start: Any, end: Any, shortest_path
         # 先計算無限制的最低暴露路徑
         def _weight_exposure(u, v, ed):
             attrs = _edge_attrs(ed)
+            length = float(attrs.get("length_m", attrs.get("length", 1.0)))
             expo = float(attrs.get("PM25_expo", 0.0))
-            # 低暴露路徑權重：直接使用邊層級 PM25_expo（已為 PM25 * length_m）
-            return expo
+            # 最低暴露路徑權重：PM25_expo × length（與 offline 演算法一致）
+            return expo * length
         
         exposure_path = nx.shortest_path(g, start, end, weight=_weight_exposure)
         
