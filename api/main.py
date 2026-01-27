@@ -1023,6 +1023,11 @@ def api_routes(req: RoutesReq):
     # 改善率仍沿用「PM25_expo * length」版，與舊版邏輯相容
     exp_s_len = _get_path_exposure_weighted_by_length(G, path_shortest)
     exp_l_len = _get_path_exposure_weighted_by_length(G, path_lowest)
+    # Debug: 輸出實際數值
+    print(f"[debug] exp_s_len (shortest PM25_expo*length): {exp_s_len}")
+    print(f"[debug] exp_l_len (lowest PM25_expo*length): {exp_l_len}")
+    print(f"[debug] exp_s (shortest ΣPM25_expo): {exp_s}, exp_l (lowest ΣPM25_expo): {exp_l}")
+    
     # 若 exp_s_len <= 0，改用其絕對值當分母（避免異常負值把改善率鎖成 0）
     denom = abs(exp_s_len)
     improvement_raw = (
@@ -1030,12 +1035,14 @@ def api_routes(req: RoutesReq):
         if denom > 0
         else 0.0
     )
+    print(f"[debug] improvement_raw: {improvement_raw}%, denom: {denom}")
     
     # 如果改善率是負的（低暴露路徑其實更糟），顯示絕對值並加 * 標記
     if improvement_raw < 0:
         improvement_rate = f"{abs(round(improvement_raw, 1))} *"
     else:
         improvement_rate = round(improvement_raw, 1)
+    print(f"[debug] final improvement_rate: {improvement_rate}")
     
     # 計算暴露量減少值（使用 Σ PM25_expo）
     exposure_reduction = max(0.0, exp_s - exp_l)
