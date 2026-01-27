@@ -1023,11 +1023,19 @@ def api_routes(req: RoutesReq):
     # 改善率仍沿用「PM25_expo * length」版，與舊版邏輯相容
     exp_s_len = _get_path_exposure_weighted_by_length(G, path_shortest)
     exp_l_len = _get_path_exposure_weighted_by_length(G, path_lowest)
-    improvement = (
-        ((exp_s_len - exp_l_len) / exp_s_len * 100.0)
-        if exp_s_len > 0
+    # 若 exp_s_len <= 0，改用其絕對值當分母（避免異常負值把改善率鎖成 0）
+    denom = abs(exp_s_len)
+    improvement_raw = (
+        ((exp_s_len - exp_l_len) / denom * 100.0)
+        if denom > 0
         else 0.0
     )
+    
+    # 如果改善率是負的（低暴露路徑其實更糟），顯示絕對值並加 * 標記
+    if improvement_raw < 0:
+        improvement_rate = f"{abs(round(improvement_raw, 1))} *"
+    else:
+        improvement_rate = round(improvement_raw, 1)
     
     # 計算暴露量減少值（使用 Σ PM25_expo）
     exposure_reduction = max(0.0, exp_s - exp_l)
@@ -1046,7 +1054,7 @@ def api_routes(req: RoutesReq):
             "exposure_reduction": round(exposure_reduction, 2),  # 新增：暴露量減少值
             "geometry": geom_low,
             "extra_distance_m": int(round(extra_m)),
-            "improvement_rate": round(improvement, 1)
+            "improvement_rate": improvement_rate
         }
     }
     return resp
