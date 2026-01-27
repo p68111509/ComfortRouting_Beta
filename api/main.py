@@ -559,8 +559,8 @@ def path_cost_and_length(g: nx.Graph, path: List[Any]) -> Tuple[float, float]:
             # 優先使用自動化流程寫入的 length_m（公尺），若不存在再退回舊的 length
             length = float(attrs.get("length_m", attrs.get("length", 0.0)))
             expo = float(attrs.get("PM25_expo", 0.0))
-            # 暴露量：直接加總每條邊的 PM25_expo
-            exp_sum += expo
+            # 與舊版 offline 演算法一致：邊成本 = PM25_expo * length
+            exp_sum += expo * length
             len_m_sum += length
     return exp_sum, len_m_sum / 1000.0
 
@@ -587,8 +587,10 @@ def _find_limited_exposure_path(g: nx.Graph, start: Any, end: Any, shortest_path
         # 先計算無限制的最低暴露路徑
         def _weight_exposure(u, v, ed):
             attrs = _edge_attrs(ed)
-            # 使用每條邊的 PM25_expo 作為權重
-            return float(attrs.get("PM25_expo", 0.0))
+            # 使用與 summary 一致的成本：PM25_expo * length
+            length = float(attrs.get("length_m", attrs.get("length", 1.0)))
+            expo = float(attrs.get("PM25_expo", 0.0))
+            return expo * length
         
         exposure_path = nx.shortest_path(g, start, end, weight=_weight_exposure)
         
@@ -618,9 +620,10 @@ def _get_path_exposure(g: nx.Graph, path: List[Any]) -> float:
     total_exposure = 0.0
     for u, v in zip(path[:-1], path[1:]):
         for attrs in _iter_edge_attrs(g, u, v):
+            length = float(attrs.get("length_m", attrs.get("length", 0.0)))
             expo = float(attrs.get("PM25_expo", 0.0))
-            # 路徑總暴露量：加總每條邊的 PM25_expo
-            total_exposure += expo
+            # 與 path_cost_and_length 保持一致：PM25_expo * length
+            total_exposure += expo * length
     return total_exposure
 
 
@@ -966,10 +969,10 @@ def api_routes(req: RoutesReq):
         return float(attrs.get("length_m", attrs.get("length", 1.0)))
 
     def _weight_exposure(u, v, ed):
-        """最低暴露路徑權重：PM25_expo × length_m（若無則退回 length）。"""
+        """最低暴露路徑權重：PM25_expo × length（與 offline 演算法一致）。"""
         attrs = _edge_attrs(ed)
-        expo = float(attrs.get("PM25_expo", 0.0))
         length = float(attrs.get("length_m", attrs.get("length", 1.0)))
+        expo = float(attrs.get("PM25_expo", 0.0))
         return expo * length
 
     try:
