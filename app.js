@@ -3297,7 +3297,11 @@ function clearGeometries() {
 // 渲染表格（更新儀表板）
 function renderTable(data) {
   const dict = i18nDict[currentLang];
-  const imp = computeImprovementRate(data.shortest, data.lowest);
+  // 優先使用後端回傳的 improvement_rate（使用 PM25_expo * length 計算），若無則 fallback 到前端計算
+  // 保留字串格式（例如 "2.6 *"）以便前端正確顯示
+  const imp = data.lowest?.improvement_rate !== undefined 
+    ? data.lowest.improvement_rate
+    : computeImprovementRate(data.shortest, data.lowest);
   const extra = computeExtraDistance(data.shortest, data.lowest);
   
   // 暴露減少已移除
@@ -3405,6 +3409,20 @@ function updateImprovementProgress(progressId, textId, percentage) {
   const progressGlow = document.getElementById('improvementProgressGlow');
   
   if (textEl) {
+    // 如果 percentage 是字串（例如 "2.6 *"），直接顯示，不做動畫
+    if (typeof percentage === 'string') {
+      textEl.textContent = percentage + '%';
+      if (progressBar && progressGlow) {
+        // 提取數字部分用於進度條
+        const numValue = parseFloat(percentage.replace(' *', ''));
+        const validPercentage = Math.max(0, Math.min(100, Math.abs(numValue) || 0));
+        updateHorizontalProgressDisplay(textEl, progressBar, progressGlow, validPercentage, true);
+      } else {
+        updateTraditionalProgress(textEl, Math.abs(parseFloat(percentage.replace(' *', '')) || 0));
+      }
+      return;
+    }
+    
     const validPercentage = Math.max(0, Math.min(100, percentage || 0));
     
     // 檢查是否為水平進度條模式（導航模式）
@@ -3419,11 +3437,14 @@ function updateImprovementProgress(progressId, textId, percentage) {
 }
 
 // 更新水平進度條顯示
-function updateHorizontalProgressDisplay(textEl, progressBar, progressGlow, percentage) {
-  // 重置為0
-  textEl.textContent = '0%';
-  textEl.style.transform = 'scale(0.8)';
-  textEl.style.opacity = '0.7';
+function updateHorizontalProgressDisplay(textEl, progressBar, progressGlow, percentage, preserveText = false) {
+  // 如果 preserveText 為 true，表示文字已經在外部設置（例如字串格式），不要重置
+  if (!preserveText) {
+    // 重置為0
+    textEl.textContent = '0%';
+    textEl.style.transform = 'scale(0.8)';
+    textEl.style.opacity = '0.7';
+  }
   
   // 重置進度條
   progressBar.style.width = '0%';
@@ -3432,17 +3453,24 @@ function updateHorizontalProgressDisplay(textEl, progressBar, progressGlow, perc
   
   // 延遲後開始動畫
   setTimeout(() => {
-    // 數字動畫
-    textEl.style.transition = 'all 0.3s ease-out';
-    textEl.style.transform = 'scale(1)';
-    textEl.style.opacity = '1';
-    
-    // 添加脈衝動畫
-    textEl.classList.add('animating');
-    setTimeout(() => textEl.classList.remove('animating'), 800);
-    
-    // 動畫從0跑到實際值
-    animateNumber(textEl, 0, percentage, 2000, '%');
+    if (!preserveText) {
+      // 數字動畫
+      textEl.style.transition = 'all 0.3s ease-out';
+      textEl.style.transform = 'scale(1)';
+      textEl.style.opacity = '1';
+      
+      // 添加脈衝動畫
+      textEl.classList.add('animating');
+      setTimeout(() => textEl.classList.remove('animating'), 800);
+      
+      // 動畫從0跑到實際值
+      animateNumber(textEl, 0, percentage, 2000, '%');
+    } else {
+      // 如果文字已設置，只做簡單的顯示動畫
+      textEl.style.transition = 'all 0.3s ease-out';
+      textEl.style.transform = 'scale(1)';
+      textEl.style.opacity = '1';
+    }
     
     // 進度條動畫
     progressBar.classList.add('animating');
@@ -5521,7 +5549,11 @@ function initRouteResultMap(routeData, exitData, attractionData) {
 function updateRouteResultCharts(data) {
   const shortestTime = computeTravelTime(data.shortest?.distance_km || 0, 'walk');
   const lowestTime = computeTravelTime(data.lowest?.distance_km || 0, 'walk');
-  const improvementRate = computeImprovementRate(data.shortest, data.lowest);
+  // 優先使用後端回傳的 improvement_rate（使用 PM25_expo * length 計算），若無則 fallback 到前端計算
+  // 保留字串格式（例如 "2.6 *"）以便前端正確顯示
+  const improvementRate = data.lowest?.improvement_rate !== undefined 
+    ? data.lowest.improvement_rate
+    : computeImprovementRate(data.shortest, data.lowest);
   // 暴露減少已移除
   const extraDistance = computeExtraDistance(data.shortest, data.lowest);
   // 保存到全域，供拉桿即時更新使用（相容 deeplink 進入）
