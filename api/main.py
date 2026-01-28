@@ -5,8 +5,8 @@ FastAPI 後端入口
 - /api/geocode  將地址字串轉為 (lat,lng)，使用 Google Geocoding API（language=zh-TW）。
 - /api/reverse  將 (lat,lng) 反查地址字串，使用 Google Geocoding API（language=zh-TW）。
 - /api/routes   以 NetworkX 路網（pickle 載入）計算：
-  * 最短距離路徑（權重 length_m）
-  * 最低暴露路徑（權重 濃度*距離，預設使用 pm25 * length_m）
+  * 最短距離路徑（權重 length，單位公尺）
+  * 最低暴露路徑（權重 濃度*距離，預設使用 PM25_expo 或 PM25_expo * length）
   回傳前端 Leaflet 友善格式，能直接給現有 renderRoutes() 繪圖。
 
 啟動方式（本機開發）：
@@ -84,9 +84,9 @@ print(f"[config] Bicycle graph: {DEFAULT_BICYCLE_GRAPH}")
 print(f"[config] Walk graph: {DEFAULT_WALK_GRAPH}")
 
 
-# 欄位鍵名（可透過環境變數改名，預設照題意）
-EDGE_LEN_KEY = os.environ.get("EDGE_LEN_KEY", "length_m")
-EDGE_PM25_KEY = os.environ.get("EDGE_PM25_KEY", "pm25")
+# 欄位鍵名（可透過環境變數改名，預設使用 length / PM25_expo）
+EDGE_LEN_KEY = os.environ.get("EDGE_LEN_KEY", "length")
+EDGE_PM25_KEY = os.environ.get("EDGE_PM25_KEY", "PM25_expo")
 
 # Google Geocoding（本題提供固定金鑰；實務上請改由環境變數）
 GOOGLE_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "AIzaSyDnbTu8PgUkue5A9uO5aJa3lHZuNUwj6z0")
@@ -571,10 +571,10 @@ def path_cost_and_length(g: nx.Graph, path: List[Any]) -> Tuple[float, float]:
     len_m_sum = 0.0
     for u, v in zip(path[:-1], path[1:]):
         for attrs in _iter_edge_attrs(g, u, v):
-            # 優先使用自動化流程寫入的 length_m（公尺），若不存在再退回舊的 length
-            length = float(attrs.get("length_m", attrs.get("length", 0.0)))
-            expo = float(attrs.get("PM25_expo", 0.0))
-            # 邊層級已定義 PM25_expo = PM25 * length_m，這裡總暴露量直接累加 PM25_expo
+            # 使用 length（公尺）與邊層級暴露 PM25_expo
+            length = float(attrs.get(EDGE_LEN_KEY, 0.0))
+            expo = float(attrs.get(EDGE_PM25_KEY, 0.0))
+            # 邊層級已定義 PM25_expo = PM25 * length，這裡總暴露量直接累加 PM25_expo
             exp_sum += expo
             len_m_sum += length
     return exp_sum, len_m_sum / 1000.0
@@ -589,7 +589,7 @@ def _find_limited_exposure_path(g: nx.Graph, start: Any, end: Any, shortest_path
     shortest_distance = 0.0
     for u, v in zip(shortest_path[:-1], shortest_path[1:]):
         for attrs in _iter_edge_attrs(g, u, v):
-            shortest_distance += float(attrs.get("length_m", attrs.get("length", 0.0)))
+            shortest_distance += float(attrs.get(EDGE_LEN_KEY, 0.0))
     
     max_allowed_distance = shortest_distance + max_increase_m
     print(f"[debug] shortest_distance: {shortest_distance:.2f}m, max_allowed: {max_allowed_distance:.2f}m")
@@ -602,8 +602,8 @@ def _find_limited_exposure_path(g: nx.Graph, start: Any, end: Any, shortest_path
         # 先計算無限制的最低暴露路徑
         def _weight_exposure(u, v, ed):
             attrs = _edge_attrs(ed)
-            length = float(attrs.get("length_m", attrs.get("length", 1.0)))
-            expo = float(attrs.get("PM25_expo", 0.0))
+            length = float(attrs.get(EDGE_LEN_KEY, 1.0))
+            expo = float(attrs.get(EDGE_PM25_KEY, 0.0))
             # 最低暴露路徑權重：PM25_expo × length（與 offline 演算法一致）
             return expo * length
         
@@ -613,7 +613,7 @@ def _find_limited_exposure_path(g: nx.Graph, start: Any, end: Any, shortest_path
         exposure_distance = 0.0
         for u, v in zip(exposure_path[:-1], exposure_path[1:]):
             for attrs in _iter_edge_attrs(g, u, v):
-                exposure_distance += float(attrs.get("length_m", attrs.get("length", 0.0)))
+                exposure_distance += float(attrs.get(EDGE_LEN_KEY, 0.0))
         
         print(f"[debug] exposure_path distance: {exposure_distance:.2f}m")
         
@@ -635,9 +635,9 @@ def _get_path_exposure(g: nx.Graph, path: List[Any]) -> float:
     total_exposure = 0.0
     for u, v in zip(path[:-1], path[1:]):
         for attrs in _iter_edge_attrs(g, u, v):
-            length = float(attrs.get("length_m", attrs.get("length", 0.0)))
-            expo = float(attrs.get("PM25_expo", 0.0))
-            # 與 path_cost_and_length 保持一致：直接累加 PM25_expo（已為 PM25 * length_m）
+            length = float(attrs.get(EDGE_LEN_KEY, 0.0))
+            expo = float(attrs.get(EDGE_PM25_KEY, 0.0))
+            # 與 path_cost_and_length 保持一致：直接累加 PM25_expo（已為 PM25 * length）
             total_exposure += expo
     return total_exposure
 
@@ -645,14 +645,14 @@ def _get_path_exposure(g: nx.Graph, path: List[Any]) -> float:
 def _get_path_exposure_weighted_by_length(g: nx.Graph, path: List[Any]) -> float:
     """
     計算「PM25_expo * length」版的總暴露，用於改善率計算：
-    - 邊層級已有 PM25_expo = PM25 * length_m
-    - 這裡再乘一次 length（length_m），保留與舊版改善率邏輯一致
+    - 邊層級已有 PM25_expo = PM25 * length
+    - 這裡再乘一次 length，保留與舊版改善率邏輯一致
     """
     total_exposure = 0.0
     for u, v in zip(path[:-1], path[1:]):
         for attrs in _iter_edge_attrs(g, u, v):
-            length = float(attrs.get("length_m", attrs.get("length", 0.0)))
-            expo = float(attrs.get("PM25_expo", 0.0))
+            length = float(attrs.get(EDGE_LEN_KEY, 0.0))
+            expo = float(attrs.get(EDGE_PM25_KEY, 0.0))
             total_exposure += expo * length
     return total_exposure
 
@@ -662,7 +662,7 @@ def _get_path_distance(g: nx.Graph, path: List[Any]) -> float:
     total_distance = 0.0
     for u, v in zip(path[:-1], path[1:]):
         for attrs in _iter_edge_attrs(g, u, v):
-            total_distance += float(attrs.get("length_m", attrs.get("length", 0.0)))
+            total_distance += float(attrs.get(EDGE_LEN_KEY, 0.0))
     return total_distance
 
 
@@ -996,13 +996,13 @@ def api_routes(req: RoutesReq):
     def _weight_length(u, v, ed):
         """最短路徑權重：使用 length 欄位。"""
         attrs = _edge_attrs(ed)
-        return float(attrs.get("length_m", attrs.get("length", 1.0)))
+        return float(attrs.get(EDGE_LEN_KEY, 1.0))
 
     def _weight_exposure(u, v, ed):
         """最低暴露路徑權重：PM25_expo × length（與 offline 演算法一致）。"""
         attrs = _edge_attrs(ed)
-        length = float(attrs.get("length_m", attrs.get("length", 1.0)))
-        expo = float(attrs.get("PM25_expo", 0.0))
+        length = float(attrs.get(EDGE_LEN_KEY, 1.0))
+        expo = float(attrs.get(EDGE_PM25_KEY, 0.0))
         return expo * length
 
     try:
