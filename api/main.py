@@ -258,76 +258,90 @@ def filter_graph_by_mode(graph: nx.Graph, mode: str) -> nx.Graph:
     - walk   ：保留適合行人的路段，並轉為無向圖
 
     規則對應說明請見 `路網設定/行人單車路網篩選規則.md`。
+    
+    【暫時停用篩選規則，改用無向圖測試】
     """
     mode = mode or "bicycle"
     mode = "bicycle" if mode not in ["bicycle", "walk"] else mode
 
-    # fclass 剔除規則（全部使用小寫比對）
-    if mode == "walk":
-        excluded_fclasses = {
-            "bridleway",
-            "busway",
-            "motorway",
-            "motorway_link",
-            "trunk",
-            "trunk_link",
-        }
-        excluded_names = set()
-    else:  # bicycle
-        excluded_fclasses = {
-            "bridleway",
-            "busway",
-            "motorway",
-            "motorway_link",
-            "trunk",
-            "trunk_link",
-            "step",
-        }
-        excluded_names = {"車行地下道"}
+    # ========== 以下篩選規則已暫時停用，直接返回原圖（保留註解以便之後恢復） ==========
+    # # fclass 剔除規則（全部使用小寫比對）
+    # if mode == "walk":
+    #     excluded_fclasses = {
+    #         "bridleway",
+    #         "busway",
+    #         "motorway",
+    #         "motorway_link",
+    #         "trunk",
+    #         "trunk_link",
+    #     }
+    #     excluded_names = set()
+    # else:  # bicycle
+    #     excluded_fclasses = {
+    #         "bridleway",
+    #         "busway",
+    #         "motorway",
+    #         "motorway_link",
+    #         "trunk",
+    #         "trunk_link",
+    #         "step",
+    #     }
+    #     excluded_names = {"車行地下道"}
+    # 
+    # max_speed_limit = 80.0
+    # 
+    # edges_to_keep: List[Tuple[Any, Any, Dict[str, Any]]] = []
+    # 
+    # for u, v, ed in graph.edges(data=True):
+    #     attrs = _edge_attrs(ed)
+    #     should_exclude = False
+    # 
+    #     # fclass（有些資料可能用 highway）
+    #     fclass = attrs.get("fclass") or attrs.get("highway")
+    #     if isinstance(fclass, str):
+    #         if fclass.strip().lower() in excluded_fclasses:
+    #             should_exclude = True
+    # 
+    #     # maxspeed
+    #     if not should_exclude:
+    #         ms = _parse_maxspeed(attrs.get("maxspeed"))
+    #         if ms is not None and ms > max_speed_limit:
+    #             should_exclude = True
+    # 
+    #     # name（僅單車模式需要特別排除）
+    #     if not should_exclude and mode == "bicycle":
+    #         name = attrs.get("name")
+    #         if isinstance(name, str):
+    #             # 嚴格等於，避免誤傷其他路段；若未來需要可改成子字串判斷
+    #             if name.strip() in excluded_names:
+    #                 should_exclude = True
+    # 
+    #     if not should_exclude:
+    #         edges_to_keep.append((u, v, ed))
+    # 
+    # # 由保留的邊建立子圖
+    # if edges_to_keep:
+    #     graph_filtered = graph.edge_subgraph([(u, v) for u, v, _ in edges_to_keep]).copy()
+    # else:
+    #     # 極端情況：全部被過濾掉，為避免後續程式崩潰，回傳原圖並印出警告
+    #     print(f"[filter_graph_by_mode] WARNING: all edges filtered out for mode={mode}, using original graph")
+    #     graph_filtered = graph
+    # ========== 篩選規則結束 ==========
+    
+    # 暫時停用篩選：直接使用原圖
+    graph_filtered = graph.copy()
 
-    max_speed_limit = 80.0
-
-    edges_to_keep: List[Tuple[Any, Any, Dict[str, Any]]] = []
-
-    for u, v, ed in graph.edges(data=True):
-        attrs = _edge_attrs(ed)
-        should_exclude = False
-
-        # fclass（有些資料可能用 highway）
-        fclass = attrs.get("fclass") or attrs.get("highway")
-        if isinstance(fclass, str):
-            if fclass.strip().lower() in excluded_fclasses:
-                should_exclude = True
-
-        # maxspeed
-        if not should_exclude:
-            ms = _parse_maxspeed(attrs.get("maxspeed"))
-            if ms is not None and ms > max_speed_limit:
-                should_exclude = True
-
-        # name（僅單車模式需要特別排除）
-        if not should_exclude and mode == "bicycle":
-            name = attrs.get("name")
-            if isinstance(name, str):
-                # 嚴格等於，避免誤傷其他路段；若未來需要可改成子字串判斷
-                if name.strip() in excluded_names:
-                    should_exclude = True
-
-        if not should_exclude:
-            edges_to_keep.append((u, v, ed))
-
-    # 由保留的邊建立子圖
-    if edges_to_keep:
-        graph_filtered = graph.edge_subgraph([(u, v) for u, v, _ in edges_to_keep]).copy()
-    else:
-        # 極端情況：全部被過濾掉，為避免後續程式崩潰，回傳原圖並印出警告
-        print(f"[filter_graph_by_mode] WARNING: all edges filtered out for mode={mode}, using original graph")
-        graph_filtered = graph
-
-    # 行人模式：轉成無向圖（不考慮方向）
-    if mode == "walk" and isinstance(graph_filtered, nx.DiGraph):
+    # ========== 方向規則已暫時停用（改用無向圖測試） ==========
+    # # 行人模式：轉成無向圖（不考慮方向）
+    # if mode == "walk" and isinstance(graph_filtered, nx.DiGraph):
+    #     graph_filtered = graph_filtered.to_undirected()
+    #     print("[filter_graph_by_mode] converted DiGraph to Graph for walk mode")
+    # ========== 方向規則結束 ==========
+    
+    # 無論是 bicycle 還是 walk 模式，都轉為無向圖（測試用）
+    if isinstance(graph_filtered, nx.DiGraph):
         graph_filtered = graph_filtered.to_undirected()
-        print("[filter_graph_by_mode] converted DiGraph to Graph for walk mode")
+        print(f"[filter_graph_by_mode] converted DiGraph to Graph for {mode} mode (testing undirected graph)")
 
     return graph_filtered
 
@@ -393,6 +407,7 @@ def load_graph(mode: str = "bicycle") -> None:
         raise RuntimeError(f"Failed to load {mode} graph pickle from any of the attempted paths: {possible_graph_paths}")
 
     # 根據 mode 套用行人 / 單車篩選規則與圖類型轉換
+    # 【暫時停用篩選規則，改用無向圖測試】
     try:
         before_edges = graph_to_load.number_of_edges()
         graph_to_load = filter_graph_by_mode(graph_to_load, mode)
