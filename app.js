@@ -1998,7 +1998,7 @@ function toggleRouteComparisonModal() {
       // 重新計算時間（因為交通方式可能改變）
       const selectedTransport = document.querySelector('input[name="transport-mode"]:checked') || 
                                document.querySelector('input[name="transport-mode-desktop"]:checked');
-      const transportMode = selectedTransport ? selectedTransport.value : 'bicycle';
+      const transportMode = selectedTransport ? selectedTransport.value : 'walk';
       
       const newShortestTime = computeTravelTime(data.shortest?.distance_km || 0, transportMode);
       const newLowestTime = computeTravelTime(data.lowest?.distance_km || 0, transportMode);
@@ -2261,7 +2261,7 @@ function bindUI() {
         const { data, improvementRate, extraDistance } = window.lastRouteData;
         const selectedTransport = document.querySelector('input[name="transport-mode"]:checked') || 
                                  document.querySelector('input[name="transport-mode-desktop"]:checked');
-        const transportMode = selectedTransport ? selectedTransport.value : 'bicycle';
+        const transportMode = selectedTransport ? selectedTransport.value : 'walk';
         
         const shortestTime = computeTravelTime(data.shortest?.distance_km || 0, transportMode);
         const lowestTime = computeTravelTime(data.lowest?.distance_km || 0, transportMode);

@@ -106,7 +106,7 @@ class ReverseReq(BaseModel):
 class RoutesReq(BaseModel):
     start: Optional[Any] = Field(None, description="可以是字串地址或 {lat,lng}")
     end: Optional[Any] = Field(None, description="可以是字串地址或 {lat,lng}")
-    mode: Optional[str] = Field("bicycle", description="bicycle: 使用腳踏車路徑（有向圖，考慮方向）; walk: 使用行人路徑（無向圖，不考慮方向）")
+    mode: Optional[str] = Field("walk", description="bicycle: 使用腳踏車路徑（有向圖，考慮方向）; walk: 使用行人路徑（無向圖，不考慮方向）")
     max_distance_increase: Optional[int] = Field(None, description="最高增加距離限制（公尺），None 表示無限制")
 
 
@@ -261,8 +261,8 @@ def filter_graph_by_mode(graph: nx.Graph, mode: str) -> nx.Graph:
     
     【暫時停用篩選規則，改用無向圖測試】
     """
-    mode = mode or "bicycle"
-    mode = "bicycle" if mode not in ["bicycle", "walk"] else mode
+    mode = mode or "walk"
+    mode = "walk" if mode not in ["bicycle", "walk"] else mode
 
     # ========== 以下篩選規則已暫時停用，直接返回原圖（保留註解以便之後恢復） ==========
     # # fclass 剔除規則（全部使用小寫比對）
@@ -346,7 +346,7 @@ def filter_graph_by_mode(graph: nx.Graph, mode: str) -> nx.Graph:
     return graph_filtered
 
 
-def load_graph(mode: str = "bicycle") -> None:
+def load_graph(mode: str = "walk") -> None:
     """
     載入 pickle 路網並建立 KDTree。根據 mode 載入對應的路網。
     根據 Streamlit 程式碼，節點本身就是 (x, y) 座標，使用 EPSG:3826 投影座標系，
@@ -809,11 +809,11 @@ async def read_index():
 
 @app.on_event("startup")
 def _on_startup():
-    """啟動時預載入腳踏車路網（預設模式）。"""
+    """啟動時預載入行人路網（預設模式）。"""
     try:
-        # 預載入腳踏車路網（預設模式）
-        print(f"[startup] attempting to preload bicycle graph (default mode)...")
-        load_graph("bicycle")
+        # 預載入行人路網（預設模式）
+        print(f"[startup] attempting to preload walk graph (default mode)...")
+        load_graph("walk")
         print(f"[startup] Bicycle graph preloaded: nodes={len(G.nodes) if G else 0}, edges={len(G.edges) if G else 0}")
     except Exception as ie:
         print(f"[startup] Failed to preload bicycle graph: {ie}")
@@ -860,7 +860,7 @@ def _on_startup():
         print("[startup] Graph is None - geocode/reverse will work, but routes will fail until graph is loaded")
 
 
-def _ensure_graph_loaded_or_raise(mode: str = "bicycle"):
+def _ensure_graph_loaded_or_raise(mode: str = "walk"):
     """在 /api/routes 執行前確保對應 mode 的 KDTree 已建立；若尚未建立，嘗試載入一次並回報清楚錯誤。"""
     global G, _kdtree, _current_mode
     
@@ -903,11 +903,11 @@ def api_routes(req: RoutesReq):
         - "walk": 使用行人路徑（無向圖，不考慮方向）
     - 回傳格式符合前端 renderRoutes() 需求。
     """
-    # 取得 mode，預設為 bicycle
-    mode = req.mode if req.mode else "bicycle"
+    # 取得 mode，預設為 walk
+    mode = req.mode if req.mode else "walk"
     # 標準化 mode（只接受 bicycle 或 walk）
     if mode not in ["bicycle", "walk"]:
-        mode = "bicycle"  # 預設為 bicycle
+        mode = "walk"  # 預設為 walk
     
     print(f"[debug] received request: mode={mode}, max_distance_increase={req.max_distance_increase}")
     
