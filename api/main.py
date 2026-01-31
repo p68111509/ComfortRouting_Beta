@@ -520,21 +520,78 @@ def nearest_node(lat: float, lng: float) -> Any:
         raise HTTPException(status_code=500, detail=f"Failed to map KDTree index to node id: {e}")
 
 
+def _node_to_latlon(g: nx.Graph, nid: Any) -> List[float]:
+    """將節點 ID 轉為 [lat, lon]（WGS84）。"""
+    if "latlon" in g.nodes[nid]:
+        lat, lon = g.nodes[nid]["latlon"]
+        return [lat, lon]
+    if isinstance(nid, (tuple, list)) and len(nid) == 2:
+        x, y = nid
+        transformer = Transformer.from_crs("epsg:3826", "epsg:4326", always_xy=True)
+        lon, lat = transformer.transform(x, y)
+        return [lat, lon]
+    return []
+
+
 def path_geometry(g: nx.Graph, path: List[Any]) -> List[List[float]]:
-    """將節點路徑轉為 [[lat,lng], ...] 幾何。"""
+    """
+    將節點路徑轉為 [[lat,lng], ...] 幾何，供前端 L.polyline 繪製。
+    若邊有 coords（TWD97 折線），則依 coords 畫轉彎；否則只用兩端點畫直線。
+    """
+    if not path or len(path) < 2:
+        return []
+
+    transformer = Transformer.from_crs("epsg:3826", "epsg:4326", always_xy=True)
     geom: List[List[float]] = []
-    for nid in path:
-        # 使用儲存在節點中的 latlon 屬性
-        if "latlon" in g.nodes[nid]:
-            lat, lon = g.nodes[nid]["latlon"]
-            geom.append([lat, lon])
+
+    for i in range(len(path) - 1):
+        u, v = path[i], path[i + 1]
+        attrs_list = _iter_edge_attrs(g, u, v)
+        attrs = attrs_list[0] if attrs_list else {}
+        coords = attrs.get("coords")
+
+        if coords and len(coords) >= 2:
+            # 邊有 coords：TWD97 (x,y) 轉 WGS84 [lat,lon]，並依路徑方向決定正反序
+            points_twd97 = list(coords)
+            # 判斷 coords 是 u→v 還是 v→u：看首點較近 u 還是 v
+            u_xy = (u[0], u[1]) if isinstance(u, (tuple, list)) and len(u) == 2 else (None, None)
+            v_xy = (v[0], v[1]) if isinstance(v, (tuple, list)) and len(v) == 2 else (None, None)
+            if u_xy[0] is not None and v_xy[0] is not None:
+                d0_to_u = (points_twd97[0][0] - u_xy[0]) ** 2 + (points_twd97[0][1] - u_xy[1]) ** 2
+                d0_to_v = (points_twd97[0][0] - v_xy[0]) ** 2 + (points_twd97[0][1] - v_xy[1]) ** 2
+                if d0_to_v < d0_to_u:
+                    points_twd97 = list(reversed(points_twd97))
+            points_wgs84 = []
+            for x, y in points_twd97:
+                try:
+                    lon, lat = transformer.transform(x, y)
+                    if math.isfinite(lat) and math.isfinite(lon):
+                        points_wgs84.append([lat, lon])
+                except Exception:
+                    continue
+            if not points_wgs84:
+                # 轉換失敗則退回兩端點
+                pu = _node_to_latlon(g, u)
+                pv = _node_to_latlon(g, v)
+                if pu and (not geom or geom[-1] != pu):
+                    geom.append(pu)
+                if pv:
+                    geom.append(pv)
+            else:
+                if i == 0:
+                    geom.extend(points_wgs84)
+                else:
+                    geom.extend(points_wgs84[1:])
         else:
-            # 如果沒有 latlon 屬性，嘗試從節點 ID 轉換
-            if isinstance(nid, (tuple, list)) and len(nid) == 2:
-                x, y = nid
-                transformer = Transformer.from_crs("epsg:3826", "epsg:4326", always_xy=True)
-                lon, lat = transformer.transform(x, y)
-                geom.append([lat, lon])
+            # 無 coords：只用兩端點（直線）
+            if i == 0:
+                pu = _node_to_latlon(g, u)
+                if pu:
+                    geom.append(pu)
+            pv = _node_to_latlon(g, v)
+            if pv:
+                geom.append(pv)
+
     return geom
 
 
