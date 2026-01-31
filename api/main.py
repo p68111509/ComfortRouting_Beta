@@ -55,8 +55,9 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parents[1]
 
 # 定義兩個路網檔案路徑（行人和腳踏車使用同一個路網）
-BICYCLE_GRAPH_NAME = "OSM_taipei_DiGraph_TWD97_withpm25_realtime.pkl"
-WALK_GRAPH_NAME = "OSM_taipei_DiGraph_TWD97_withpm25_realtime.pkl"
+# 統一使用 Network_TWD97_withpm25_realtime.pkl 作為實際檔名
+BICYCLE_GRAPH_NAME = "Network_TWD97_withpm25_realtime.pkl"
+WALK_GRAPH_NAME = "Network_TWD97_withpm25_realtime.pkl"
 
 DEFAULT_BICYCLE_GRAPH = BASE_DIR / "data" / BICYCLE_GRAPH_NAME
 DEFAULT_WALK_GRAPH = BASE_DIR / "data" / WALK_GRAPH_NAME

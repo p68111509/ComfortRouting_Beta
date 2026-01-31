@@ -1,3 +1,0 @@
-Last updated: 20260129_21
-PKL file: OSM_taipei_DiGraph_TWD97_withpm25_realtime.pkl
-Update time: 2026-01-29 21:27:50
