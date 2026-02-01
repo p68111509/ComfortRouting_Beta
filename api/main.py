@@ -768,7 +768,7 @@ async def get_overlay(overlay_type: str):
     
     # 定義疊加圖層檔案路徑（相對路徑，後端直接讀取）
     overlay_files = {
-        "pm25": "data/AirPollution/PM25__20241130.png",
+        "pm25": "data/AirPollution/Map_pm25_realtime.png",
         "no2": "data/AirPollution/NO2_全台.png", 
         "wbgt": "data/AirPollution/WBGT_全台.png"
     }
