@@ -1672,6 +1672,11 @@ const i18nDict = {
     overlayPM25: "PM₂.₅",
     overlayNO2: "NO₂",
     overlayWBGT: "氣溫",
+    tileStyle: "底圖樣式",
+    tileVoyager: "淡雅",
+    tileLight: "簡潔",
+    tileDark: "深色",
+    tileStandard: "標準",
     modeNavigation: "導航模式",
     modeMetro: "捷運模式",
     helpBtn: "關於我們 | 說明",
@@ -1780,6 +1785,11 @@ const i18nDict = {
     overlayPM25: "PM₂.₅",
     overlayNO2: "NO₂",
     overlayWBGT: "Temperature",
+    tileStyle: "Base Map Style",
+    tileVoyager: "Voyager",
+    tileLight: "Light",
+    tileDark: "Dark",
+    tileStandard: "Standard",
     modeNavigation: "Navigation Mode",
     modeMetro: "Metro Mode",
     helpBtn: "About Us | Help",
@@ -1863,7 +1873,15 @@ const i18nDict = {
   }
 };
 
-// 底圖配置
+// 底圖配置（key -> i18n 鍵，用於切換語言時更新按鈕文字）
+const TILE_KEY_TO_I18N = {
+  'cartodb-voyager': 'tileVoyager',
+  'cartodb-light': 'tileLight',
+  'cartodb-dark': 'tileDark',
+  'osm': 'tileStandard'
+};
+let currentTileKey = 'cartodb-voyager';
+
 const TILE_LAYERS = {
   'cartodb-voyager': {
     url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
@@ -1929,14 +1947,21 @@ function loadTileLayer(layerKey) {
   if (currentTileLayer) {
     map.removeLayer(currentTileLayer);
   }
-  
-  const config = TILE_LAYERS[layerKey];
+  currentTileKey = layerKey || 'cartodb-voyager';
+  const config = TILE_LAYERS[currentTileKey];
   if (config) {
     currentTileLayer = L.tileLayer(config.url, {
       attribution: config.attribution,
       maxZoom: config.maxZoom
     });
     currentTileLayer.addTo(map);
+  }
+  const nameEl = document.getElementById('tileCurrentName');
+  if (nameEl && TILE_KEY_TO_I18N[currentTileKey]) {
+    const lang = (currentLang && i18nDict[currentLang]) ? currentLang : 'zh';
+    if (i18nDict[lang][TILE_KEY_TO_I18N[currentTileKey]]) {
+      nameEl.textContent = i18nDict[lang][TILE_KEY_TO_I18N[currentTileKey]];
+    }
   }
 }
 
@@ -2564,21 +2589,23 @@ function bindTileSelectorEvents() {
     option.addEventListener('click', function() {
       const value = this.dataset.value;
       loadTileLayer(value);
-      
-      // 關閉下拉選單
       dropdown.classList.remove('show');
       button.querySelector('.tile-dropdown-arrow').textContent = '▼';
-      
-      // 重置標籤文字
-      document.getElementById('tileCurrentName').textContent = '底圖樣式';
+      // 按鈕顯示選中的選項名稱（已是目前語言的翻譯）
+      document.getElementById('tileCurrentName').textContent = this.textContent;
     });
   });
-  
-  // 點擊外部關閉下拉選單
+
   document.addEventListener('click', function() {
+    const wasOpen = dropdown.classList.contains('show');
     dropdown.classList.remove('show');
     button.querySelector('.tile-dropdown-arrow').textContent = '▼';
-    document.getElementById('tileCurrentName').textContent = '底圖樣式';
+    if (wasOpen) {
+      const nameEl = document.getElementById('tileCurrentName');
+      if (nameEl && i18nDict[currentLang] && TILE_KEY_TO_I18N[currentTileKey]) {
+        nameEl.textContent = i18nDict[currentLang][TILE_KEY_TO_I18N[currentTileKey]];
+      }
+    }
   });
 }
 
@@ -3747,6 +3774,13 @@ function applyLanguage() {
       }
     }
   });
+
+  // 底圖樣式按鈕：依目前選中的底圖 key 顯示對應語言的選項名稱
+  const tileCurrentNameEl = document.getElementById('tileCurrentName');
+  if (tileCurrentNameEl && currentTileKey && TILE_KEY_TO_I18N[currentTileKey]) {
+    const i18nKey = TILE_KEY_TO_I18N[currentTileKey];
+    if (dict[i18nKey]) tileCurrentNameEl.textContent = dict[i18nKey];
+  }
   
   // 手機版語言切換特殊處理
   if (window.innerWidth <= 768) {
