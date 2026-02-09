@@ -1647,6 +1647,7 @@ const i18nDict = {
     distanceLimit: "距離限制功能",
     maxDistance: "最大增加距離",
     planBtn: "🔍 規劃路徑",
+    calculatingLabel: "計算中...",
     resetBtn: "🔄 重置",
     compareTitle: "📊 路徑比較",
     shortest: "最短路徑",
@@ -1703,6 +1704,32 @@ const i18nDict = {
     improvementRateExampleText: "假設最短路徑暴露為 100 μg/m³·min，低暴露路徑暴露為 80 μg/m³·min",
     improvementRateExampleCalc: "改善率 = (100 - 80) ÷ 100 × 100% = 20%",
     improvementRateExampleResult: "表示低暴露路徑比最短路徑減少了 20% 的空氣污染暴露",
+    // 路徑比較資訊卡
+    carbonPassbook: "🌳 負碳存摺",
+    helpLabel: "說明",
+    healthSteps: "👣 健康步帳",
+    stepsByHeight: "約步數（依身高）",
+    heightLabel: "身高：",
+    baselineTransport: "基準交通：",
+    modeCar: "汽車",
+    carbonTreesCaption: "相當於種植 %s 顆樹/年",
+    caloriesLabel: "🔥 卡路里：約 ",
+    lifeGainLabel: "⏳ 壽命延長：約 ",
+    lifeGainSuffix: " 分鐘",
+    carbonHelpTitle: "負碳存摺計算說明",
+    stepsHelpTitle: "健康步帳計算說明",
+    carbonHelpFormula: "📊 計算公式",
+    carbonHelpFormulaText: "減碳量 = 走路距離 (km) × 基準交通碳排係數 (kg CO₂/km)",
+    carbonHelpFormulaList1: "機車：0.11 kg CO₂/km",
+    carbonHelpFormulaList2: "汽車：0.21 kg CO₂/km",
+    carbonHelpBaseline: "基準交通會依距離自動推估：< 2 km → 機車；> 5 km → 汽車；其餘 → 機車。",
+    carbonHelpTrees: "🌳 樹木換算",
+    carbonHelpTreesText: "等效樹木數（棵／年） = Saved CO₂ (kg) / 21.555。顯示 6 顆為滿刻度，灰色表示未達成。",
+    stepsHelpSteps: "👣 步數估算",
+    stepsHelpStepsText: "步距 = 身高 (m) × 0.43；步數 = 距離 (km) × 1000 / 步距 (m/步)。",
+    stepsHelpCalories: "🔥 卡路里與壽命",
+    stepsHelpCaloriesList1: "卡路里 ≈ 1000 步 × 40 kcal",
+    stepsHelpCaloriesList2: "壽命延長 (分鐘) ≈ 步數 × 0.004",
     // 按鈕翻譯
     locate: "定位",
         startPoint: "起點",
@@ -1759,7 +1786,8 @@ const i18nDict = {
     modeWalk: "Walk",
     distanceLimit: "Distance Limit Feature",
     maxDistance: "Max Distance Increase",
-    planBtn: "🔍 Plan Routes",
+    planBtn: "🔍 Plan Route",
+    calculatingLabel: "Calculating...",
     resetBtn: "🔄 Reset",
     compareTitle: "📊 Route Comparison",
     shortest: "Shortest Route",
@@ -1816,6 +1844,32 @@ const i18nDict = {
     improvementRateExampleText: "Assuming shortest path exposure is 100 μg/m³·min, low exposure path exposure is 80 μg/m³·min",
     improvementRateExampleCalc: "Improvement Rate = (100 - 80) ÷ 100 × 100% = 20%",
     improvementRateExampleResult: "This means the low exposure path reduces air pollution exposure by 20% compared to the shortest path",
+    // Route comparison info cards
+    carbonPassbook: "🌳 Carbon Passbook",
+    helpLabel: "Help",
+    healthSteps: "👣 Health Steps",
+    stepsByHeight: "Est. steps (by height)",
+    heightLabel: "Height: ",
+    baselineTransport: "Baseline transport: ",
+    modeCar: "Car",
+    carbonTreesCaption: "Equivalent to %s trees/year",
+    caloriesLabel: "🔥 Calories: ~",
+    lifeGainLabel: "⏳ Life gain: ~",
+    lifeGainSuffix: " min",
+    carbonHelpTitle: "Carbon Passbook Calculation",
+    stepsHelpTitle: "Health Steps Calculation",
+    carbonHelpFormula: "📊 Formula",
+    carbonHelpFormulaText: "Carbon saved = Walking distance (km) × Baseline transport emission factor (kg CO₂/km)",
+    carbonHelpFormulaList1: "Motorcycle: 0.11 kg CO₂/km",
+    carbonHelpFormulaList2: "Car: 0.21 kg CO₂/km",
+    carbonHelpBaseline: "Baseline is estimated by distance: < 2 km → motorcycle; > 5 km → car; otherwise → motorcycle.",
+    carbonHelpTrees: "🌳 Tree equivalent",
+    carbonHelpTreesText: "Equivalent trees (per year) = Saved CO₂ (kg) / 21.555. Display shows 6 as full scale; gray means not reached.",
+    stepsHelpSteps: "👣 Step estimate",
+    stepsHelpStepsText: "Stride = Height (m) × 0.43; Steps = Distance (km) × 1000 / Stride (m/step).",
+    stepsHelpCalories: "🔥 Calories & life",
+    stepsHelpCaloriesList1: "Calories ≈ 1000 steps × 40 kcal",
+    stepsHelpCaloriesList2: "Life gain (min) ≈ Steps × 0.004",
     // Button translations
     locate: "Locate",
         startPoint: "Start",
@@ -3173,7 +3227,7 @@ async function planRoutes() {
     const planBtnFloating = document.getElementById('plan-btn-floating');
     const originalText = planBtnFloating ? planBtnFloating.textContent : '';
     if (planBtnFloating) {
-      planBtnFloating.textContent = '計算中...';
+      planBtnFloating.textContent = (i18nDict[currentLang] && i18nDict[currentLang].calculatingLabel) ? i18nDict[currentLang].calculatingLabel : '計算中...';
       planBtnFloating.disabled = true;
     }
     
@@ -3267,7 +3321,7 @@ async function planRoutes() {
     // 恢復按鈕狀態
     const planBtnFloating = document.getElementById('plan-btn-floating');
     if (planBtnFloating) {
-      planBtnFloating.textContent = '🔍 規劃路徑';
+      planBtnFloating.textContent = (i18nDict[currentLang] && i18nDict[currentLang].planBtn) ? i18nDict[currentLang].planBtn : '🔍 規劃路徑';
       planBtnFloating.disabled = false;
     }
   }
@@ -3385,13 +3439,14 @@ function updateDashboard(data, shortestTime, lowestTime, improvementRate, extraD
   const distanceIncreaseEl = document.getElementById('dashDistanceIncrease');
   const distanceUnitEl = document.getElementById('dashDistanceUnit');
   if (distanceIncreaseEl && distanceUnitEl) {
+    const dict = i18nDict[currentLang];
     const distanceIncrease = computeExtraDistance(data.shortest, data.lowest);
     if (distanceIncrease >= 1000) {
       distanceIncreaseEl.textContent = (distanceIncrease / 1000).toFixed(1);
-      distanceUnitEl.textContent = '公里';
+      distanceUnitEl.textContent = (dict && dict.unitKilometers) ? dict.unitKilometers : '公里';
     } else {
       distanceIncreaseEl.textContent = Math.round(distanceIncrease);
-      distanceUnitEl.textContent = '公尺';
+      distanceUnitEl.textContent = (dict && dict.unitMeters) ? dict.unitMeters : '公尺';
     }
   }
 
@@ -3906,7 +3961,7 @@ function showOverlayLoadingState(overlayType) {
       const label = input.closest('label');
       const span = label.querySelector('span');
       if (span) {
-        span.textContent = '計算中...';
+        span.textContent = (i18nDict[currentLang] && i18nDict[currentLang].calculatingLabel) ? i18nDict[currentLang].calculatingLabel : '計算中...';
         span.style.color = '#666';
         span.style.fontStyle = 'italic';
       }
@@ -5620,13 +5675,14 @@ function updateResultDashboard(data, shortestTime, lowestTime, improvementRate, 
   const distanceIncreaseEl = document.getElementById('resultDashDistanceIncrease');
   const distanceUnitEl = document.getElementById('resultDashDistanceUnit');
   if (distanceIncreaseEl && distanceUnitEl) {
+    const dict = i18nDict[currentLang];
     const distanceIncrease = computeExtraDistance(data.shortest, data.lowest);
     if (distanceIncrease >= 1000) {
       distanceIncreaseEl.textContent = (distanceIncrease / 1000).toFixed(1);
-      distanceUnitEl.textContent = '公里';
+      distanceUnitEl.textContent = (dict && dict.unitKilometers) ? dict.unitKilometers : '公里';
     } else {
       distanceIncreaseEl.textContent = Math.round(distanceIncrease);
-      distanceUnitEl.textContent = '公尺';
+      distanceUnitEl.textContent = (dict && dict.unitMeters) ? dict.unitMeters : '公尺';
     }
   }
   
@@ -5730,12 +5786,18 @@ function updateCarbonCard(prefix, distanceKm) {
   const savedKg = distanceKm * factor;
   const trees = savedKg / 21.555; // 等效樹木數（棵／年）= Saved CO₂ (kg) / 21.555
 
+  const dict = i18nDict[currentLang];
   const valueEl = document.getElementById(`${prefix}CarbonKg`);
   const treesEl = document.getElementById(`${prefix}CarbonTrees`);
   const modeEl = document.getElementById(`${prefix}CarbonMode`);
+  const captionEl = document.getElementById(`${prefix}CarbonCaption`);
   if (valueEl) valueEl.textContent = formatKg(savedKg);
   if (treesEl) treesEl.textContent = trees.toFixed(1);
-  if (modeEl) modeEl.textContent = (mode === 'car' ? '汽車' : '機車');
+  if (modeEl) modeEl.textContent = dict ? (mode === 'car' ? dict.modeCar : dict.modeMotorcycle) : (mode === 'car' ? '汽車' : '機車');
+  if (captionEl) {
+    const tpl = (dict && dict.carbonTreesCaption) ? dict.carbonTreesCaption : '相當於種植 %s 顆樹/年';
+    captionEl.textContent = tpl.replace('%s', trees.toFixed(1));
+  }
 
   renderTreesIcons(`${prefix}CarbonTreesVisual`, trees);
 }
