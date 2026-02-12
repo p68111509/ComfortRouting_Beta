@@ -1,0 +1,30 @@
+Last updated: 20260212_23
+PKL file: Network_TWD97_withpm25_realtime.pkl
+Update time: 2026-02-12 23:27:47
+
+# 本小時流程資料來源（此 PKL 對應的流程：EPA/微感器有無抓到、是否用備援）
+microsensor: ✅ 當前小時 (20260212_23)
+epa: ✅ 上一小時 (20260212_22)
+
+# 路網摘要（此 PKL 為最新）
+graph_type: Graph
+num_nodes: 104624
+num_edges: 133669
+
+# PM25_expo 敘述統計
+PM25_expo_count: 133669
+PM25_expo_min: 3.9593253708860696
+PM25_expo_max: 101086.72929221539
+PM25_expo_mean: 998.7297135200761
+
+# PM25 敘述統計
+PM25_count: 133669
+PM25_min: 3.5226221084594727
+PM25_max: 14.807007789611816
+PM25_mean: 11.444261836576112
+
+# length（公尺）敘述統計
+length_count: 133669
+length_min: 0.3424910216556394
+length_max: 9856.400269841546
+length_mean: 88.9267563333633
