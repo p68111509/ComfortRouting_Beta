@@ -14,7 +14,7 @@ let currentTileLayer = null;
 // 常數
 // 導航模式地圖初始視角：台中市中心一帶（WGS84）
 const DEFAULT_CENTER = [24.147, 120.68];
-const DEFAULT_ZOOM = 12;
+const DEFAULT_ZOOM = 13;
 // 自動檢測 API 基礎 URL
 const API_BASE = (window.location.protocol === 'file:' || 
                   window.location.hostname === 'localhost' || 
@@ -1989,7 +1989,8 @@ function initMap() {
     zoom: DEFAULT_ZOOM,
     zoomControl: true
   });
-  
+  console.log('[map] initial view (導航模式)', DEFAULT_CENTER, 'zoom', DEFAULT_ZOOM);
+
   // 載入預設底圖
   loadTileLayer('cartodb-voyager');
   
