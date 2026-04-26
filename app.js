@@ -12,8 +12,9 @@ let overlayLayer = null;
 let currentTileLayer = null;
 
 // 常數
-const DEFAULT_CENTER = [25.0330, 121.5654];
-const DEFAULT_ZOOM = 13;
+// 導航模式地圖初始視角：台中市中心一帶（WGS84）
+const DEFAULT_CENTER = [24.147, 120.68];
+const DEFAULT_ZOOM = 12;
 // 自動檢測 API 基礎 URL
 const API_BASE = (window.location.protocol === 'file:' || 
                   window.location.hostname === 'localhost' || 
