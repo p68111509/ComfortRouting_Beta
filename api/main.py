@@ -55,9 +55,9 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parents[1]
 
 # 定義兩個路網檔案路徑（行人和腳踏車使用同一個路網）
-# 統一使用 Network_TWD97_withpm25_realtime.pkl 作為實際檔名
-BICYCLE_GRAPH_NAME = "Network_TWD97_withpm25_realtime.pkl"
-WALK_GRAPH_NAME = "Network_TWD97_withpm25_realtime.pkl"
+# 暫時以台中路網（精簡、無邊 geometry）取代雙北即時路網（可再改回 Network_TWD97_withpm25_realtime.pkl）
+BICYCLE_GRAPH_NAME = "Taichung_Road_PM25_largest_connected_slim_nogeom.pkl"
+WALK_GRAPH_NAME = "Taichung_Road_PM25_largest_connected_slim_nogeom.pkl"
 
 DEFAULT_BICYCLE_GRAPH = BASE_DIR / "data" / BICYCLE_GRAPH_NAME
 DEFAULT_WALK_GRAPH = BASE_DIR / "data" / WALK_GRAPH_NAME
@@ -85,8 +85,8 @@ print(f"[config] Bicycle graph: {DEFAULT_BICYCLE_GRAPH}")
 print(f"[config] Walk graph: {DEFAULT_WALK_GRAPH}")
 
 
-# 欄位鍵名（可透過環境變數改名，預設使用 length / PM25_expo）
-EDGE_LEN_KEY = os.environ.get("EDGE_LEN_KEY", "length")
+# 欄位鍵名（可透過環境變數改名；台中精簡路網為 length_m，雙北即時路網通常為 length）
+EDGE_LEN_KEY = os.environ.get("EDGE_LEN_KEY", "length_m")
 EDGE_PM25_KEY = os.environ.get("EDGE_PM25_KEY", "PM25_expo")
 
 # Google Geocoding（本題提供固定金鑰；實務上請改由環境變數）
