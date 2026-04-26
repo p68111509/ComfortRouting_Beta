@@ -55,9 +55,10 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parents[1]
 
 # 定義兩個路網檔案路徑（行人和腳踏車使用同一個路網）
-# 暫時以台中路網（精簡、無邊 geometry）取代雙北即時路網（可再改回 Network_TWD97_withpm25_realtime.pkl）
-BICYCLE_GRAPH_NAME = "Taichung_Road_PM25_largest_connected_slim_nogeom.pkl"
-WALK_GRAPH_NAME = "Taichung_Road_PM25_largest_connected_slim_nogeom.pkl"
+# 暫時以台中路網（精簡戶政欄位，仍含邊上 geometry、PM25、length_m 等；由 路網圖檔 壓縮產生）取代雙北即時路網
+# 檔名：Road_Taichung_PM25_slim_roads.pkl ／ 實體路徑：專案根 data\Road_Taichung_PM25_slim_roads.pkl（可改回 Network_TWD97_withpm25_realtime.pkl）
+BICYCLE_GRAPH_NAME = "Road_Taichung_PM25_slim_roads.pkl"
+WALK_GRAPH_NAME = "Road_Taichung_PM25_slim_roads.pkl"
 
 DEFAULT_BICYCLE_GRAPH = BASE_DIR / "data" / BICYCLE_GRAPH_NAME
 DEFAULT_WALK_GRAPH = BASE_DIR / "data" / WALK_GRAPH_NAME
@@ -68,9 +69,12 @@ def get_graph_paths_for_mode(mode: str) -> List[Path]:
     graph_name = BICYCLE_GRAPH_NAME if mode == "bicycle" else WALK_GRAPH_NAME
     default_path = DEFAULT_BICYCLE_GRAPH if mode == "bicycle" else DEFAULT_WALK_GRAPH
     
+    # 本機可將 Road_Taichung_PM25_slim_roads.pkl 放於 repo 的 路網設定/路網圖檔/（與壓縮筆記本產出同路徑）
+    taichung_slim_alt = BASE_DIR.parent / "路網設定" / "路網圖檔" / graph_name
     return [
         Path("/opt/render/project/src/data") / graph_name,  # Render 主要路徑
         default_path,  # 專案根/data/...
+        taichung_slim_alt,
         BASE_DIR / "api" / "data" / graph_name,  # 專案根/api/data/...
         Path("data") / graph_name,  # 相對於 api/ 目錄
         Path("/opt/render/project/src/api/data") / graph_name,  # Render api/data 路徑
